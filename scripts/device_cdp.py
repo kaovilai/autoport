@@ -70,8 +70,14 @@ class Cdp:
     def _conn(self):
         if self._ws is None:
             target = self._find_page()
+            # suppress_origin: Chrome 111+ rejects CDP websocket connections
+            # that carry an Origin header (403 "Rejected an incoming WebSocket
+            # connection from the ... origin") unless Chrome was started with
+            # --remote-allow-origins. websocket-client derives an Origin from
+            # the host by default; sending none is always allowed.
             self._ws = websocket.create_connection(
-                target["webSocketDebuggerUrl"], timeout=self.timeout)
+                target["webSocketDebuggerUrl"], timeout=self.timeout,
+                suppress_origin=True)
         return self._ws
 
     def send(self, method, params=None):

@@ -133,8 +133,10 @@ jobs:
           ADB="$ANDROID_HOME/platform-tools/adb"
           # Best effort: make Chrome skip its first-run flow. Public Chrome only
           # honors the command-line file while marked as the debug app.
+          # --remote-allow-origins covers CDP websocket clients that send an
+          # Origin header (device_cdp.py additionally suppresses it).
           "$ADB" shell am set-debug-app --persistent com.android.chrome >/dev/null 2>&1 || true
-          "$ADB" shell 'echo "chrome --no-first-run --disable-fre --no-default-browser-check" > /data/local/tmp/chrome-command-line' || true
+          "$ADB" shell 'echo "chrome --no-first-run --disable-fre --no-default-browser-check --remote-allow-origins=*" > /data/local/tmp/chrome-command-line' || true
           "$ADB" shell am start -a android.intent.action.VIEW -d "http://localhost:8090/"
           sleep 8
           # Fresh Chrome opens FirstRunActivity over the VIEW intent, so the
