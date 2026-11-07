@@ -340,6 +340,11 @@ Wire format (all verified against decompiled MacroDroid
   substitution there at fire time; MacroDroid does plain runtime replacement.
   Emission keeps the magic text but reports the key (UI warning) because a
   runtime value containing quotes/backslashes/newlines can break the payload.
+- **Variable semantics**: used locals are declared as MacroDroid STRING
+  variables (`m_type: 2`); Tasker numeric/array variable types are not
+  preserved (MacroDroid coerces magic text at runtime), and Tasker array
+  references (`%arr()`) are left literal and reported in
+  `unresolvedVariables` rather than half-translated to `{lv=arr}()`.
 - **Failure isolation**: `emitMacros` wraps each macro in try/catch; a macro
   that fails to emit produces `macro: null` + `report.error`, rendered as a
   failure card, and a macro with nothing emittable renders a report-only card

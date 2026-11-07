@@ -156,6 +156,14 @@ await test('translateVars: %msg must not match inside %errmsg (name boundary)', 
   assert.deepEqual([...r2.unresolvedVariables], ['%errmsg']);
 });
 
+await test('translateVars: Tasker array syntax %arr() stays literal and is reported', () => {
+  const report = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
+  const out = translateVars('items %arr() scalar %arr', { local: ['%arr'], global: [] }, report);
+  assert.equal(out, 'items %arr() scalar {lv=arr}', 'array reference must not become {lv=arr}()');
+  assert.deepEqual([...report.variablesUsed], ['%arr'], 'scalar use still counts');
+  assert.deepEqual([...report.unresolvedVariables], ['%arr'], 'array reference reported');
+});
+
 await test('translateVars: single-char local %h must not match inside %http_data', () => {
   const report = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
   const out = translateVars('read %http_data into %h', { local: ['%h'], global: [] }, report);

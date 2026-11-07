@@ -157,7 +157,8 @@ export function translateVars(text, variables, report) {
       continue;
     }
     // whole-name match: the next character must not extend a Tasker var name
-    const rx = new RegExp(`${escapeRe(name)}(?![A-Za-z0-9_])`, 'g');
+    // (and `(` marks Tasker ARRAY syntax, e.g. %arr() — not translatable)
+    const rx = new RegExp(`${escapeRe(name)}(?![A-Za-z0-9_(])`, 'g');
     let hits = 0;
     out = out.replace(rx, () => { hits += 1; return `{${magic}=${bare}}`; });
     if (hits > 0) report.variablesUsed.add(name);

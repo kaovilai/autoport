@@ -199,8 +199,12 @@ async function renderTasker(name, buffer) {
   lastTaskerEmission = lastEmission;
 
   out.insertAdjacentHTML('beforeend', cards.join('\n'));
-  // wire the macro copy buttons (the cards were just inserted above)
+  // Wire the macro copy buttons. Results accumulate across parses, so wire
+  // each button exactly once — re-binding on every render would run the
+  // clipboard write (and its status line) once per earlier parse.
   for (const btn of out.querySelectorAll('[data-copy-macro]')) {
+    if (btn.dataset.wired) continue;
+    btn.dataset.wired = '1';
     btn.addEventListener('click', async () => {
       try {
         const json = btn.parentElement.querySelector('pre').textContent;
