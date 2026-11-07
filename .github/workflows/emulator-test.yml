@@ -3,10 +3,11 @@ name: emulator-test
 # Device-level verification (V1-V5 partial, V15, M3.1 import) on a GitHub
 # Actions ubuntu runner with KVM.
 #
-# Runs automatically when device-relevant code changes (the PWA shell + the
-# Tasker->IR->MacroDroid emitter, which is the code the device import actually
-# exercises), on pushes to main, on a weekly schedule (app-version drift), and
-# on demand. Fork PRs are skipped: they cannot read the GPLAY_AUTH secret.
+# Runs automatically when device-relevant code changes (the
+# Tasker->IR->MacroDroid emitter/plugin paths and the PWA shell the device
+# assertions exercise), on pushes to main, nightly (app-version drift + cache
+# warm), and on demand. Fork PRs are skipped: they cannot read the GPLAY_AUTH
+# secret.
 #
 # Cached to keep the run cheap (~1 GB system image + Play APKs are the bulk):
 #   - Android system image (keyed by image id)
@@ -20,29 +21,43 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'js/**'
-      - 'sw.js'
-      - 'index.html'
-      - 'manifest.webmanifest'
+      # the code whose device behavior only a real MacroDroid import proves
+      - 'js/targets/macrodroid/**'
+      - 'js/sources/tasker/**'
       - 'data/macrodroid/**'
       - 'data/taskerCodes.json'
       - 'tests/golden/tasker/**'
       - 'tests/fixtures/tasker/**'
+      # PWA shell exercised by the device CDP assertions / offline flow
+      - 'sw.js'
+      - 'index.html'
+      - 'manifest.webmanifest'
+      - 'js/app.js'
+      - 'js/share.js'
+      - 'js/idb.js'
+      - 'js/sniff.js'
       - '.github/workflows/emulator-test.yml'
   push:
     branches: [main]
     paths:
-      - 'js/**'
-      - 'sw.js'
-      - 'index.html'
-      - 'manifest.webmanifest'
+      # the code whose device behavior only a real MacroDroid import proves
+      - 'js/targets/macrodroid/**'
+      - 'js/sources/tasker/**'
       - 'data/macrodroid/**'
       - 'data/taskerCodes.json'
       - 'tests/golden/tasker/**'
       - 'tests/fixtures/tasker/**'
+      # PWA shell exercised by the device CDP assertions / offline flow
+      - 'sw.js'
+      - 'index.html'
+      - 'manifest.webmanifest'
+      - 'js/app.js'
+      - 'js/share.js'
+      - 'js/idb.js'
+      - 'js/sniff.js'
       - '.github/workflows/emulator-test.yml'
   schedule:
-    - cron: '23 6 * * 1' # weekly drift check (app versions)
+    - cron: '17 4 * * *' # nightly: app-version drift + cache warm
 
 permissions:
   contents: read

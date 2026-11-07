@@ -8,7 +8,7 @@ server, no account, no telemetry.
 
 ## CI-tested app versions
 
-Device tests run on KVM emulator runners ([emulator-test.yml](.github/workflows/emulator-test.yml) — automatic on device-relevant changes, weekly, and on demand) with the real apps installed from their original sources; versions below are what the last run verified.
+Device tests run on KVM emulator runners ([emulator-test.yml](.github/workflows/emulator-test.yml) — automatic on device-relevant changes, nightly, and on demand) with the real apps installed from their original sources; versions below are what the last run verified.
 
 | App | Version (last run) | Install source | Verified |
 |---|---|---|---|
@@ -66,7 +66,7 @@ Legend: ☑ done · ◐ partial · ☐ not started
 - [x] PWA site-integrity suite (manifest contract, real PNG icons, SW precache list exists **and** covers every module/data file — the offline gate)
 - [x] **Browser e2e** ([ci.yml](.github/workflows/ci.yml) `e2e` job, Playwright + pinned Chromium): SW registration + precache, every ingest path (picker / drag-drop / paste box / page paste), V4 equality across paths (status + rendered cards; parser oracle-golden-tested), share-target POST → 303 → inbox card → "Open in converter" handoff, text-only / empty / >25 MiB shares, IndexedDB persistence + clear, offline reload + **offline parse** + offline deep-link fallback — run twice: at the server root **and** under `/autoport/` (GitHub Pages layout)
 - [x] Upstream drift gate on `tasker.joaoapps.com` code tables
-- [x] Emulator device test on KVM runners (**automatic on device-relevant paths**, weekly, and on demand; system image + APKs cached): Chrome + MacroDroid from Play, PWA load + **CDP content assertions + on-device parse (online and offline)**, V15 share-link import, M3.1 pass-through import asserted in the MacroDroid editor
+- [x] Emulator device test on KVM runners (**automatic on device-relevant paths**, nightly, and on demand; system image + APKs cached): Chrome + MacroDroid from Play, PWA load + **CDP content assertions + on-device parse (online and offline)**, V15 share-link import, M3.1 pass-through import asserted in the MacroDroid editor
 
 See `docs/DESIGN.md` (§11) for the V1–V21 verification matrix and
 `docs/VERIFICATION.md` for current status.
