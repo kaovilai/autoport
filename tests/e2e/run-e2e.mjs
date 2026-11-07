@@ -420,6 +420,26 @@ async function runScope(scopeName, base, context) {
     await page.close();
   });
 
+  await t(`${scopeName}: guarded-plugin macro renders a report-only card when nothing is emittable`, async () => {
+    const page = await newPage();
+    await page.goto(base);
+    await page.setInputFiles('#file-input', path.join(repoRoot, 'tests/fixtures/tasker/plugins/CyanBridge_LocalAgent_Tasker.prj.xml'));
+    await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
+    const cards = page.locator('#results .card', { hasText: 'MacroDroid macro — plugin pass-through' });
+    // Observe: 1 unguarded plugin action -> a real macro card (1 delegated)
+    const emittedCard = cards.filter({ hasText: '1 plugin action(s) delegated' }).first();
+    await emittedCard.waitFor();
+    assert.match(await emittedCard.textContent(), /structural check: valid/);
+    // Execute: every plugin action carries a Tasker If-guard -> NOTHING is
+    // emittable, but the skipped list must still be surfaced (0 delegated)
+    // instead of the macro silently disappearing.
+    const reportCard = cards.filter({ hasText: '0 plugin action(s) delegated' }).first();
+    await reportCard.waitFor();
+    assert.match(await reportCard.textContent(), /Not converted yet \(12\)/);
+    assert.equal(await reportCard.locator('pre.preview').count(), 0, 'no macro JSON to copy when nothing is emitted');
+    await page.close();
+  });
+
   await t(`${scopeName}: TaskerNet link paste -> CORS warning, never a blank screen (V3 browser half)`, async () => {
     const page = await newPage();
     await page.goto(base);
@@ -564,13 +584,20 @@ async function runScope(scopeName, base, context) {
     assert.equal(await card.getByRole('link', { name: 'Open in converter' }).count(), 0, 'oversized card must not offer converter handoff');
     // The record must not carry the payload — only its metadata.
     const rec = await page.evaluate(async () => {
+      // Reject on request errors AND on synchronous throws inside onsuccess
+      // (e.g. InvalidStateError from transaction/objectStore) — and close
+      // the connection once done so the read cannot leak or hang.
       const all = await new Promise((res, rej) => {
         const req = indexedDB.open('autoport');
         req.onerror = () => rej(req.error);
         req.onsuccess = () => {
-          const rq = req.result.transaction('inbox', 'readonly').objectStore('inbox').getAll();
-          rq.onerror = () => rej(rq.error);
-          rq.onsuccess = () => res(rq.result);
+          let rq;
+          try {
+            const db = req.result;
+            rq = db.transaction('inbox', 'readonly').objectStore('inbox').getAll();
+          } catch (e) { req.result.close(); rej(e); return; }
+          rq.onerror = () => { req.result.close(); rej(rq.error); };
+          rq.onsuccess = () => { req.result.close(); res(rq.result); };
         };
       });
       return all.find((r) => r.name === 'huge.bin');

@@ -152,7 +152,19 @@ async function renderTasker(name, buffer) {
           <p class="muted">⚠️ Macro emission failed: ${escapeHtml(report.error)}</p></article>`);
         continue;
       }
-      if (!macro) continue;
+      if (!macro) {
+        // Nothing emittable (e.g. every plugin action carries a Tasker
+        // If-guard, or only builtin actions) — still surface WHY, with the
+        // skipped list, instead of silently dropping the macro.
+        if (report.skipped.length) {
+          cards.push(`<article class="card">
+            <h3>MacroDroid macro — plugin pass-through</h3>
+            <p class="muted">0 plugin action(s) delegated — this macro produced no MacroDroid export yet.</p>
+            <p class="muted small">Not converted yet (${report.skipped.length}): ${report.skipped.map((s) => escapeHtml(s.codeName || `code ${s.code}`)).join(', ')}</p>
+          </article>`);
+        }
+        continue;
+      }
       const verdict = validateMacro(macro);
       const skipped = report.skipped.length
         ? `<p class="muted small">Not converted yet (${report.skipped.length}): ${report.skipped.map((s) => escapeHtml(s.codeName || `code ${s.code}`)).join(', ')}</p>` : '';

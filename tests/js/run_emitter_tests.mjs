@@ -156,6 +156,14 @@ await test('translateVars: %msg must not match inside %errmsg (name boundary)', 
   assert.deepEqual([...r2.unresolvedVariables], ['%errmsg']);
 });
 
+await test('translateVars: single-char local %h must not match inside %http_data', () => {
+  const report = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
+  const out = translateVars('read %http_data into %h', { local: ['%h'], global: [] }, report);
+  assert.equal(out, 'read %http_data into {lv=h}', '%http_data must stay literal');
+  assert.deepEqual([...report.variablesUsed], ['%h']);
+  assert.deepEqual([...report.unresolvedVariables], ['%http_data'], 'the unknown longer name must be reported, not silently corrupted');
+});
+
 await test('translateVars: variablesUsed only records actual replacements', () => {
   const report = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
   translateVars('nothing to see', { local: ['%msg'], global: [] }, report);

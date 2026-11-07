@@ -256,24 +256,33 @@ jobs:
           sleep 20
           "$ADB" exec-out screencap -p > /tmp/macrodroid-passthrough-import.png
           # Assert the import INSIDE MacroDroid, not just that it foregrounded:
-          # the macro editor must show the macro name and must NOT show
-          # "No Actions" (run 8 proved a base64 mSerializedBundle silently
-          # drops every LocalePluginAction on import — the editor opened with
-          # "Actions 0 — No Actions" and the old check passed vacuously).
+          # the share link must land in the macro EDITOR (hard gate), the macro
+          # name and BOTH action rows must be rendered, and "No Actions" must
+          # be absent. Run 8 proved a base64 mSerializedBundle silently drops
+          # every LocalePluginAction ("Actions 0 — No Actions"); run 9 (numeric
+          # byte array) shows "Actions 2" with the AutoInput rows.
+          top=$("$ADB" shell dumpsys activity activities | grep -i 'topResumedActivity' | head -1)
+          echo "top activity after pass-through link: $top"
+          if ! echo "$top" | grep -q 'com.arlosoft.macrodroid/.editscreen.EditMacroActivity'; then
+            echo "::error::share link did not land in the MacroDroid macro editor (EditMacroActivity); got: $top"
+            exit 1
+          fi
           "$ADB" shell uiautomator dump /sdcard/passthrough-ui.xml >/dev/null
           "$ADB" pull /sdcard/passthrough-ui.xml /tmp/passthrough-ui.xml >/dev/null
           if ! grep -q "Launch Instagram" /tmp/passthrough-ui.xml; then
             echo "::error::imported macro name 'Launch Instagram' not visible in the MacroDroid editor"
             cat /tmp/passthrough-ui.xml; exit 1
           fi
+          rows=$(grep -o "ActivityConfigPerformAction" /tmp/passthrough-ui.xml | wc -l)
+          if [ "$rows" -lt 2 ]; then
+            echo "::error::expected 2 rendered LocalePluginAction rows in the editor, found $rows (the nodes were dropped or not rendered)"
+            cat /tmp/passthrough-ui.xml; exit 1
+          fi
           if grep -q "No Actions" /tmp/passthrough-ui.xml; then
             echo "::error::MacroDroid imported the macro with ZERO actions — the LocalePluginAction nodes were dropped (check mSerializedBundle encoding)"
             exit 1
           fi
-          echo "pass-through import verified: macro name + actions present in the MacroDroid editor"
-          top=$("$ADB" shell dumpsys activity activities | grep -i 'topResumedActivity' | head -1)
-          echo "top activity after pass-through link: $top"
-          echo "$top" | grep -qi macrodroid || echo "::warning::MacroDroid not foreground; check screenshot"
+          echo "pass-through import verified: EditMacroActivity + macro name + 2 action rows on device"
 
       - name: Upload screenshots + logs
         if: always()
