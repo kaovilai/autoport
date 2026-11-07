@@ -42,6 +42,11 @@ function escapeHtml(s) {
 /* ------------------------------------------------------------------ */
 
 let mappingTable = null;
+
+/* Last Tasker IR parsed by renderTasker — exposed on window.autoport.lastIr
+ * for the e2e suite (V4: golden equality across ingest paths). Test hook
+ * only; nothing in the product reads it. */
+let lastTaskerIr = null;
 async function loadMappingTable() {
   if (mappingTable) return mappingTable;
   try {
@@ -79,6 +84,7 @@ async function renderTasker(name, buffer) {
   // not-representable card never renders.
   const parseStats = {};
   const ir = await parseTaskerXml(text, { stats: parseStats }); // never throws; errors come back in IR
+  lastTaskerIr = ir;
 
   if (ir.error) {
     log(`   ✗ ${ir.error.kind}: ${ir.error.message}`);
@@ -167,7 +173,7 @@ async function ingest(name, type, buffer, opts = {}) {
   log(`   reported MIME : ${type || '(empty string)'}   ← NEVER trust this`);
   log(`   sniffed       : ${info.kind} — ${info.label}`);
   log(`   implied MIME  : ${info.vendorMime}`);
-  log(`   magic bytes   : ${info.magic}`);
+  log(`   magic bytes   : ${info.detail.magic}`);
   if (info.detail.printableRatio != null) log(`   printable     : ${info.detail.printableRatio}`);
 
   if (doomed) {
@@ -327,5 +333,5 @@ if (fromId) {
   });
 }
 
-// expose for manual console poking during the spike
-window.autoport = { idb, ingest, classify, parseTaskerXml, parseFloT0, decodeAutoInput };
+// expose for manual console poking during the spike; lastIr is an e2e hook (V4)
+window.autoport = { idb, ingest, classify, parseTaskerXml, parseFloT0, decodeAutoInput, get lastIr() { return lastTaskerIr; } };

@@ -193,19 +193,36 @@ async function runScope(scopeName, base, context) {
   // + 2 plugin, 0 unknown. Pinning the full status string catches stats-plumbing
   // regressions (e.g. "0 identified" when the IR stats never reach the UI).
   const EXPECT_TASKER_STATUS = 'Tasker parsed: 1 macro(s), 5 action(s), 5 identified';
-  // V4 equality compares the rendered CARDS and the FULL results log across
-  // paths, not just the status counts — a shared miscount would otherwise
-  // pass all three tests. The log normalization only hides the two values
-  // that legitimately differ per path (file name/size header, reported MIME);
-  // everything byte-derived (sniffed kind, implied MIME, magic bytes,
-  // printable ratio) and every rendered card must be identical, which pins
-  // the delivered bytes and therefore — the parser being deterministic and
-  // oracle-golden-tested in the unit suite — the parsed IR.
+  // V4 equality per DESIGN.md: normalized golden equality across the ingest
+  // paths. Three layers, all compared key-order-insensitively:
+  //   1. the full parsed IR (window.autoport.lastIr, set by renderTasker) —
+  //      deep-compared across picker/drop/paste AND against the committed
+  //      python-oracle golden for this fixture;
+  //   2. the rendered cards;
+  //   3. the status string and the normalized results log (byte-derived
+  //      sniff fields: kind, implied MIME, magic bytes).
   const cardsHtml = (page) => page.evaluate(() => [...document.querySelectorAll('#results .card')].map((c) => c.outerHTML).join('\n'));
   const normalizedResults = (page) => page.evaluate(() =>
     document.querySelector('#results').textContent.split('\n')
       .map((l) => l.replace(/^── .*/, '── <file>').replace(/^(   reported MIME :).*$/, '$1 <mime>'))
       .join('\n'));
+  const canonicalize = (v) => {
+    if (Array.isArray(v)) return v.map(canonicalize);
+    if (v && typeof v === 'object') {
+      return Object.fromEntries(Object.keys(v).sort().map((k) => [k, canonicalize(v[k])]));
+    }
+    return v;
+  };
+  // V4 normalization rule (DESIGN.md §11): source.file is basename-only and
+  // legitimately differs per ingest path (picker has a filename, paste does
+  // not) — exclude it; everything else must match the golden exactly.
+  const normalizeIr = (ir) => {
+    const c = canonicalize(ir);
+    if (c && c.source) delete c.source.file;
+    return c;
+  };
+  const irOf = (page) => page.evaluate(() => JSON.stringify(window.autoport?.lastIr ?? null));
+  const goldenIr = normalizeIr(JSON.parse(readFileSync(path.join(repoRoot, 'tests/golden/tasker/tasker-LaunchInstagram.tsk.ir.json'), 'utf8')));
 
   await t(`${scopeName}: file picker -> Tasker task parsed (V1 browser half)`, async () => {
     const page = await newPage();
@@ -229,6 +246,8 @@ async function runScope(scopeName, base, context) {
     const pickerStatus = await statusText(page);
     const pickerCards = await cardsHtml(page);
     const pickerResults = await normalizedResults(page);
+    const pickerIr = normalizeIr(JSON.parse(await irOf(page)));
+    assert.deepEqual(pickerIr, goldenIr, 'picker IR does not match the python-oracle golden');
     await page.close();
 
     const page2 = await newPage();
@@ -244,6 +263,7 @@ async function runScope(scopeName, base, context) {
     assert.equal(await statusText(page2), pickerStatus, 'picker and drop must produce identical status (V4)');
     assert.equal(await cardsHtml(page2), pickerCards, 'picker and drop must render identical cards (V4)');
     assert.equal(await normalizedResults(page2), pickerResults, 'picker and drop must log identical normalized results (V4)');
+    assert.deepEqual(normalizeIr(JSON.parse(await irOf(page2))), pickerIr, 'picker and drop must produce identical IRs (V4)');
     await page2.close();
   });
 
@@ -257,7 +277,9 @@ async function runScope(scopeName, base, context) {
     const pasteStatus = await statusText(page);
     const pasteCards = await cardsHtml(page);
     const pasteResults = await normalizedResults(page);
+    const pasteIr = normalizeIr(JSON.parse(await irOf(page)));
     assert.equal(pasteStatus, EXPECT_TASKER_STATUS);
+    assert.deepEqual(pasteIr, goldenIr, 'paste IR does not match the python-oracle golden');
     await page.close();
     // Re-run the same fixture through the picker on a clean page and compare.
     const page2 = await newPage();
@@ -267,6 +289,7 @@ async function runScope(scopeName, base, context) {
     assert.equal(await statusText(page2), pasteStatus, 'paste and picker must produce identical status (V4)');
     assert.equal(await cardsHtml(page2), pasteCards, 'paste and picker must render identical cards (V4)');
     assert.equal(await normalizedResults(page2), pasteResults, 'paste and picker must log identical normalized results (V4)');
+    assert.deepEqual(normalizeIr(JSON.parse(await irOf(page2))), pasteIr, 'paste and picker must produce identical IRs (V4)');
     await page2.close();
   });
 
