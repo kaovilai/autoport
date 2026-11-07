@@ -1,8 +1,17 @@
 // js/app.js — main page: file picker, drag-drop, paste-XML, and the shared-inbox handoff.
 // Vanilla ES module. No framework, no build step.
+//
+// M2: real source adapters wired in —
+//   Tasker XML -> js/sources/tasker/taskerXml.js (full-fidelity IR, golden-tested)
+//   AutoInput  -> js/sources/tasker/pluginAutoInput.js (plugin bundle -> touch ops)
+//   Automate   -> js/sources/automate/floParser.js (T0 header inventory)
+//   MacroDroid -> data/macrodroid/mappingTable.json (per-action conversion status)
 
 import { classify, humanSize } from './sniff.js';
 import * as idb from './idb.js';
+import { parseTaskerXml } from './sources/tasker/taskerXml.js';
+import { decodeAutoInput } from './sources/tasker/pluginAutoInput.js';
+import { parseFloT0 } from './sources/automate/floParser.js';
 
 const $ = (sel) => document.querySelector(sel);
 const out = $('#results');
@@ -14,7 +23,7 @@ const pasteBox = $('#paste');
 const analyzeBtn = $('#analyze');
 
 function log(line) {
-  out.textContent += (out.textContent ? '\n' : '') + line;
+  out.insertAdjacentText('beforeend', (out.textContent ? '\n' : '') + line);
 }
 
 function clearResults() { out.textContent = ''; }
@@ -24,53 +33,122 @@ function setStatus(msg, kind = '') {
   statusEl.dataset.kind = kind;
 }
 
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 /* ------------------------------------------------------------------ */
-/* Tasker inventory (spike-level: proves the parse path works)        */
+/* MacroDroid mapping table (conversion status per Tasker action code) */
 /* ------------------------------------------------------------------ */
 
-const ACTION_HINTS = {
-  339: 'HTTP Request', 129: 'JavaScriptlet', 548: 'Flash', 547: 'Set Variable',
-  130: 'JavaScript', 30: 'Wait', 20: 'Notify', 183: 'Say', 235: 'Send Intent',
-  294: 'Perform Task', 590: 'Wait Until', 341: 'Kill App', 877: 'Else If', 879: 'End If'
-};
-
-function inventoryTasker(text) {
-  const doc = new DOMParser().parseFromString(text, 'application/xml');
-  const parseError = doc.querySelector('parsererror');
-  if (parseError) return { ok: false, error: parseError.textContent.slice(0, 300) };
-
-  const root = doc.documentElement;
-  const tasks = [...doc.querySelectorAll('Task')];
-  const profiles = [...doc.querySelectorAll('Profile')];
-  const scenes = [...doc.querySelectorAll('Scene')];
-  const lines = [];
-  lines.push(`root: <${root.nodeName}>  attrs: ${[...root.attributes].map(a => `${a.name}=${a.value}`).join(' ')}`);
-  lines.push(`containers: Task=${tasks.length} Profile=${profiles.length} Scene=${scenes.length}`);
-
-  for (const t of tasks) {
-    const name = t.querySelector(':scope > nme')?.textContent ?? '(unnamed)';
-    const id = t.querySelector(':scope > id')?.textContent ?? '?';
-    const pri = t.querySelector(':scope > pri')?.textContent ?? '?';
-    const actions = [...t.querySelectorAll(':scope > Action')];
-    lines.push('');
-    lines.push(`TASK id=${id} pri=${pri} name="${name}"  actions=${actions.length}`);
-    let i = 0;
-    for (const a of actions) {
-      const code = a.querySelector(':scope > code')?.textContent ?? '?';
-      const hint = ACTION_HINTS[code] ? ` (${ACTION_HINTS[code]})` : '';
-      const args = [...a.children].filter(c => c.nodeName !== 'code' && c.nodeName !== 'ConditionList');
-      const argDesc = args.map(c => {
-        if (c.nodeName === 'Str') return `Str ${c.getAttribute('sr')}="${(c.textContent || '').slice(0, 60)}"`;
-        if (c.nodeName === 'Int') return `Int ${c.getAttribute('sr')}=${c.getAttribute('val')}`;
-        if (c.nodeName === 'Bundle') return `Bundle ${c.getAttribute('sr')}(${c.querySelectorAll('Vals > *').length} vals)`;
-        return `${c.nodeName} ${c.getAttribute('sr') || ''}`;
-      }).join(', ');
-      lines.push(`  ${String(i++).padStart(2)}. code=${code}${hint}  ${argDesc}`);
-    }
-    const conds = [...t.querySelectorAll(':scope > Action > ConditionList')];
-    if (conds.length) lines.push(`  condition lists: ${conds.length}`);
+let mappingTable = null;
+async function loadMappingTable() {
+  if (mappingTable) return mappingTable;
+  try {
+    const r = await fetch(new URL('../../data/macrodroid/mappingTable.json', import.meta.url), { cache: 'force-cache' });
+    mappingTable = await r.json();
+  } catch (e) {
+    console.warn('[autoport] mapping table unavailable', e);
+    mappingTable = {};
   }
-  return { ok: true, text: lines.join('\n'), stats: { tasks: tasks.length, profiles: profiles.length, scenes: scenes.length } };
+  return mappingTable;
+}
+
+function chip(kind, label) {
+  return `<span class="chip ${escapeHtml(kind)}">${escapeHtml(label)}</span>`;
+}
+
+function mappingChip(code) {
+  const m = mappingTable?.[String(code)];
+  if (!m) return chip('unmapped', 'unmapped');
+  if (m.status === 'exact') return chip('exact', `→ ${m.classType}`);
+  if (m.status === 'partial') return chip('partial', `~ ${m.classType}`);
+  if (m.status === 'manual') return chip('unmapped', 'manual');
+  return chip('unmapped', 'unmapped');
+}
+
+/* ------------------------------------------------------------------ */
+/* Tasker: full IR render                                             */
+/* ------------------------------------------------------------------ */
+
+async function renderTasker(name, buffer) {
+  const text = new TextDecoder().decode(buffer);
+  await loadMappingTable();
+  const ir = await parseTaskerXml(text); // never throws; errors come back in IR
+
+  if (ir.error) {
+    log(`   ✗ ${ir.error.kind}: ${ir.error.message}`);
+    setStatus('Tasker XML rejected — see details above', 'warn');
+    return;
+  }
+
+  const stats = ir.stats || {};
+  const cards = [];
+  for (const macro of ir.macros || []) {
+    const rows = [];
+    for (const trig of macro.triggers || []) {
+      rows.push(`<div class="row"><span class="pill">trigger</span> <code>${escapeHtml(trig.codeName || `code ${trig.code}`)}</code></div>`);
+    }
+    for (const act of macro.actions || []) {
+      let main, extra = '';
+      if (act.kind === 'builtin') {
+        main = `<code>${escapeHtml(act.codeName || `code ${act.code}`)}</code> ${mappingChip(act.code)}`;
+      } else if (act.kind === 'plugin') {
+        const pkg = act.plugin?.package || '';
+        if (pkg.includes('autoinput')) {
+          const d = decodeAutoInput({ pluginTypeId: act.plugin?.pluginTypeId, pluginConfig: act.plugin?.configClass, args: act.args });
+          const sel = d.selector ? ` ${escapeHtml(JSON.stringify(d.selector))}` : '';
+          extra = ` <code>${escapeHtml(d.op)}</code>${sel}`;
+          main = chip('plugin', 'AutoInput') + extra;
+        } else {
+          main = chip('plugin', `plugin: ${escapeHtml(pkg || 'unknown')}`);
+        }
+      } else {
+        main = chip('unmapped', `unknown (code ${escapeHtml(String(act.code ?? '?'))})`);
+      }
+      rows.push(`<div class="row"><span class="pill">action</span> ${main}</div>`);
+    }
+    const vars = macro.variables || {};
+    const varNote = [
+      vars.local?.length ? `${vars.local.length} local` : '',
+      vars.global?.length ? `${vars.global.length} global` : '',
+    ].filter(Boolean).join(', ');
+    cards.push(`<article class="card">
+      <h3>${escapeHtml(macro.name || '(unnamed)')}</h3>
+      <p class="muted">${macro.triggers?.length || 0} trigger(s) · ${macro.actions?.length || 0} action(s)${varNote ? ` · ${escapeHtml(varNote)} vars` : ''}</p>
+      ${rows.join('')}
+    </article>`);
+  }
+
+  if (stats.unrepresentable?.length) {
+    cards.push(`<article class="card"><h3>Not representable</h3><p class="muted">${stats.unrepresentable.map(escapeHtml).join('<br>')}</p></article>`);
+  }
+
+  out.insertAdjacentHTML('beforeend', cards.join('\n'));
+  const totalActions = (ir.macros || []).reduce((n, m) => n + (m.actions?.length || 0), 0);
+  const decoded = (stats.actionsDecoded ?? 0) + (stats.actionsPlugin ?? 0);
+  setStatus(`Tasker parsed: ${(ir.macros || []).length} macro(s), ${totalActions} action(s), ${decoded} identified${stats.actionsUnknown ? `, ${stats.actionsUnknown} unknown` : ''}`, 'ok');
+}
+
+/* ------------------------------------------------------------------ */
+/* Automate .flo: T0 inventory                                        */
+/* ------------------------------------------------------------------ */
+
+function renderFlo(name, buffer) {
+  const u8 = buffer instanceof Uint8Array ? u8 : new Uint8Array(buffer);
+  const t0 = parseFloT0(u8); // never throws
+  if (t0.error) {
+    log(`   ✗ ${t0.error}`);
+    setStatus('Automate flow rejected (truncated/malformed)', 'warn');
+    return;
+  }
+  const strs = (t0.strings || []).slice(0, 8).map(escapeHtml);
+  out.insertAdjacentHTML('beforeend', `<article class="card">
+    <h3>${escapeHtml(name)}</h3>
+    <p class="muted">Automate flow · v${t0.version} · ${t0.statementCount} statement(s) · ${t0.strings?.length || 0} strings</p>
+    ${strs.length ? `<p class="muted">${strs.join('<br>')}</p>` : ''}
+  </article>`);
+  setStatus(`Automate flow: v${t0.version}, ${t0.statementCount} statements (T0 inventory)`, 'ok');
 }
 
 /* ------------------------------------------------------------------ */
@@ -95,19 +173,9 @@ async function ingest(name, type, buffer, opts = {}) {
   }
 
   if (info.parser === 'tasker') {
-    const text = new TextDecoder().decode(buffer);
-    const inv = inventoryTasker(text);
-    if (inv.ok) {
-      log('   ✓ Tasker inventory:');
-      for (const l of inv.text.split('\n')) log(`     ${l}`);
-      setStatus(`Tasker export parsed: ${inv.stats.tasks} task(s), ${inv.stats.profiles} profile(s)`, 'ok');
-    } else {
-      log(`   ✗ XML parse error: ${inv.error}`);
-      setStatus('Tasker XML did not parse', 'warn');
-    }
+    await renderTasker(name, buffer);
   } else if (info.kind === 'automate-flow') {
-    log('   ✓ Automate flow magic confirmed (LAFl). Decoder is a separate spike.');
-    setStatus('Automate flow detected — T0 inventory path', 'ok');
+    renderFlo(name, buffer);
   } else if (info.kind === 'automate-pdf' || info.kind === 'png') {
     log('   i Image/PDF export: route to vision/manual mapping (not parsed here).');
     setStatus('Flow export image/PDF detected — manual/vision mapping', '');
@@ -218,10 +286,6 @@ async function refreshInbox() {
   }
 }
 
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-
 /* ------------------------------------------------------------------ */
 /* Service worker + install plumbing                                  */
 /* ------------------------------------------------------------------ */
@@ -260,4 +324,4 @@ if (fromId) {
 }
 
 // expose for manual console poking during the spike
-window.autoport = { idb, ingest, classify };
+window.autoport = { idb, ingest, classify, parseTaskerXml, parseFloT0, decodeAutoInput };

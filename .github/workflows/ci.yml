@@ -60,6 +60,17 @@ jobs:
           done < <(find js -name '*.js')
           exit $status
 
+      - name: Browser module test suites (golden differential + adapters)
+        run: |
+          set -e
+          for t in tests/js/run_*.mjs; do
+            echo "== $t"
+            node "$t"
+          done
+
+      - name: MacroDroid mapping table check
+        run: python3 -I scripts/check_mapping_table.py --table data/macrodroid/mappingTable.json
+
       - name: Regenerate Tasker code tables (upstream fetch)
         run: python3 -I scripts/gen_tasker_codes.py --fetch --out data/taskerCodes.json
 

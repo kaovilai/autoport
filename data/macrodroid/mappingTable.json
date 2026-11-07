@@ -1,0 +1,2192 @@
+{
+  "10": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TAKE_PHOTO_OLD (best: TakeScreenshotAction at 0.4692); manual review required"
+  },
+  "11": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TAKE_PHOTO_SERIES_OLD (best: TakePictureAction at 0.4080); manual review required"
+  },
+  "12": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TAKE_PHOTO_CHRON_OLD (best: TakePictureAction at 0.4167); manual review required"
+  },
+  "15": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker LOCK (best: PinUnlockAction at 0.3077); manual review required"
+  },
+  "16": {
+    "classType": "SetKeyguardAction",
+    "status": "partial",
+    "notes": "Tasker System Lock uses Device Admin lockNow(); MacroDroid has no admin lockNow - SetKeyguardAction only enables/disables the keyguard, so pair it with ScreenOnAction (screen off) to approximate a lock."
+  },
+  "18": {
+    "classType": "KillBackgroundAppAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker KILL_APP (score 0.6917); suggestion only, never used for emission"
+  },
+  "20": {
+    "classType": "LaunchActivityAction",
+    "status": "exact",
+    "notes": "Tasker Load App launches an app; LaunchActivityAction launches an app (or a specific activity) directly."
+  },
+  "22": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker LOAD_LAST_APP (best: WhatsAppAction at 0.4632); manual review required"
+  },
+  "25": {
+    "classType": "LaunchHomeScreenAction",
+    "status": "exact",
+    "notes": "Go Home -> LaunchHomeScreenAction."
+  },
+  "30": {
+    "classType": "PauseAction",
+    "status": "exact",
+    "notes": "Tasker Wait pauses execution; MacroDroid PauseAction is the Wait action (duration argument)."
+  },
+  "35": {
+    "classType": "WaitUntilTriggerAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker WAIT_UNTIL (score 0.7600); suggestion only, never used for emission"
+  },
+  "37": {
+    "classType": "IfConditionAction",
+    "status": "exact",
+    "notes": "Tasker IF -> IfConditionAction; the condition goes into the action's m_constraintList (DESIGN 7.1)."
+  },
+  "38": {
+    "classType": "EndIfAction",
+    "status": "exact",
+    "notes": "Tasker ENDIF closes the block; flat EndIfAction marker in m_actionList."
+  },
+  "39": {
+    "classType": "LoopAction",
+    "status": "exact",
+    "notes": "Tasker FOR (repeat N times) -> LoopAction."
+  },
+  "40": {
+    "classType": "EndLoopAction",
+    "status": "exact",
+    "notes": "Tasker ENDFOR -> EndLoopAction marker."
+  },
+  "41": {
+    "classType": "SendSMSAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SEND_TEXT_SMS (score 0.7889); suggestion only, never used for emission"
+  },
+  "42": {
+    "classType": "SendSMSAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SEND_DATA_SMS (score 0.7889); suggestion only, never used for emission"
+  },
+  "43": {
+    "classType": "ElseAction",
+    "status": "exact",
+    "notes": "Tasker ELSE -> ElseAction marker."
+  },
+  "46": {
+    "classType": "CreateChartAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker CREATE_SCENE (score 0.5682); suggestion only, never used for emission"
+  },
+  "47": {
+    "classType": "CustomSceneAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SHOW_SCENE (score 0.6000); suggestion only, never used for emission"
+  },
+  "48": {
+    "classType": "HideSceneAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker HIDE_SCENE (score 1.0000); suggestion only, never used for emission"
+  },
+  "49": {
+    "classType": "CustomSceneAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DESTROY_SCENE (score 0.5978); suggestion only, never used for emission"
+  },
+  "50": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_VALUE (best: HideSceneAction at 0.3923); manual review required"
+  },
+  "51": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_TEXT (best: ShareTextAction at 0.4400); manual review required"
+  },
+  "53": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_WEB_CONTROL (best: ControlMediaAction at 0.3725); manual review required"
+  },
+  "54": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_TEXT_COLOUR (best: ShareTextAction at 0.3602); manual review required"
+  },
+  "55": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_BACKGROUND_COLOUR (best: KillBackgroundAppAction at 0.3873); manual review required"
+  },
+  "56": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_BORDER (best: HideSceneAction at 0.3852); manual review required"
+  },
+  "57": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_POSITION (best: HideSceneAction at 0.3724); manual review required"
+  },
+  "58": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_SIZE (best: HideSceneAction at 0.4000); manual review required"
+  },
+  "59": {
+    "classType": "RebootAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker REBOOT (score 1.0000); suggestion only, never used for emission"
+  },
+  "60": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_ADD_GEOMARKER (best: HideSceneAction at 0.3182); manual review required"
+  },
+  "61": {
+    "classType": "VibrateAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VIBRATE (score 1.0000); suggestion only, never used for emission"
+  },
+  "62": {
+    "classType": "VibrateAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VIBRATE_PATTERN (score 0.6667); suggestion only, never used for emission"
+  },
+  "63": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_DELETE_GEOMARKER (best: DeleteVariableAction at 0.3862); manual review required"
+  },
+  "64": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_MAP_CONTROL (best: ControlMediaAction at 0.3725); manual review required"
+  },
+  "65": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_VISIBILITY (best: HideSceneAction at 0.3613); manual review required"
+  },
+  "66": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_IMAGE (best: HideSceneAction at 0.3923); manual review required"
+  },
+  "67": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_DEPTH (best: HideSceneAction at 0.3923); manual review required"
+  },
+  "68": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_FOCUS (best: HideSceneAction at 0.3923); manual review required"
+  },
+  "69": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_CREATE (best: CreateChartAction at 0.4069); manual review required"
+  },
+  "71": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_TEXT_SIZE (best: ShareTextAction at 0.3736); manual review required"
+  },
+  "73": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_DESTROY (best: HideSceneAction at 0.3786); manual review required"
+  },
+  "90": {
+    "classType": "MakeCallAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker MAKE_PHONECALL (score 0.6310); suggestion only, never used for emission"
+  },
+  "95": {
+    "classType": "BlockTouchesAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker BLOCK_CALLS (score 0.5682); suggestion only, never used for emission"
+  },
+  "97": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIVERT_CALLS (best: InvertColoursAction at 0.3333); manual review required"
+  },
+  "99": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker REVERT_CALLS (best: RejectCallAction at 0.3810); manual review required"
+  },
+  "100": {
+    "classType": "VoiceSearchAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SEARCH (score 0.6863); suggestion only, never used for emission"
+  },
+  "101": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TAKE_PHOTO_TWO (best: TakeScreenshotAction at 0.4692); manual review required"
+  },
+  "102": {
+    "classType": "OpenFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VIEW_FILE (score 0.5625); suggestion only, never used for emission"
+  },
+  "104": {
+    "classType": "OpenWebPageAction",
+    "status": "exact",
+    "notes": "Tasker Browse URL -> OpenWebPageAction (opens the URL in the browser / HTTP GET)."
+  },
+  "105": {
+    "classType": "ClipboardAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_CLIPBOARD (score 0.7619); suggestion only, never used for emission"
+  },
+  "109": {
+    "classType": "SetWallpaperAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_WALLPAPER (score 1.0000); suggestion only, never used for emission"
+  },
+  "111": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MMS_COMPOSE (best: MuteMicrophoneAction at 0.2917); manual review required"
+  },
+  "112": {
+    "classType": "JavaScriptAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker RUN_SCRIPT (score 0.5658); suggestion only, never used for emission"
+  },
+  "113": {
+    "classType": "SetWifiAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker TETHER_WIFI (score 0.6029); suggestion only, never used for emission"
+  },
+  "114": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TETHER_USB (best: USBTetheringAction at 0.5357); manual review required"
+  },
+  "115": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TEST_OLD (best: WriteToFileAction at 0.2778); manual review required"
+  },
+  "116": {
+    "classType": "HttpRequestAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker HTTP_POST (score 0.5658); suggestion only, never used for emission"
+  },
+  "117": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker HTTP_HEAD (best: HttpRequestAction at 0.5132); manual review required"
+  },
+  "118": {
+    "classType": "HttpRequestAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker HTTP_GET (score 0.5833); suggestion only, never used for emission"
+  },
+  "119": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker OPEN_MAP (best: OpenFileAction at 0.5167); manual review required"
+  },
+  "123": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker RUN_SHELL (best: ShellScriptAction at 0.5132); manual review required"
+  },
+  "124": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker REMOUNT (best: RebootAction at 0.3077); manual review required"
+  },
+  "125": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker EMAIL_COMPOSE (best: SendEmailAction at 0.4881); manual review required"
+  },
+  "126": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker RETURN (best: RebootAction at 0.2500); manual review required"
+  },
+  "129": {
+    "classType": "JavaScriptAction",
+    "status": "exact",
+    "notes": "Tasker JavaScriptlet -> JavaScriptAction; the JS source is carried as the code argument. Tasker-specific JS globals (global(), setGlobal()) have no MacroDroid equivalent."
+  },
+  "130": {
+    "classType": null,
+    "status": "manual",
+    "notes": "Tasker Perform Task invokes another task with %parN arguments; MacroDroid has no parameterized task call - inline the callee (recommended, DESIGN 7.1) or hand-author ActionBlockAction; user decision per instance."
+  },
+  "131": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker JAVASCRIPT (best: JavaScriptAction at 0.5000); manual review required"
+  },
+  "133": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SET_TASKER_PREF (best: SetHotspotAction at 0.4609); manual review required"
+  },
+  "134": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker QUERY_ACTION (best: ActionBlockAction at 0.5227); manual review required"
+  },
+  "135": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GOTO (best: LoopAction at 0.2500); manual review required"
+  },
+  "136": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SOUND_EFFECTS_ENABLED (best: ReadSoundLevelAction at 0.3788); manual review required"
+  },
+  "137": {
+    "classType": "StopWatchAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker STOP (score 0.6410); suggestion only, never used for emission"
+  },
+  "138": {
+    "classType": "SetMacroDroidIconAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_TASKER_ICON (score 0.5857); suggestion only, never used for emission"
+  },
+  "139": {
+    "classType": "DisableCameraAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DISABLE_TASKER (score 0.6346); suggestion only, never used for emission"
+  },
+  "140": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CHANGE_ICON_SET (best: SetNotificationBarIconAction at 0.4857); manual review required"
+  },
+  "142": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker EDIT_TASK (best: SendIntentAction at 0.2778); manual review required"
+  },
+  "143": {
+    "classType": "HideSceneAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker EDIT_SCENE (score 0.5833); suggestion only, never used for emission"
+  },
+  "147": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SHOW_TASKER_PREFS (best: ShowVolumePopupAction at 0.3667); manual review required"
+  },
+  "148": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SHOW_TASKER_RUNLOG (best: ShowVolumePopupAction at 0.3602); manual review required"
+  },
+  "150": {
+    "classType": "SetKeyguardAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker KEYGUARD_ENABLED (score 0.5577); suggestion only, never used for emission"
+  },
+  "151": {
+    "classType": "SetKeyguardAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker KEYGUARD_PATTERN (score 0.5577); suggestion only, never used for emission"
+  },
+  "152": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CHANGE_WIDGET_ICON (best: ConfigureWidgetButtonAction at 0.4910); manual review required"
+  },
+  "153": {
+    "classType": "ImportMacrosAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker IMPORT_DATA (score 0.5682); suggestion only, never used for emission"
+  },
+  "155": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CHANGE_WIDGET_TEXT (best: RewriteTextAction at 0.4963); manual review required"
+  },
+  "156": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MIDI_PLAY (best: PlaySoundAction at 0.4853); manual review required"
+  },
+  "157": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker QUICK_SETTING_ADD (best: SetQuickSettingsStateAction at 0.5040); manual review required"
+  },
+  "158": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker QUICK_SETTING_REMOVE (best: SetQuickSettingsStateAction at 0.4762); manual review required"
+  },
+  "159": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TOGGLE_PROFILE (best: WriteToFileAction at 0.2917); manual review required"
+  },
+  "161": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SET_APP_SHORTCUTS (best: AndroidShortcutsAction at 0.5226); manual review required"
+  },
+  "162": {
+    "classType": "SetQuickSettingsStateAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_QUICK_SETTING (score 0.7024); suggestion only, never used for emission"
+  },
+  "165": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CANCEL_ALARM (best: CancelActiveMacroAction at 0.5214); manual review required"
+  },
+  "166": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SHOW_ALARMS (best: ShowVolumePopupAction at 0.4400); manual review required"
+  },
+  "171": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker BEEP (best: ElseAction at 0.2500); manual review required"
+  },
+  "172": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MORSE (best: JsonParseAction at 0.2857); manual review required"
+  },
+  "173": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NETWORK_ACCESS (best: GetContactsAction at 0.2500); manual review required"
+  },
+  "175": {
+    "classType": "CarModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker POWER_MODE (score 0.5625); suggestion only, never used for emission"
+  },
+  "176": {
+    "classType": "TakeScreenshotAction",
+    "status": "exact",
+    "notes": "Tasker Take Screenshot -> TakeScreenshotAction (screenshot can be saved/shared)."
+  },
+  "177": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker HAPTIC_FEEDBACK (best: PressBackAction at 0.2609); manual review required"
+  },
+  "185": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker FILTER_IMAGE (best: ImageDescriptionAction at 0.4352); manual review required"
+  },
+  "187": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SAVE_IMAGE (best: ImageDescriptionAction at 0.4500); manual review required"
+  },
+  "188": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker LOAD_IMAGE (best: ImageDescriptionAction at 0.4500); manual review required"
+  },
+  "189": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CROP_IMAGE (best: ImageDescriptionAction at 0.4500); manual review required"
+  },
+  "190": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker FLIP_IMAGE (best: ImageDescriptionAction at 0.4500); manual review required"
+  },
+  "191": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ROTATE_IMAGE (best: SetAutoRotateAction at 0.4500); manual review required"
+  },
+  "192": {
+    "classType": "SetRingtoneAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker PLAY_RINGTONE (score 0.5978); suggestion only, never used for emission"
+  },
+  "193": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker RESIZE_IMAGE (best: ImageDescriptionAction at 0.4352); manual review required"
+  },
+  "194": {
+    "classType": "CustomSceneAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker TEST_SCENE (score 0.6000); suggestion only, never used for emission"
+  },
+  "195": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_TEST (best: HideSceneAction at 0.4000); manual review required"
+  },
+  "197": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_DEVELOPER_SETTINGS (best: SecureSettingsAction at 0.4703); manual review required"
+  },
+  "198": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_DEVICE_INFO_SETTINGS (best: SecureSettingsAction at 0.4561); manual review required"
+  },
+  "199": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_ADD_ACCOUNT_SETTINGS (best: SecureSettingsAction at 0.4298); manual review required"
+  },
+  "200": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_SETTINGS (best: SecureSettingsAction at 0.5357); manual review required"
+  },
+  "201": {
+    "classType": "SetAirplaneModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DIALOG_AIRPLANE_MODE_SETTINGS (score 0.5784); suggestion only, never used for emission"
+  },
+  "202": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_APN_SETTINGS (best: SecureSettingsAction at 0.4581); manual review required"
+  },
+  "203": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_DATE_SETTINGS (best: SecureSettingsAction at 0.4813); manual review required"
+  },
+  "204": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_INTERNAL_STORAGE_SETTINGS (best: SecureSettingsAction at 0.4225); manual review required"
+  },
+  "205": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_DEVELOPMENT_SETTINGS (best: SecureSettingsAction at 0.4564); manual review required"
+  },
+  "206": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_WIFI_SETTINGS (best: SecureSettingsAction at 0.4500); manual review required"
+  },
+  "208": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_LOCATION_SOURCE_SETTINGS (best: SecureSettingsAction at 0.4524); manual review required"
+  },
+  "210": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_INPUT_METHOD_SETTINGS (best: SecureSettingsAction at 0.4231); manual review required"
+  },
+  "211": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_SYNC_SETTINGS (best: SecureSettingsAction at 0.5125); manual review required"
+  },
+  "212": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_WIFI_IP_SETTINGS (best: SecureSettingsAction at 0.4020); manual review required"
+  },
+  "214": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_WIRELESS_SETTINGS (best: SecureSettingsAction at 0.4778); manual review required"
+  },
+  "216": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_APPLICATION_SETTINGS (best: CloseApplicationAction at 0.5171); manual review required"
+  },
+  "218": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_BLUETOOTH_SETTINGS (best: BluetoothTetheringAction at 0.5415); manual review required"
+  },
+  "219": {
+    "classType": "SetQuickSettingsStateAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker QUICK_SETTINGS (score 0.7157); suggestion only, never used for emission"
+  },
+  "220": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_ROAMING_SETTINGS (best: SecureSettingsAction at 0.4571); manual review required"
+  },
+  "222": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_DISPLAY_SETTINGS (best: DisplayDensityAction at 0.4571); manual review required"
+  },
+  "224": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_LOCALE_SETTINGS (best: SecureSettingsAction at 0.4941); manual review required"
+  },
+  "226": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_MANAGE_APPLICATION_SETTINGS (best: CloseApplicationAction at 0.4645); manual review required"
+  },
+  "227": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_MEMORY_CARD_SETTINGS (best: SecureSettingsAction at 0.4298); manual review required"
+  },
+  "228": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_NETWORK_OPERATOR_SETTINGS (best: SecureSettingsAction at 0.4225); manual review required"
+  },
+  "229": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_QUICK_LAUNCH_SETTINGS (best: SetQuickSettingsStateAction at 0.5326); manual review required"
+  },
+  "230": {
+    "classType": "SecureSettingsAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DIALOG_SECURITY_SETTINGS (score 0.5611); suggestion only, never used for emission"
+  },
+  "231": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_SEARCH_SETTINGS (best: SecureSettingsAction at 0.5235); manual review required"
+  },
+  "232": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_SOUND_SETTINGS (best: SecureSettingsAction at 0.5030); manual review required"
+  },
+  "234": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_USER_DICTIONARY_SETTINGS (best: IterateDictionaryAction at 0.4556); manual review required"
+  },
+  "235": {
+    "classType": "SecureSettingsAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SECURE_SETTING (score 0.7315); suggestion only, never used for emission"
+  },
+  "236": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_ACCESSIBILITY_SETTINGS (best: AccessibilityServiceAction at 0.5404); manual review required"
+  },
+  "237": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_NOTIFICATION_LISTENER_SETTINGS (best: NotificationInteractionAction at 0.5000); manual review required"
+  },
+  "238": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_PRIVACY_SETTINGS (best: SecureSettingsAction at 0.4571); manual review required"
+  },
+  "239": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_PRINT_SETTINGS (best: SecureSettingsAction at 0.4727); manual review required"
+  },
+  "244": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TOGGLE_APP_DOCK (best: DisableAppAction at 0.4174); manual review required"
+  },
+  "245": {
+    "classType": "PressBackAction",
+    "status": "exact",
+    "notes": "Tasker Back Button -> PressBackAction."
+  },
+  "246": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker LONG_POWER (best: LogAction at 0.2500); manual review required"
+  },
+  "247": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SHOW_RECENTS (best: ShowVolumePopupAction at 0.3923); manual review required"
+  },
+  "248": {
+    "classType": "AndroidShortcutsAction",
+    "status": "partial",
+    "notes": "Tasker accessibility Lock Screen maps to Android's GLOBAL_ACTION_LOCK_SCREEN; AndroidShortcutsAction performs system global actions via the accessibility service - verify the flavor exposes the lock-screen global action before emitting."
+  },
+  "249": {
+    "classType": "TakeScreenshotAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker ACCESSIBILITY_TAKE_SCREENSHOT (score 0.7415); suggestion only, never used for emission"
+  },
+  "250": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SMS_COMPOSE (best: SendSMSAction at 0.4265); manual review required"
+  },
+  "251": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_BATTERY_INFO_SETTINGS (best: SecureSettingsAction at 0.4231); manual review required"
+  },
+  "252": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SET_SMS_APP (best: SendSMSAction at 0.5125); manual review required"
+  },
+  "254": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SPEAKERPHONE_STATUS (best: SpeakerPhoneAction at 0.4000); manual review required"
+  },
+  "256": {
+    "classType": "VibrateAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker RINGER_VIBRATE (score 0.6833); suggestion only, never used for emission"
+  },
+  "257": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_POWER_USAGE_SETTINGS (best: SecureSettingsAction at 0.4561); manual review required"
+  },
+  "258": {
+    "classType": "NotificationAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker NOTIFICATION_VIBRATE (score 0.7204); suggestion only, never used for emission"
+  },
+  "259": {
+    "classType": "NotificationAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker NOTIFICATION_PULSE (score 0.7471); suggestion only, never used for emission"
+  },
+  "294": {
+    "classType": "BluetoothTetheringAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker BLUETOOTH_STATUS (score 0.5833); suggestion only, never used for emission"
+  },
+  "295": {
+    "classType": "SetBluetoothAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker BLUETOOTH_NAME (score 0.6100); suggestion only, never used for emission"
+  },
+  "296": {
+    "classType": "SetBluetoothAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker BLUETOOTH_SCO (score 0.6250); suggestion only, never used for emission"
+  },
+  "300": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ANCHOR (best: LaunchShortcutAction at 0.3000); manual review required"
+  },
+  "301": {
+    "classType": "MuteMicrophoneAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker MICROPHONE_MUTE (score 0.8571); suggestion only, never used for emission"
+  },
+  "303": {
+    "classType": "SetVolumeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VOLUME_ALARM (score 0.5500); suggestion only, never used for emission"
+  },
+  "304": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker VOLUME_RINGER (best: SetVolumeAction at 0.5357); manual review required"
+  },
+  "305": {
+    "classType": "NotificationAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VOLUME_NOTIFICATION (score 0.7333); suggestion only, never used for emission"
+  },
+  "306": {
+    "classType": "MakeCallAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VOLUME_CALL (score 0.5833); suggestion only, never used for emission"
+  },
+  "307": {
+    "classType": "SetVolumeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VOLUME_MUSIC (score 0.5500); suggestion only, never used for emission"
+  },
+  "308": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker VOLUME_SYSTEM (best: SetVolumeAction at 0.5357); manual review required"
+  },
+  "309": {
+    "classType": "SetVolumeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VOLUME_DTMF (score 0.5658); suggestion only, never used for emission"
+  },
+  "310": {
+    "classType": "SilentModeVibrateOffAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SILENT_MODE (score 0.6667); suggestion only, never used for emission"
+  },
+  "311": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker VOLUME_BT_VOICE (best: SetVolumeAction at 0.4727); manual review required"
+  },
+  "312": {
+    "classType": "SetModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker INTERRUPT_MODE (score 0.5500); suggestion only, never used for emission"
+  },
+  "313": {
+    "classType": "ImmersiveModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker RINGER_MODE (score 0.5543); suggestion only, never used for emission"
+  },
+  "314": {
+    "classType": "SelectionDialogAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker AUTHENTICATION_DIALOG (score 0.5929); suggestion only, never used for emission"
+  },
+  "315": {
+    "classType": "DisableAppAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker ENABLE_DISABLE_APP (score 0.7846); suggestion only, never used for emission"
+  },
+  "316": {
+    "classType": "DisplayDensityAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DISPLAY_DENSITY (score 1.0000); suggestion only, never used for emission"
+  },
+  "317": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NFC_STATUS (best: SetNFCAction at 0.4500); manual review required"
+  },
+  "318": {
+    "classType": "ForceScreenRotationAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker FORCE_ROTATION (score 0.8063); suggestion only, never used for emission"
+  },
+  "319": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ASK_PERMISSION (best: SetRingtoneAction at 0.2500); manual review required"
+  },
+  "320": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker PING (best: OptionDialogAction at 0.2500); manual review required"
+  },
+  "321": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GOOGLE_DRIVE_UPLOAD_FILE (best: ReadFileAction at 0.4080); manual review required"
+  },
+  "322": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DATA_BACKUP (best: SetDataAction at 0.4853); manual review required"
+  },
+  "323": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker AIRPLANE_RADIOS (best: SetAirplaneModeAction at 0.5103); manual review required"
+  },
+  "324": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GOOGLE_DRIVE_LIST (best: GetCalendarEventsAction at 0.2500); manual review required"
+  },
+  "325": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GOOGLE_DRIVE_TRASH (best: GetCalendarEventsAction at 0.2727); manual review required"
+  },
+  "326": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GOOGLE_DRIVE_DOWNLOAD (best: ControlMediaAction at 0.2258); manual review required"
+  },
+  "327": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GOOGLE_DRIVE_SIGN_IN (best: EdgeLightingAction at 0.2414); manual review required"
+  },
+  "328": {
+    "classType": "SetKeyboardAction",
+    "status": "partial",
+    "notes": "Tasker Keyboard selects an input method directly; MacroDroid SetKeyboardAction only shows the keyboard picker - the user still has to choose."
+  },
+  "329": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NAVIGATION_BAR (best: SetNotificationBarIconAction at 0.4524); manual review required"
+  },
+  "330": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NFC_TAG (best: SetNFCAction at 0.5000); manual review required"
+  },
+  "331": {
+    "classType": "SetAutoSyncAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker AUTO_SYNC (score 0.8211); suggestion only, never used for emission"
+  },
+  "332": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GPS_STATUS (best: SetGPSAction at 0.4500); manual review required"
+  },
+  "333": {
+    "classType": "SetAirplaneModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker AIRPLANE_MODE (score 0.8444); suggestion only, never used for emission"
+  },
+  "334": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SAY_WAVENET (best: SayTimeAction at 0.4853); manual review required"
+  },
+  "335": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TEST_CURRENT_APP (best: WhatsAppAction at 0.4273); manual review required"
+  },
+  "336": {
+    "classType": "BluetoothTetheringAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker BLUETOOTH_TETHER (score 0.7045); suggestion only, never used for emission"
+  },
+  "337": {
+    "classType": "NotificationAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker NOTIFICATION_SETTINGS (score 0.7083); suggestion only, never used for emission"
+  },
+  "338": {
+    "classType": "NotificationAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker NOTIFICATION_CHANNEL_INFO (score 0.5929); suggestion only, never used for emission"
+  },
+  "339": {
+    "classType": "HttpRequestAction",
+    "status": "exact",
+    "notes": "HTTP Request -> HttpRequestAction; method/url/headers/body/timeout map onto requestConfig."
+  },
+  "340": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker BLUETOOTH_CONNECTION (best: SetBluetoothAction at 0.5403); manual review required"
+  },
+  "341": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TEST_NET (best: RewriteTextAction at 0.2778); manual review required"
+  },
+  "342": {
+    "classType": "WriteToFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker TEST_FILE (score 0.5684); suggestion only, never used for emission"
+  },
+  "343": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TEST_MEDIA (best: ControlMediaAction at 0.5357); manual review required"
+  },
+  "344": {
+    "classType": "WhatsAppAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker TEST_APP (score 0.5833); suggestion only, never used for emission"
+  },
+  "345": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker TEST_VARIABLE (score 0.6848); suggestion only, never used for emission"
+  },
+  "346": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TEST_PHONE (best: SpeakerPhoneAction at 0.5357); manual review required"
+  },
+  "347": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TEST_TASKER (best: BatterySaverAction at 0.2727); manual review required"
+  },
+  "348": {
+    "classType": "AmbientDisplayAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker TEST_DISPLAY (score 0.6100); suggestion only, never used for emission"
+  },
+  "349": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TEST_SYSTEM (best: SystemSettingAction at 0.5109); manual review required"
+  },
+  "350": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GOOGLE_CLOUD_VISION (best: RecordVideoAction at 0.2500); manual review required"
+  },
+  "351": {
+    "classType": "HttpRequestAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker HTTP_AUTH (score 0.5658); suggestion only, never used for emission"
+  },
+  "352": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker QUERY_NETWORK_DATA (best: SetDataAction at 0.4609); manual review required"
+  },
+  "353": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GOOGLE_NATURAL_LANGUAGE (best: SetLanguageAction at 0.5125); manual review required"
+  },
+  "354": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ARRAY_SET (best: ArrayManipulationAction at 0.4900); manual review required"
+  },
+  "355": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ARRAY_PUSH (best: ArrayManipulationAction at 0.5192); manual review required"
+  },
+  "356": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ARRAY_POP (best: ArrayManipulationAction at 0.5300); manual review required"
+  },
+  "357": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ARRAY_CLEAR (best: ClearDictionaryArrayEntryAction at 0.5333); manual review required"
+  },
+  "358": {
+    "classType": "SetBluetoothAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker BLUETOOTH_INFO (score 0.6100); suggestion only, never used for emission"
+  },
+  "359": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GOOGLE_SPEECH_TO_TEXT (best: SpeakTextAction at 0.4259); manual review required"
+  },
+  "360": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_INPUT (best: VoiceInputAction at 0.5357); manual review required"
+  },
+  "361": {
+    "classType": "CarModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DARK_MODE (score 0.6500); suggestion only, never used for emission"
+  },
+  "362": {
+    "classType": "SetDigitalAssistantAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_ASSISTANT (score 0.7871); suggestion only, never used for emission"
+  },
+  "363": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SET_MOBILE_NETWORK_TYPE (best: SetBluetoothAction at 0.4479); manual review required"
+  },
+  "364": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker QUERY_NEXT_ALARM (best: SetAlarmClockAction at 0.4259); manual review required"
+  },
+  "365": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker FUNCTION (best: UIInteractionAction at 0.3333); manual review required"
+  },
+  "366": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GET_CURRENT_LOCATION (best: GetNotificationsAction at 0.5235); manual review required"
+  },
+  "367": {
+    "classType": "DisableCameraAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker CAMERA (score 0.6491); suggestion only, never used for emission"
+  },
+  "368": {
+    "classType": "ShareLocationAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker PICK_LOCATION (score 0.5700); suggestion only, never used for emission"
+  },
+  "369": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ARRAY_PROCESS (best: ArrayManipulationAction at 0.4914); manual review required"
+  },
+  "370": {
+    "classType": "LaunchShortcutAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SHORTCUT (score 0.6970); suggestion only, never used for emission"
+  },
+  "371": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ASTRID (best: ToastAction at 0.2727); manual review required"
+  },
+  "372": {
+    "classType": "SensorReadAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SENSOR_INFO (score 0.5500); suggestion only, never used for emission"
+  },
+  "373": {
+    "classType": "SensorReadAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker TEST_SENSOR (score 0.5500); suggestion only, never used for emission"
+  },
+  "374": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCREEN_CAPTURE (best: ScreenOnAction at 0.5357); manual review required"
+  },
+  "375": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ADB_WIFI (best: SetWifiAction at 0.5357); manual review required"
+  },
+  "376": {
+    "classType": "ReadFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SHARE_FILE (score 0.6029); suggestion only, never used for emission"
+  },
+  "377": {
+    "classType": "FloatingTextAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DIALOG_TEXT (score 0.5682); suggestion only, never used for emission"
+  },
+  "378": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_LIST (best: ClearDialogAction at 0.5357); manual review required"
+  },
+  "379": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ADMIN (best: ProofreadingAction at 0.2353); manual review required"
+  },
+  "380": {
+    "classType": "HttpServerResponseAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker HTTP_RESPONSE (score 0.8000); suggestion only, never used for emission"
+  },
+  "381": {
+    "classType": "ContactViaAppAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker CONTACT_VIA_APP (score 1.0000); suggestion only, never used for emission"
+  },
+  "382": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CONTENT_PROVIDER_READ (best: SensorReadAction at 0.4759); manual review required"
+  },
+  "383": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SETTINGS_PANEL (best: SecureSettingsAction at 0.5463); manual review required"
+  },
+  "384": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker POWER_MENU_ACTION (best: ActionBlockAction at 0.4308); manual review required"
+  },
+  "385": {
+    "classType": "UDPCommandAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker COMMAND (score 0.7451); suggestion only, never used for emission"
+  },
+  "386": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CALL_SCREENING (best: MakeCallAction at 0.4405); manual review required"
+  },
+  "387": {
+    "classType": "AccessibilityServiceAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VOLUME_ACCESSIBILITY (score 0.5833); suggestion only, never used for emission"
+  },
+  "389": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_VARIABLES (score 0.7283); suggestion only, never used for emission"
+  },
+  "390": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_PICK_INPUT (best: VoiceInputAction at 0.5200); manual review required"
+  },
+  "391": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_PROGRESS (best: ClearDialogAction at 0.4900); manual review required"
+  },
+  "392": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_VARIABLE_STRUCTURE_TYPE (score 0.6476); suggestion only, never used for emission"
+  },
+  "393": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ARRAYS_MERGE (best: BatterySaverAction at 0.2609); manual review required"
+  },
+  "394": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DATE_TIME_FORMAT (best: SayTimeAction at 0.4381); manual review required"
+  },
+  "395": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker JUICE_DEFENDER_STATUS (best: ExpandCollapseStatusBarAction at 0.3810); manual review required"
+  },
+  "396": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker REGEX (best: ShareTextAction at 0.2857); manual review required"
+  },
+  "397": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GET_MATERIAL_YOU_COLORS (best: GetNotificationsAction at 0.3889); manual review required"
+  },
+  "398": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CONNECT_TO_WIFI (best: SetWifiAction at 0.5000); manual review required"
+  },
+  "399": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VARIABLE_MAP (score 0.6136); suggestion only, never used for emission"
+  },
+  "400": {
+    "classType": "OpenFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker MOVE_FILE (score 0.6250); suggestion only, never used for emission"
+  },
+  "401": {
+    "classType": "ShareLocationAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker MOCK_LOCATION (score 0.5700); suggestion only, never used for emission"
+  },
+  "402": {
+    "classType": "ClipboardAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker GET_CLIPBOARD (score 0.7619); suggestion only, never used for emission"
+  },
+  "403": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCAN_BARCODE (best: WifiSSIDScanAction at 0.3739); manual review required"
+  },
+  "404": {
+    "classType": "OpenFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker COPY_FILE (score 0.6250); suggestion only, never used for emission"
+  },
+  "405": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker COPY_DIR (best: ConfirmNextAction at 0.2222); manual review required"
+  },
+  "406": {
+    "classType": "DeleteVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DELETE_FILE (score 0.6250); suggestion only, never used for emission"
+  },
+  "407": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker PICK_PHOTOS (best: UploadPhotoAction at 0.2857); manual review required"
+  },
+  "408": {
+    "classType": "DeleteVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DELETE_DIR (score 0.5543); suggestion only, never used for emission"
+  },
+  "409": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MAKE_DIR (best: MakeCallAction at 0.5167); manual review required"
+  },
+  "410": {
+    "classType": "WriteToFileAction",
+    "status": "exact",
+    "notes": "Tasker Write File -> WriteToFileAction."
+  },
+  "411": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TEST_FILE_OLD (best: WriteToFileAction at 0.4848); manual review required"
+  },
+  "412": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker LIST_FILES (best: FileOperationAllFilesAction at 0.4000); manual review required"
+  },
+  "413": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker REQUEST_ADD_TILE (best: HttpRequestAction at 0.4800); manual review required"
+  },
+  "414": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GET_IMAGE_PIXEL_COLORS (best: CheckPixelColorAction at 0.4664); manual review required"
+  },
+  "415": {
+    "classType": "ReadFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker READ_LINE (score 0.6250); suggestion only, never used for emission"
+  },
+  "416": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker READ_PARA (best: ReadFileAction at 0.5000); manual review required"
+  },
+  "417": {
+    "classType": "ReadFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker READ_FILE (score 1.0000); suggestion only, never used for emission"
+  },
+  "418": {
+    "classType": "GetCalendarEventsAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker GET_CALENDAR_EVENTS (score 1.0000); suggestion only, never used for emission"
+  },
+  "419": {
+    "classType": "BatterySaverAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker BATTERY_SAVER_MODE (score 0.8286); suggestion only, never used for emission"
+  },
+  "420": {
+    "classType": "OpenFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker ZIP_FILE (score 0.5833); suggestion only, never used for emission"
+  },
+  "421": {
+    "classType": null,
+    "status": "manual",
+    "notes": "Tasker Get Assistant Info reads assistant launcher details; MacroDroid has no read action for this - SetDigitalAssistantAction only changes the default assistant."
+  },
+  "422": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker UNZIP_FILE (best: OpenFileAction at 0.5441); manual review required"
+  },
+  "423": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SET_PASSPHRASE (best: SetVariableAction at 0.5417); manual review required"
+  },
+  "424": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GET_BATTERY_INFO (best: BatterySaverAction at 0.4692); manual review required"
+  },
+  "425": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker WIFI_STATUS (best: SetWifiAction at 0.4853); manual review required"
+  },
+  "426": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker WIFI_NET_CONTROL (best: ControlMediaAction at 0.4692); manual review required"
+  },
+  "427": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker WIFI_SLEEP_POLICY (best: WifiSSIDScanAction at 0.4259); manual review required"
+  },
+  "428": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ENCRYPT_DIR (best: EncryptDecryptTextAction at 0.5214); manual review required"
+  },
+  "429": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DECRYPT_DIR (best: EncryptDecryptTextAction at 0.4500); manual review required"
+  },
+  "430": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker RESTART_TASKER (best: SetAutoRotateAction at 0.2692); manual review required"
+  },
+  "431": {
+    "classType": "AccessibilityServiceAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker ACCESSIBILITY_SERVICES (score 0.7378); suggestion only, never used for emission"
+  },
+  "432": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GET_NETWORK_INFO (best: GetNotificationsAction at 0.4333); manual review required"
+  },
+  "433": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MOBILE_DATA_STATUS_DIRECT (best: GetDataUsedAction at 0.3853); manual review required"
+  },
+  "434": {
+    "classType": "OpenFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker ENCRYPT_FILE (score 0.5658); suggestion only, never used for emission"
+  },
+  "435": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DECRYPT_FILE (best: OpenFileAction at 0.5132); manual review required"
+  },
+  "436": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ENTER_PASSPHRASE (best: JsonParseAction at 0.2500); manual review required"
+  },
+  "437": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CLEAR_PASSPHRASE (best: ClearAppDataAction at 0.4963); manual review required"
+  },
+  "438": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MATTER_LIGHT_BULB (best: CameraFlashLightAction at 0.4247); manual review required"
+  },
+  "439": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker WIMAX_STATUS (best: ExpandCollapseStatusBarAction at 0.3725); manual review required"
+  },
+  "440": {
+    "classType": "SetRingtoneAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_TIMEZONE (score 0.5682); suggestion only, never used for emission"
+  },
+  "441": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker WORK_PROFILE (best: WriteToFileAction at 0.3182); manual review required"
+  },
+  "442": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SLEEPBOT (best: RebootAction at 0.2857); manual review required"
+  },
+  "443": {
+    "classType": "ControlMediaAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker ANDROID_MEDIA_CONTROL (score 0.6258); suggestion only, never used for emission"
+  },
+  "444": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TESLALED (best: FontScaleAction at 0.2941); manual review required"
+  },
+  "445": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MUSIC_PLAY (best: PlaySoundAction at 0.4722); manual review required"
+  },
+  "446": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker LIST_FILE_PROPERTIES (best: FileOperationAllFilesAction at 0.4505); manual review required"
+  },
+  "447": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MUSIC_PLAY_DIR (best: PlaySoundAction at 0.4381); manual review required"
+  },
+  "448": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ARRAY_COMPARE (best: ArrayManipulationAction at 0.4569); manual review required"
+  },
+  "449": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MUSIC_STOP (best: StopWatchAction at 0.4722); manual review required"
+  },
+  "450": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MOBILE_DATA_STATUS (best: GetDataUsedAction at 0.4259); manual review required"
+  },
+  "451": {
+    "classType": "ForwardSMSAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker MUSIC_FORWARD (score 0.5682); suggestion only, never used for emission"
+  },
+  "452": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SHOW_RUNNING_TASKS (best: TerminateRunningAction at 0.4188); manual review required"
+  },
+  "453": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MUSIC_BACK (best: PressBackAction at 0.5278); manual review required"
+  },
+  "454": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SHOW_ACTIVE_PROFILES (best: ShowVolumePopupAction at 0.4091); manual review required"
+  },
+  "455": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SOUND_RECORD (best: RecordVideoAction at 0.5227); manual review required"
+  },
+  "456": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker JUICE_DEFENDER_DATA (best: SetDataAction at 0.4083); manual review required"
+  },
+  "457": {
+    "classType": "SetRingtoneAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker RINGTONE (score 0.7544); suggestion only, never used for emission"
+  },
+  "458": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker WIDGETLOCKER (best: WriteToFileAction at 0.2609); manual review required"
+  },
+  "459": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCAN_CARD (best: WifiSSIDScanAction at 0.4000); manual review required"
+  },
+  "460": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SET_DEVICE_EFFECTS (best: SetVibrateAction at 0.4308); manual review required"
+  },
+  "461": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker WIDGET_V2 (best: RefreshWidgetAction at 0.5357); manual review required"
+  },
+  "462": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker REMOTE_ACTION_EXECUTION (best: ActionBlockAction at 0.4188); manual review required"
+  },
+  "463": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker EDIT_CALENDAR_VIA_APP (best: ContactViaAppAction at 0.5438); manual review required"
+  },
+  "464": {
+    "classType": "GetCalendarEventsAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker EDIT_CALENDAR_EVENT (score 0.6078); suggestion only, never used for emission"
+  },
+  "465": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker EDIT_CALENDAR_REMINDER (best: GetCalendarEventsAction at 0.4910); manual review required"
+  },
+  "466": {
+    "classType": "GetCalendarEventsAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker GET_CALENDAR_REMINDERS (score 0.7117); suggestion only, never used for emission"
+  },
+  "467": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker EDIT_CALENDAR_ATTENDEE (best: GetCalendarEventsAction at 0.4910); manual review required"
+  },
+  "468": {
+    "classType": "GetCalendarEventsAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker GET_CALENDAR_ATTENDEES (score 0.7117); suggestion only, never used for emission"
+  },
+  "469": {
+    "classType": "SetKeyboardAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_KEYBOARD (score 1.0000); suggestion only, never used for emission"
+  },
+  "470": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GET_KEYBOARDS (best: GetContactsAction at 0.5109); manual review required"
+  },
+  "475": {
+    "classType": "OpenFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker GZIP_FILE (score 0.5625); suggestion only, never used for emission"
+  },
+  "476": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GUNZIP_FILE (best: OpenFileAction at 0.5278); manual review required"
+  },
+  "490": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GRAB_MEDIA_BUTTON (best: ConfigureWidgetButtonAction at 0.4444); manual review required"
+  },
+  "500": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NOTIFY (best: NotificationAction at 0.2778); manual review required"
+  },
+  "510": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NOTIFY_LED_RED (best: NotificationReplyAction at 0.2414); manual review required"
+  },
+  "511": {
+    "classType": "CameraFlashLightAction",
+    "status": "exact",
+    "notes": "Tasker Torch -> CameraFlashLightAction."
+  },
+  "512": {
+    "classType": "ExpandCollapseStatusBarAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker STATUS_BAR (score 0.6146); suggestion only, never used for emission"
+  },
+  "513": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CLOSE_SYSTEM_DIALOGS (best: SystemSettingAction at 0.4581); manual review required"
+  },
+  "520": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NOTIFY_LED_GREEN (best: GetCalendarEventsAction at 0.2581); manual review required"
+  },
+  "523": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NOTIFY_PLAIN (best: NotificationAction at 0.3478); manual review required"
+  },
+  "525": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NOTIFY_LED (best: ControlMediaAction at 0.2381); manual review required"
+  },
+  "530": {
+    "classType": "VibrateAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker NOTIFY_VIBRATE (score 0.6833); suggestion only, never used for emission"
+  },
+  "536": {
+    "classType": "VibrateAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker NOTIFY_VIBRATE_2 (score 0.5833); suggestion only, never used for emission"
+  },
+  "538": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NOTIFY_SOUND_2 (best: PlaySoundAction at 0.4857); manual review required"
+  },
+  "540": {
+    "classType": "PlaySoundAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker NOTIFY_SOUND (score 0.5500); suggestion only, never used for emission"
+  },
+  "543": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker START_TIMER (best: SayTimeAction at 0.3529); manual review required"
+  },
+  "544": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TIMER_WIDGET_CONTROL (best: RefreshWidgetAction at 0.4581); manual review required"
+  },
+  "545": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_VARIABLE_RANDOM (score 0.7929); suggestion only, never used for emission"
+  },
+  "546": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TIMER_WIDGET_SET (best: RefreshWidgetAction at 0.4963); manual review required"
+  },
+  "547": {
+    "classType": "SetVariableAction",
+    "status": "exact",
+    "notes": "Tasker Set Variable -> SetVariableAction (the catalog's Set Variable action)."
+  },
+  "548": {
+    "classType": "ToastAction",
+    "status": "exact",
+    "notes": "Tasker Flash shows a transient toast; MacroDroid ToastAction displays a toast popup."
+  },
+  "549": {
+    "classType": "ClearVariablesAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker CLEAR_VARIABLE (score 0.7315); suggestion only, never used for emission"
+  },
+  "550": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker POPUP (best: ShowVolumePopupAction at 0.5000); manual review required"
+  },
+  "551": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MENU (best: MutexEndAction at 0.2500); manual review required"
+  },
+  "552": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker POPUP_TASK_BUTTONS (best: ShowVolumePopupAction at 0.3280); manual review required"
+  },
+  "553": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SMSBACKUP (best: PressBackAction at 0.3333); manual review required"
+  },
+  "555": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker BEYONDPOD (best: EndLoopAction at 0.2500); manual review required"
+  },
+  "556": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker NEWSROB (best: ClearLogAction at 0.2000); manual review required"
+  },
+  "557": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker POPUP_IMAGE_TASK_NAMES (best: ImageDescriptionAction at 0.3667); manual review required"
+  },
+  "558": {
+    "classType": "AndroidWearAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker ANDROID_NOTIFIER (score 0.5962); suggestion only, never used for emission"
+  },
+  "559": {
+    "classType": "SayTimeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SAY (score 0.6333); suggestion only, never used for emission"
+  },
+  "560": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker POPUP_TASK_ICONS (best: ShowVolumePopupAction at 0.3391); manual review required"
+  },
+  "565": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker POPUP_TASK_NAMES (best: ShowVolumePopupAction at 0.3391); manual review required"
+  },
+  "566": {
+    "classType": "SetAlarmClockAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_ALARM (score 0.7810); suggestion only, never used for emission"
+  },
+  "567": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CALENDAR_INSERT (best: AddCalendarEntryAction at 0.5333); manual review required"
+  },
+  "568": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DAILYROADS (best: DayDreamAction at 0.2778); manual review required"
+  },
+  "590": {
+    "classType": "TextManipulationAction",
+    "status": "partial",
+    "notes": "Tasker Variable Split splits a string into an array; MacroDroid has no dedicated split action - use the text-manipulation split variant (verify the textManipulation kind/enum)."
+  },
+  "592": {
+    "classType": "TextManipulationAction",
+    "status": "partial",
+    "notes": "Tasker Variable Join joins an array into a string; MacroDroid has no dedicated join action - use the text-manipulation join variant (verify the textManipulation kind/enum)."
+  },
+  "594": {
+    "classType": "ClearVariablesAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker LIST_VARIABLES (score 0.6204); suggestion only, never used for emission"
+  },
+  "595": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker QUERY_VARIABLE (score 0.6250); suggestion only, never used for emission"
+  },
+  "596": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker CONVERT_VARIABLE (score 0.6346); suggestion only, never used for emission"
+  },
+  "597": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SECTION_VARIABLE (score 0.6731); suggestion only, never used for emission"
+  },
+  "598": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SEARCH_REPLACE_VARIABLE (best: DeleteVariableAction at 0.5143); manual review required"
+  },
+  "599": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DUETODAY (best: SetDataAction at 0.2667); manual review required"
+  },
+  "612": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SCENE_ELEMENT_VIDEO_CONTROL (best: ControlMediaAction at 0.3611); manual review required"
+  },
+  "643": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker OFFICETALK (best: VoiceInputAction at 0.2500); manual review required"
+  },
+  "657": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SOUND_RECORD_STOP (best: RecordVideoAction at 0.4692); manual review required"
+  },
+  "664": {
+    "classType": null,
+    "status": "manual",
+    "notes": "Tasker Java Function calls a reflected Java method with typed args; MacroDroid JavaAction runs a BeanShell snippet - semantics and argument marshalling differ, so the body must be re-authored by hand."
+  },
+  "665": {
+    "classType": "JavaAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker JAVA_OBJECT (score 0.6190); suggestion only, never used for emission"
+  },
+  "667": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SQL_QUERY (best: AiLlmQueryAction at 0.5333); manual review required"
+  },
+  "696": {
+    "classType": "SayTimeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SAY_AFTER (score 0.5833); suggestion only, never used for emission"
+  },
+  "697": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SHUT_UP (best: HeadsUpNotificationsAction at 0.3154); manual review required"
+  },
+  "699": {
+    "classType": "WriteToFileAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SAY_TO_FILE (score 0.6333); suggestion only, never used for emission"
+  },
+  "701": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DPAD (best: UDPCommandAction at 0.2857); manual review required"
+  },
+  "702": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker TYPE (best: MutexAction at 0.2222); manual review required"
+  },
+  "703": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker BUTTON (best: ConfigureWidgetButtonAction at 0.4722); manual review required"
+  },
+  "721": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_VISIBILITY (best: AmbientDisplayAction at 0.2286); manual review required"
+  },
+  "731": {
+    "classType": "MakeCallAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker TAKE_CALL (score 0.6875); suggestion only, never used for emission"
+  },
+  "732": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker RADIO_STATUS (best: ExpandCollapseStatusBarAction at 0.4314); manual review required"
+  },
+  "733": {
+    "classType": "MakeCallAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker END_CALL (score 0.5833); suggestion only, never used for emission"
+  },
+  "734": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SILENCE_RINGER (best: DisableTriggerAction at 0.2963); manual review required"
+  },
+  "735": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker MOBILE_NETWORK_MODE (best: SetModeAction at 0.4500); manual review required"
+  },
+  "740": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_TEXT (best: RewriteTextAction at 0.4308); manual review required"
+  },
+  "741": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_TEXT_SIZE (best: RewriteTextAction at 0.3667); manual review required"
+  },
+  "742": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_TEXT_COLOUR (best: RewriteTextAction at 0.3542); manual review required"
+  },
+  "760": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_ALPHA (best: SetWallpaperAction at 0.2143); manual review required"
+  },
+  "761": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_IMAGE (best: ImageDescriptionAction at 0.3563); manual review required"
+  },
+  "762": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_COLOUR (best: InvertColoursAction at 0.2667); manual review required"
+  },
+  "775": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker WRITE_BINARY (best: WriteToFileAction at 0.4727); manual review required"
+  },
+  "776": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker READ_BINARY (best: ReadFileAction at 0.5278); manual review required"
+  },
+  "777": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker PERMANENT_NOTIFY (best: RestoreNotificationsAction at 0.2286); manual review required"
+  },
+  "779": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker CANCEL_NOTIFY (best: CancelActiveMacroAction at 0.4759); manual review required"
+  },
+  "793": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_STATE (best: SetQuickSettingsStateAction at 0.3591); manual review required"
+  },
+  "794": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_POSITION (best: ElseIfConditionAction at 0.2647); manual review required"
+  },
+  "795": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ZOOM_ELEMENT_SIZE (best: VolumeIncrementDecrementAction at 0.2308); manual review required"
+  },
+  "804": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker INPUT_METHOD_SELECT (best: InputKeyEventAction at 0.4000); manual review required"
+  },
+  "806": {
+    "classType": "ScreenOnAction",
+    "status": "exact",
+    "notes": "Tasker Poke Display wakes the display -> ScreenOnAction (turn screen on)."
+  },
+  "808": {
+    "classType": "SetBrightnessAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SCREEN_BRIGHTNESS_AUTO (score 0.5636); suggestion only, never used for emission"
+  },
+  "810": {
+    "classType": "SetBrightnessAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SCREEN_BRIGHTNESS (score 0.6638); suggestion only, never used for emission"
+  },
+  "812": {
+    "classType": "SetScreenTimeoutAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SCREEN_OFF_TIMEOUT (score 0.7396); suggestion only, never used for emission"
+  },
+  "815": {
+    "classType": "GetInstalledAppsAction",
+    "status": "partial",
+    "notes": "Both enumerate installed apps, but Tasker fills the %app_packages/%app_labels array pair while GetInstalledAppsAction writes a single list variable - output-shape conversion needed."
+  },
+  "820": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker STAY_ON_WHILE_PLUGGED_IN (best: CheckTextOnScreenAction at 0.2733); manual review required"
+  },
+  "822": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker ACCELEROMETER_ROTATION (best: ForceScreenRotationAction at 0.5000); manual review required"
+  },
+  "876": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SET_SPEECH_PARAMS (best: SetKeyboardAction at 0.4308); manual review required"
+  },
+  "877": {
+    "classType": "SendIntentAction",
+    "status": "exact",
+    "notes": "Tasker Send Intent -> SendIntentAction."
+  },
+  "888": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker INC_VARIABLE (score 0.6136); suggestion only, never used for emission"
+  },
+  "890": {
+    "classType": "SetVariableAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker DEC_VARIABLE (score 0.6591); suggestion only, never used for emission"
+  },
+  "900": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker BROWSE_FILES (best: FileOperationAllFilesAction at 0.3854); manual review required"
+  },
+  "901": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker STOP_FIX (best: StopWatchAction at 0.5000); manual review required"
+  },
+  "902": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GET_FIX (best: GetNotificationsAction at 0.4773); manual review required"
+  },
+  "903": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GET_VOICE (best: VoiceInputAction at 0.5278); manual review required"
+  },
+  "904": {
+    "classType": "UDPCommandAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker VOICE_COMMAND (score 0.5682); suggestion only, never used for emission"
+  },
+  "905": {
+    "classType": "SetLocationModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker LOCATION_MODE (score 0.8444); suggestion only, never used for emission"
+  },
+  "906": {
+    "classType": "ImmersiveModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker IMMERSIVE_MODE (score 1.0000); suggestion only, never used for emission"
+  },
+  "907": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker HIDE_STATUS_BAR_ICONS (best: ExpandCollapseStatusBarAction at 0.5183); manual review required"
+  },
+  "909": {
+    "classType": "GetContactsAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker CONTACTS (score 0.7544); suggestion only, never used for emission"
+  },
+  "910": {
+    "classType": "OpenCallLogAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker CALL_LOG (score 0.7889); suggestion only, never used for emission"
+  },
+  "911": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker GENTLEALARM (best: SetAlarmClockAction at 0.2917); manual review required"
+  },
+  "915": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker SETCPU (best: SetGPSAction at 0.3333); manual review required"
+  },
+  "941": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker HTML_POPUP (best: ShowVolumePopupAction at 0.4917); manual review required"
+  },
+  "956": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_NFC_SETTINGS (best: SecureSettingsAction at 0.4903); manual review required"
+  },
+  "957": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_NFC_SHARING_SETTINGS (best: SecureSettingsAction at 0.4298); manual review required"
+  },
+  "958": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_NFC_PAYMENT_SETTINGS (best: SecureSettingsAction at 0.4298); manual review required"
+  },
+  "959": {
+    "classType": null,
+    "status": "candidate",
+    "notes": "no MacroDroid action reached the 0.55 name-similarity threshold for Tasker DIALOG_DREAM_SETTINGS (best: SecureSettingsAction at 0.5030); manual review required"
+  },
+  "987": {
+    "classType": "SetKeyboardAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SHOW_SOFT_KEYBOARD (score 0.5704); suggestion only, never used for emission"
+  },
+  "988": {
+    "classType": "CarModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker CAR_MODE (score 1.0000); suggestion only, never used for emission"
+  },
+  "989": {
+    "classType": "SetModeAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker NIGHT_MODE (score 0.5625); suggestion only, never used for emission"
+  },
+  "999": {
+    "classType": "SetBrightnessAction",
+    "status": "candidate",
+    "notes": "auto name-similarity candidate for Tasker SET_LIGHT (score 0.5833); suggestion only, never used for emission"
+  }
+}
