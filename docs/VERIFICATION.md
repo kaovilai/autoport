@@ -16,7 +16,7 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
 | V11 | `.flo` magic/version detected; negatives rejected gracefully | ✅ CI | 13 real flows + 3 negative fixtures |
 | V13 | Generated macro JSON passes MCP validate | ✅ proven offline (recorded probes) | `tests/fixtures/macrodroid/validator-probes/validate-ok.json` |
 | V14 | Structural validator rejects adversarial shapes | ✅ probe evidence recorded | `validate-probe-*.json` (bad classtype, unbalanced If rejected) |
-| V15 | End-to-end macro import into MacroDroid on device | ✅ emulator CI (manual dispatch) | MCP share link → MacroDroid macro editor (run 42341971557) |
+| V15 | End-to-end macro import into MacroDroid on device | ✅ emulator CI (auto on device paths + weekly) | MCP share link → MacroDroid macro editor (run 42341971557) |
 | M3.1 | Emit MacroDroid macro JSON from IR (plugin pass-through) | ✅ unit + e2e (every push) · MCP-validated live · 🔬 device import (emulator CI) | emitter suite (40 tests): Java-ObjectSerialization writer **byte-for-byte vs a JVM reference** (real AutoInput v1/v2 bundles included) + CI drift gate regenerating the reference; emitted LaunchInstagram macro `VALID` on the live MacroDroid MCP (recorded probe, parity-tested); browser e2e renders the macro card + copy button in both scopes and pins the Gson importer contract (numeric byte array); emulator CI imports the emitted pass-through macro via share link and hard-asserts **EditMacroActivity + macro name + 2 rendered action rows** via uiautomator (run 42372632804) |
 | V12 | PDF/PNG block count vs T0 | ❌ unproven (path demoted) | design §5.4 |
 
@@ -40,7 +40,7 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
    handoff, text-only / empty / >25 MiB share handling, `GET /share`
    redirect, IndexedDB inbox persistence + clear, offline reload / offline
    parse / offline deep-link `<base>` fallback.
-3. **Emulator device test (manual dispatch, `emulator-test.yml`, KVM
+3. **Emulator device test (auto on device-relevant paths + weekly, `emulator-test.yml`, KVM
    runner):** real Chrome + MacroDroid + Automate + Tasker APKs from their
    original sources, version matrix + launch smoke, PWA load with **CDP
    content assertions and on-device parse (online + offline via killed

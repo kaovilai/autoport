@@ -1,20 +1,62 @@
 name: emulator-test
 
-# Device-level verification (V1-V5 partial, V15) on a GitHub Actions ubuntu
-# runner with KVM. Manual dispatch only for now.
+# Device-level verification (V1-V5 partial, V15, M3.1 import) on a GitHub
+# Actions ubuntu runner with KVM.
+#
+# Runs automatically when device-relevant code changes (the PWA shell + the
+# Tasker->IR->MacroDroid emitter, which is the code the device import actually
+# exercises), on pushes to main, on a weekly schedule (app-version drift), and
+# on demand. Fork PRs are skipped: they cannot read the GPLAY_AUTH secret.
+#
+# Cached to keep the run cheap (~1 GB system image + Play APKs are the bulk):
+#   - Android system image (keyed by image id)
+#   - Play/trial APKs (weekly bucket; the installed versions are still
+#     re-measured every run and reported in device-matrix.txt)
+#   - pip wheels for the CDP helper
 # Requires repo secret GPLAY_AUTH (contents of ~/.gplay-auth.json from the
 # gplay-apk-downloader tool) to fetch Chrome + MacroDroid APKs with original
 # signatures from Google Play.
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'js/**'
+      - 'sw.js'
+      - 'index.html'
+      - 'manifest.webmanifest'
+      - 'data/macrodroid/**'
+      - 'data/taskerCodes.json'
+      - 'tests/golden/tasker/**'
+      - 'tests/fixtures/tasker/**'
+      - '.github/workflows/emulator-test.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'js/**'
+      - 'sw.js'
+      - 'index.html'
+      - 'manifest.webmanifest'
+      - 'data/macrodroid/**'
+      - 'data/taskerCodes.json'
+      - 'tests/golden/tasker/**'
+      - 'tests/fixtures/tasker/**'
+      - '.github/workflows/emulator-test.yml'
+  schedule:
+    - cron: '23 6 * * 1' # weekly drift check (app versions)
 
 permissions:
   contents: read
+
+concurrency:
+  group: emulator-test-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   device:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    # fork PRs have no access to GPLAY_AUTH -> skip instead of failing
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +68,14 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
           ls -la /dev/kvm
+
+      - name: Cache Android system image + platform
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            /usr/local/lib/android/sdk/system-images
+            /usr/local/lib/android/sdk/platforms/android-34
+          key: android-sysimg-34-google_apis-x86_64-v1
 
       - name: Install SDK pieces
         run: |
@@ -64,10 +114,32 @@ jobs:
           done
           "$ADB" devices
 
+      - name: APK cache bucket (weekly — app versions refresh)
+        id: apkweek
+        run: echo "week=$(date -u +%Y-%V)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore cached APKs
+        id: apks
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: /tmp/apks
+          key: apks-${{ runner.os }}-w${{ steps.apkweek.outputs.week }}
+          restore-keys: |
+            apks-${{ runner.os }}-
+
       - name: Fetch APKs (Chrome, MacroDroid) via Play
         env:
           GPLAY_AUTH: ${{ secrets.GPLAY_AUTH }}
         run: |
+          # cache hit only when EVERY expected app is present (Chrome may be
+          # split into several APKs, MacroDroid/Automate/Tasker are single)
+          ok=1
+          for pat in com.android.chrome com.arlosoft.macrodroid com.llamalab.automate Tasker; do
+            ls /tmp/apks/${pat}*.apk >/dev/null 2>&1 || ok=0
+          done
+          if [ "$ok" = 1 ]; then
+            echo "APKs restored from cache:"; ls -la /tmp/apks; exit 0
+          fi
           git clone --depth 1 https://github.com/alltechdev/gplay-apk-downloader /tmp/gplay
           python3 -m venv /tmp/gplay/.venv
           /tmp/gplay/.venv/bin/pip install -q gpapi requests 'protobuf<4' cloudscraper pysocks
@@ -116,6 +188,12 @@ jobs:
           cat /tmp/device-matrix.txt
           "$ADB" exec-out screencap -p > /tmp/three-apps-smoke.png || true
 
+      - name: Cache pip wheels (CDP helper)
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('.github/workflows/emulator-test.yml') }}
+
       - name: Serve AutoPort PWA + adb reverse
         run: |
           python3 -m http.server 8090 --bind 127.0.0.1 --directory "$GITHUB_WORKSPACE" \
@@ -125,7 +203,7 @@ jobs:
           "$ANDROID_HOME/platform-tools/adb" reverse tcp:8090 tcp:8090
           # Chrome remote debugging over adb, for CDP page-content assertions
           "$ANDROID_HOME/platform-tools/adb" forward tcp:9222 localabstract:chrome_devtools_remote
-          python3 -m pip install --quiet --user websocket-client
+          python3 -m pip install --quiet --user --cache-dir "$HOME/.cache/pip" websocket-client
 
       - name: "V-PWA: load page in Chrome (localhost = secure context) + assert content via CDP"
         run: |
