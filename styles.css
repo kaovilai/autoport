@@ -6,6 +6,8 @@
   --brand-2: #8b5cf6;   /* violet */
   --brand-3: #06b6d4;   /* cyan */
   --brand-grad: linear-gradient(135deg, var(--brand-1), var(--brand-2) 55%, var(--brand-3));
+  /* darker stops for surfaces carrying small white text (WCAG AA ≥4.5:1) */
+  --brand-grad-text: linear-gradient(135deg, #4f46e5, #6d28d9 55%, #0e7490);
   --brand-grad-soft: linear-gradient(135deg, #eef0ff, #f3ecff 55%, #ecfeff);
 
   /* light theme (default) */
@@ -19,7 +21,7 @@
   --muted: #667085;
   --accent: #6366f1;
   --accent-2: #b45309;
-  --ok: #059669;
+  --ok: #047857;
   --warn: #b45309;
   --danger: #dc2626;
   --shadow: 0 1px 2px rgb(16 21 39 / .05), 0 8px 24px -12px rgb(16 21 39 / .18);
@@ -88,7 +90,7 @@ h2 { font-size: 1.05rem; }
 }
 .skip:focus {
   position: static; display: inline-block; margin: .5rem; padding: .45rem .8rem;
-  background: var(--brand-1); color: #fff; border-radius: 999px; z-index: 10;
+  background: #4f46e5; color: #fff; border-radius: 999px; z-index: 10;
 }
 
 /* ---------- header ---------- */
@@ -97,10 +99,16 @@ h2 { font-size: 1.05rem; }
   display: flex; align-items: center; justify-content: space-between; gap: 1rem;
   padding: .9rem 1.1rem;
   position: sticky; top: 0; z-index: 5;
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  background: var(--bg);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  border-bottom: 1px solid var(--line);
+}
+@supports (background: color-mix(in srgb, black, transparent)) {
+  .top {
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom-color: color-mix(in srgb, var(--line) 70%, transparent);
+  }
 }
 
 .brand { display: flex; align-items: center; gap: .75rem; }
@@ -144,7 +152,7 @@ main {
   width: 26px; height: 26px;
   display: grid; place-items: center;
   border-radius: 999px;
-  background: var(--brand-grad);
+  background: var(--brand-grad-text);
   color: #fff;
   font-size: .8rem; font-weight: 700;
   box-shadow: 0 4px 10px -4px rgb(99 102 241 / .6);
@@ -237,7 +245,7 @@ textarea:focus-visible {
 .btn:hover { border-color: var(--brand-2); transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
 .btn.primary {
-  background: var(--brand-grad);
+  background: var(--brand-grad-text);
   color: #fff;
   border: none;
   box-shadow: 0 6px 18px -8px rgb(99 102 241 / .7);
@@ -291,7 +299,7 @@ textarea:focus-visible {
   letter-spacing: .02em;
   text-transform: uppercase;
   color: #fff;
-  background: var(--brand-grad);
+  background: var(--brand-grad-text);
   border-radius: 999px;
   white-space: nowrap;
   box-shadow: 0 3px 8px -3px rgb(99 102 241 / .55);

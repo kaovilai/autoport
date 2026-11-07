@@ -35,7 +35,7 @@
 <main id="main">
 
   <section class="panel">
-    <div class="hero-title"><span class="step-dot">1</span><h2>Bring a file in</h2></div>
+    <div class="hero-title"><span class="step-dot" aria-hidden="true">1</span><h2><span class="sr">1 · </span>Bring a file in</h2></div>
     <p class="muted">
       On Android: install this app, then use the <strong>share sheet</strong> from Tasker, Automate,
       or your file manager and pick <em>AutoPort</em>. In a browser: pick or drop a file below.
@@ -64,13 +64,13 @@
   </section>
 
   <section class="panel">
-    <div class="hero-title"><span class="step-dot">2</span><h2>What we recognized</h2></div>
+    <div class="hero-title"><span class="step-dot" aria-hidden="true">2</span><h2><span class="sr">2 · </span>What we recognized</h2></div>
     <p id="status" class="status" role="status" aria-live="polite">Waiting for a file…</p>
     <pre id="results" class="results" tabindex="0"></pre>
   </section>
 
   <section class="panel">
-    <div class="hero-title"><span class="step-dot">3</span><h2>Shared inbox</h2></div>
+    <div class="hero-title"><span class="step-dot" aria-hidden="true">3</span><h2><span class="sr">3 · </span>Shared inbox</h2></div>
     <p class="muted small">Items delivered through the Android share sheet (stored in IndexedDB, on this device only).</p>
     <div id="inbox" class="inbox"></div>
   </section>
