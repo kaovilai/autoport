@@ -24,7 +24,7 @@
 
 import { spawn } from 'node:child_process';
 import net from 'node:net';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { mkdtempSync, symlinkSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -135,7 +135,8 @@ async function runScope(scopeName, base, context) {
   await t(`${scopeName}: service worker registers, activates and controls the page`, async () => {
     const page = await newPage();
     await page.goto(base);
-    await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
+    // First registration on a cold browser can be slow; 30s headroom.
+    await page.waitForFunction(() => navigator.serviceWorker.controller !== null, null, { timeout: 30000 });
     const state = await page.evaluate(async () => {
       const reg = await navigator.serviceWorker.getRegistration();
       const keys = await caches.keys();
@@ -167,6 +168,11 @@ async function runScope(scopeName, base, context) {
     await page.goto(base);
     const m = await (await page.request.get(base + 'manifest.webmanifest')).json();
     assert.equal(m.share_target.method, 'POST');
+    // Pin the form field names too: the synthetic share tests below submit
+    // these names, so a silent manifest rename must fail here, not in the
+    // field.
+    assert.equal(m.share_target.params.title, 'title', 'manifest renamed the title field');
+    assert.equal(m.share_target.params.text, 'text', 'manifest renamed the text field');
     for (const icon of m.icons) {
       const r = await page.request.get(new URL(icon.src, base).href);
       assert.equal(r.status(), 200, `icon not served: ${icon.src}`);
@@ -187,6 +193,9 @@ async function runScope(scopeName, base, context) {
   // + 2 plugin, 0 unknown. Pinning the full status string catches stats-plumbing
   // regressions (e.g. "0 identified" when the IR stats never reach the UI).
   const EXPECT_TASKER_STATUS = 'Tasker parsed: 1 macro(s), 5 action(s), 5 identified';
+  // V4 equality compares the rendered CARDS across paths, not just the status
+  // counts — a shared miscount would otherwise pass all three tests.
+  const cardsHtml = (page) => page.evaluate(() => [...document.querySelectorAll('#results .card')].map((c) => c.outerHTML).join('\n'));
 
   await t(`${scopeName}: file picker -> Tasker task parsed (V1 browser half)`, async () => {
     const page = await newPage();
@@ -194,18 +203,21 @@ async function runScope(scopeName, base, context) {
     await page.setInputFiles('#file-input', path.join(repoRoot, 'tests/fixtures/tasker/LaunchInstagram.tsk.xml'));
     await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     assert.equal(await statusText(page), EXPECT_TASKER_STATUS);
-    assert.ok((await page.locator('.card').count()) >= 1, 'no result card rendered');
+    // Cards must carry real decoded content, not just counts (the JS parser
+    // itself is golden-tested against the python oracle in the unit suite).
+    const html = await cardsHtml(page);
+    assert.match(html, /AutoInput/, 'no AutoInput chip in rendered cards');
+    assert.match(html, /WAIT/, 'no decoded builtin action name in rendered cards (code tables not applied?)');
     await page.close();
   });
 
-  await t(`${scopeName}: drag-and-drop -> same parse (V4 equality with picker)`, async () => {
+  await t(`${scopeName}: drag-and-drop -> identical cards and status (V4 equality with picker)`, async () => {
     const page = await newPage();
     await page.goto(base);
-    const pickerStatus = await (async () => {
-      await page.setInputFiles('#file-input', path.join(repoRoot, 'tests/fixtures/tasker/LaunchInstagram.tsk.xml'));
-      await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
-      return statusText(page);
-    })();
+    await page.setInputFiles('#file-input', path.join(repoRoot, 'tests/fixtures/tasker/LaunchInstagram.tsk.xml'));
+    await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
+    const pickerStatus = await statusText(page);
+    const pickerCards = await cardsHtml(page);
     await page.close();
 
     const page2 = await newPage();
@@ -219,10 +231,11 @@ async function runScope(scopeName, base, context) {
     }, bytesOf(FIX.tasker));
     await page2.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     assert.equal(await statusText(page2), pickerStatus, 'picker and drop must produce identical status (V4)');
+    assert.equal(await cardsHtml(page2), pickerCards, 'picker and drop must render identical cards (V4)');
     await page2.close();
   });
 
-  await t(`${scopeName}: paste box + Analyze -> same parse (V4 equality)`, async () => {
+  await t(`${scopeName}: paste box + Analyze -> identical cards and status (V4 equality)`, async () => {
     const page = await newPage();
     await page.goto(base);
     await openPasteBox(page);
@@ -230,13 +243,16 @@ async function runScope(scopeName, base, context) {
     await page.click('#analyze');
     await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     const pasteStatus = await statusText(page);
+    const pasteCards = await cardsHtml(page);
+    assert.equal(pasteStatus, EXPECT_TASKER_STATUS);
+    await page.close();
     // Re-run the same fixture through the picker on a clean page and compare.
     const page2 = await newPage();
     await page2.goto(base);
     await page2.setInputFiles('#file-input', path.join(repoRoot, 'tests/fixtures/tasker/LaunchInstagram.tsk.xml'));
     await page2.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     assert.equal(await statusText(page2), pasteStatus, 'paste and picker must produce identical status (V4)');
-    await page.close();
+    assert.equal(await cardsHtml(page2), pasteCards, 'paste and picker must render identical cards (V4)');
     await page2.close();
   });
 
@@ -457,6 +473,20 @@ async function runScope(scopeName, base, context) {
     await card.waitFor();
     assert.match(await card.locator('.pill').first().textContent(), /too-large/);
     assert.equal(await card.getByRole('link', { name: 'Open in converter' }).count(), 0, 'oversized card must not offer converter handoff');
+    // The record must not carry the payload — only its metadata.
+    const rec = await page.evaluate(async () => {
+      const all = await new Promise((res) => {
+        const req = indexedDB.open('autoport');
+        req.onsuccess = () => {
+          const rq = req.result.transaction('inbox', 'readonly').objectStore('inbox').getAll();
+          rq.onsuccess = () => res(rq.result);
+        };
+      });
+      return all.find((r) => r.name === 'huge.bin');
+    });
+    assert.ok(rec, 'no stored record for huge.bin');
+    assert.equal(rec.buf, null, 'oversized payload was buffered into IndexedDB');
+    assert.equal(rec.kind, 'too-large');
     await page.close();
   });
 
@@ -468,6 +498,10 @@ async function runScope(scopeName, base, context) {
       return r.type; // 'opaqueredirect' when the SW answered with a redirect
     }, shareUrl);
     assert.equal(kind, 'opaqueredirect', 'GET /share did not produce a redirect response');
+    // And the redirect must land on the inbox UI, not elsewhere.
+    await page.goto(shareUrl);
+    assert.equal(new URL(page.url()).pathname, new URL(shareHtmlUrl).pathname, 'GET /share did not land on share.html');
+    await page.locator('#clear-all').waitFor();
     await page.close();
   });
 
@@ -540,8 +574,15 @@ async function runScope(scopeName, base, context) {
       await page.goto(base + 'no/such/deep/link');
       assert.match(await page.title(), /AutoPort/, 'offline deep link did not serve the app shell');
       const baseHref = await page.evaluate(() => document.querySelector('base')?.href || '');
-      assert.ok(baseHref.endsWith(new URL(base).pathname), `injected <base> ${baseHref} does not point at the scope`);
+      assert.equal(baseHref, base, `injected <base> ${baseHref} is not the serving scope`);
       await page.locator('#status').waitFor();
+      // The deep-linked shell must be a working converter, not just markup:
+      // parse the fixture while still offline from the deep-linked URL.
+      await openPasteBox(page);
+      await page.fill('#paste', taskerXmlText);
+      await page.click('#analyze');
+      await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
+      assert.equal(await statusText(page), EXPECT_TASKER_STATUS, 'deep-linked shell failed to parse offline');
     } finally {
       await context.setOffline(false);
     }
@@ -572,30 +613,92 @@ const subDir = mkdtempSync(path.join(tmpdir(), 'autoport-e2e-'));
 mkdirSync(subDir, { recursive: true });
 symlinkSync(repoRoot, path.join(subDir, 'autoport'), 'dir');
 const subServer = await startServer(subDir);
+// Combined origin: the app served at BOTH / and /autoport/ on one origin, for
+// the cross-scope service-worker cache-isolation test.
+const comboDir = mkdtempSync(path.join(tmpdir(), 'autoport-e2e-combo-'));
+for (const entry of readdirSync(repoRoot)) {
+  if (entry === '.git' || entry === 'node_modules') continue;
+  symlinkSync(path.join(repoRoot, entry), path.join(comboDir, entry));
+}
+symlinkSync(repoRoot, path.join(comboDir, 'autoport'), 'dir');
+const comboServer = await startServer(comboDir);
 
 const rootBase = `http://127.0.0.1:${rootServer.port}/`;
 const subBase = `http://127.0.0.1:${subServer.port}/autoport/`;
+const comboRoot = `http://127.0.0.1:${comboServer.port}/`;
+const comboSub = `http://127.0.0.1:${comboServer.port}/autoport/`;
 await waitServer(rootBase);
 await waitServer(subBase);
+await waitServer(comboRoot);
 
 console.log(`root scope : ${rootBase}`);
 console.log(`subpath    : ${subBase}`);
+console.log(`combined   : ${comboRoot} + /autoport/ (cross-scope test)`);
 console.log(`browser    : ${channel || 'bundled chromium'}`);
 
-const browser = await chromium.launch(channel ? { channel } : { headless: true });
-
+// Launch inside the cleanup scope: if Chromium is missing/cannot start, the
+// servers are still torn down instead of left listening.
+let browser;
 try {
-  // Each scope gets its own context (different origins -> isolated SW/IDB state).
-  const rootCtx = await browser.newContext();
-  const subCtx = await browser.newContext();
-  await runScope('root', rootBase, rootCtx);
-  await runScope('subpath', subBase, subCtx);
-  await rootCtx.close();
-  await subCtx.close();
+  browser = await chromium.launch(channel ? { channel } : { headless: true });
+
+  try {
+    // Each scope gets its own context (different origins -> isolated SW/IDB state).
+    const rootCtx = await browser.newContext();
+    const subCtx = await browser.newContext();
+    await runScope('root', rootBase, rootCtx);
+    await runScope('subpath', subBase, subCtx);
+    await rootCtx.close();
+    await subCtx.close();
+
+    /* ------------------------------------------------------------------- */
+    /* Cross-scope cache isolation (same origin, sibling deployments)     */
+    /* ------------------------------------------------------------------- */
+
+    // Regression test for a real sw.js bug: the root worker's activate-time
+    // cleanup matched cache names with endsWith(BASE), and for the root scope
+    // (BASE === '/') a sibling /autoport/ deployment's cache names end with
+    // '/' too — so the root worker DELETED the subpath caches on activation.
+    await t('cross-scope: root worker activation must not delete /autoport/ caches', async () => {
+      const ctx = await browser.newContext();
+      // Register the subpath worker first, so its caches exist before the root
+      // worker re-activates.
+      const subPage = await ctx.newPage();
+      await subPage.goto(comboSub);
+      await subPage.waitForFunction(() => navigator.serviceWorker.controller !== null);
+      await subPage.evaluate(async () => {
+        // wait for the subpath precache to be populated
+        const names = await caches.keys();
+        const shell = names.find((n) => n.startsWith('autoport-shell-') && n.endsWith('/autoport/'));
+        if (!shell) throw new Error(`no subpath shell cache: ${names}`);
+      });
+      await subPage.close();
+
+      // Load + re-activate the ROOT worker (unregister + reload forces a
+      // fresh install -> activate -> cleanup pass with subpath caches present).
+      const rootPage = await ctx.newPage();
+      await rootPage.goto(comboRoot);
+      await rootPage.waitForFunction(() => navigator.serviceWorker.controller !== null);
+      await rootPage.evaluate(async () => {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) await reg.unregister();
+      });
+      await rootPage.reload();
+      await rootPage.waitForFunction(() => navigator.serviceWorker.controller !== null);
+
+      const names = await rootPage.evaluate(async () => await caches.keys());
+      const subCaches = names.filter((n) => n.endsWith('/autoport/'));
+      assert.ok(subCaches.length >= 1, `root worker activation deleted the sibling /autoport/ caches: ${JSON.stringify(names)}`);
+      await rootPage.close();
+      await ctx.close();
+    });
+  } finally {
+    await browser.close();
+  }
 } finally {
-  await browser.close();
   rootServer.proc.kill('SIGTERM');
   subServer.proc.kill('SIGTERM');
+  comboServer.proc.kill('SIGTERM');
 }
 
 console.log(`\ne2e: ${passes} passed, ${failures} failed${failedNames.length ? `\nfailed: ${failedNames.join(' | ')}` : ''}`);

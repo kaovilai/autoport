@@ -157,10 +157,9 @@ await test('hexHead formats little heads with spaces', () => {
   assert.equal(hexHead(U([0x4c, 0x41, 0x46, 0x6c])), '4c 41 46 6c');
   assert.equal(hexHead(U([0xab]), 4), 'ab');
   assert.equal(hexHead(U([])), '');
-  // detail.magic carries the first 16 bytes
+  // detail.magic carries exactly the first 16 bytes (the full %PDF-1.7 header)
   const r = classify(ascii('%PDF-1.7 rest of file padded out beyond sixteen bytes'));
-  assert.equal(r.detail.magic, r.detail.magic.split(' ').length <= 16 ? r.detail.magic : r.detail.magic);
-  assert.match(r.detail.magic, /^25 50 44 46/);
+  assert.equal(r.detail.magic, '25 50 44 46 2d 31 2e 37 20 72 65 73 74 20 6f 66');
 });
 
 await test('humanSize boundaries', () => {

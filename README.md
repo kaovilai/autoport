@@ -62,7 +62,7 @@ Legend: ☑ done · ◐ partial · ☐ not started
 - [x] JS suites: Tasker parser **golden parity with the Python oracle**, AutoInput decoder, `.flo` T0, MacroDroid validator
 - [x] Content-sniffer unit suite (every `classify()` route pinned)
 - [x] PWA site-integrity suite (manifest contract, real PNG icons, SW precache list exists **and** covers every module/data file — the offline gate)
-- [x] **Browser e2e** ([ci.yml](.github/workflows/ci.yml) `e2e` job, Playwright + pinned Chromium): SW registration + precache, every ingest path (picker / drag-drop / paste box / page paste), V4 golden equality across paths, share-target POST → 303 → inbox card → "Open in converter" handoff, text-only / empty / >25 MiB shares, IndexedDB persistence + clear, offline reload + **offline parse** + offline deep-link fallback — run twice: at the server root **and** under `/autoport/` (GitHub Pages layout)
+- [x] **Browser e2e** ([ci.yml](.github/workflows/ci.yml) `e2e` job, Playwright + pinned Chromium): SW registration + precache, every ingest path (picker / drag-drop / paste box / page paste), V4 equality across paths (status + rendered cards; parser oracle-golden-tested), share-target POST → 303 → inbox card → "Open in converter" handoff, text-only / empty / >25 MiB shares, IndexedDB persistence + clear, offline reload + **offline parse** + offline deep-link fallback — run twice: at the server root **and** under `/autoport/` (GitHub Pages layout)
 - [x] Upstream drift gate on `tasker.joaoapps.com` code tables
 - [x] Emulator device test on KVM runners (manual dispatch): Chrome + MacroDroid from Play, PWA load + **CDP content assertions + on-device parse (online and offline)**, V15 share-link import
 
@@ -74,11 +74,11 @@ No build step. Serve the repo root over HTTP and open it:
 
     python3 -m http.server 8080
 
-Unit + fixture tests (python3 / node stdlib only — no install needed):
+Unit + fixture tests (python3 / node stdlib only — no install needed).
+Note: `npm test` runs only the JS suites; the Python fixture run is separate:
 
+    python3 -I scripts/fixture_tests.py --out /tmp/report.json
     npm test
-    # equivalent: python3 -I scripts/fixture_tests.py --out /tmp/report.json
-    #              for t in tests/js/run_*.mjs; do node "$t"; done
 
 Browser e2e (the only place with a dependency: one pinned npm devDependency,
 Playwright, plus its pinned Chromium — the browser binary is a separate,

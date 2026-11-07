@@ -16,6 +16,8 @@ for (const suite of suites) {
   if (r.status !== 0) {
     failed += 1;
     console.error(`SUITE FAILED: ${suite} (exit ${r.status})`);
+    if (r.signal) console.error(`  killed by signal: ${r.signal}`);
+    if (r.error) console.error(`  spawn error: ${r.error.message}`);
   }
 }
 

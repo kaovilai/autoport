@@ -265,10 +265,19 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     // Delete only this scope's old caches; other scopes' workers own theirs.
+    // NB: for the root scope (BASE === '/') a simple endsWith(BASE) would also
+    // match deeper scopes' names (e.g. 'autoport-shell-v3/autoport/' ends with
+    // '/'), so a root worker would delete a sibling /autoport/ deployment's
+    // caches. Require the scope to be the name's COMPLETE path suffix.
+    const isOwnScopeCache = (n) => {
+      if (!n.startsWith('autoport-') || !n.endsWith(BASE)) return false;
+      if (BASE === '/') return !n.slice(0, -1).includes('/');
+      return true;
+    };
     const keep = new Set([CACHE_SHELL, CACHE_RUNTIME]);
     const names = await caches.keys();
     await Promise.all(names.map((n) => (
-      (n.startsWith('autoport-') && n.endsWith(BASE) && !keep.has(n)) ? caches.delete(n) : null
+      (isOwnScopeCache(n) && !keep.has(n)) ? caches.delete(n) : null
     )));
     await self.clients.claim();
     await notifyClients({ type: 'autoport:sw-activated', version: VERSION });

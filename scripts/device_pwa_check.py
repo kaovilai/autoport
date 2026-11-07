@@ -32,14 +32,30 @@ from device_cdp import Cdp, CdpError  # noqa: E402
 
 EXPECTED_TITLE_PREFIX = "AutoPort"
 
+# Polled until every field passes: a slow first load can return a state object
+# before the worker activates and controls the page, so the caller must keep
+# polling rather than fail on the first (incomplete) answer.
 SW_STATE_JS = (
-    "(async () => ({"
-    " readyState: document.readyState,"
-    " title: document.title,"
-    " controlled: !!navigator.serviceWorker.controller,"
-    " regState: (await navigator.serviceWorker.getRegistration())?.active?.state,"
-    " shellCaches: (await caches.keys()).filter(k => k.startsWith('autoport-shell-')).length"
-    "}))()"
+    "(async () => {"
+    " const ready = document.readyState === 'complete'"
+    "  && document.title.startsWith('" + EXPECTED_TITLE_PREFIX + "')"
+    "  && !!navigator.serviceWorker.controller"
+    "  && (await navigator.serviceWorker.getRegistration())?.active?.state === 'activated';"
+    " if (!ready) return null;"
+    " const shellName = (await caches.keys()).find(k => k.startsWith('autoport-shell-'));"
+    " if (!shellName) return null;"
+    " const shell = await caches.open(shellName);"
+    " const has = (p) => shell.match(new URL(p, location.href)).then(r => !!r);"
+    " return {"
+    "  title: document.title,"
+    "  controlled: !!navigator.serviceWorker.controller,"
+    "  regState: (await navigator.serviceWorker.getRegistration())?.active?.state,"
+    "  shellCaches: (await caches.keys()).filter(k => k.startsWith('autoport-shell-')).length,"
+    "  shellHasIndex: await has('index.html'),"
+    "  shellHasShare: await has('share.html'),"
+    "  shellHasCodes: await has('data/taskerCodes.json'),"
+    " };"
+    "})()"
 )
 
 
@@ -60,12 +76,9 @@ def wait_for(fn, what, timeout=120, poll=2):
 
 def check_loaded(cdp):
     state = wait_for(lambda: cdp.eval(SW_STATE_JS), "page + service worker state")
-    if not str(state.get("title", "")).startswith(EXPECTED_TITLE_PREFIX):
-        raise CdpError(f"unexpected document.title: {state.get('title')!r}")
-    if not state.get("controlled") or state.get("regState") != "activated":
-        raise CdpError(f"service worker not controlling the page: {state}")
-    if not state.get("shellCaches"):
-        raise CdpError(f"no autoport-shell-* cache on device — precache never ran: {state}")
+    for key in ("shellHasIndex", "shellHasShare", "shellHasCodes"):
+        if not state.get(key):
+            raise CdpError(f"precache missing an entry ({key} falsy): {state}")
     return state
 
 
@@ -97,9 +110,14 @@ def parse_fixture(cdp, fixture_path, expect="Tasker parsed"):
 
 
 def main():
+    # SUPPRESS defaults: with plain defaults, a subparser re-parsing the
+    # remaining args would overwrite a value given BEFORE the subcommand
+    # (e.g. `--port 5 parse` -> port reset to 9222). SUPPRESS leaves the
+    # namespace untouched when the option is absent on either side; the
+    # effective defaults are applied via getattr below.
     common = argparse.ArgumentParser(add_help=False)
-    common.add_argument("--port", type=int, default=9222)
-    common.add_argument("--match", default="localhost", help="substring of the page URL to target")
+    common.add_argument("--port", type=int, default=argparse.SUPPRESS)
+    common.add_argument("--match", default=argparse.SUPPRESS)
     ap = argparse.ArgumentParser(description=__doc__, parents=[common])
     sub = ap.add_subparsers(dest="cmd", required=True)
     p_load = sub.add_parser("assert-loaded", parents=[common])
@@ -109,7 +127,7 @@ def main():
     p_parse.add_argument("--expect", default="Tasker parsed")
     args = ap.parse_args()
 
-    cdp = Cdp(http_port=args.port, match=args.match)
+    cdp = Cdp(http_port=getattr(args, "port", 9222), match=getattr(args, "match", "localhost"))
     started = time.time()
     # give the page a moment to settle after navigation/reload
     wait_for(lambda: cdp.eval("document.readyState") == "complete", "page load", timeout=60)

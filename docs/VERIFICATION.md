@@ -7,7 +7,7 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
 | V1 | Tasker XML shared in → parsed task | ✅ browser e2e (every push) · 🔬 device (emulator CI) | `tests/e2e/run-e2e.mjs` share POST → inbox → converter handoff; emulator asserts on-device parse via CDP |
 | V2 | Automate `.flo` shared in → T0 inventory | ✅ browser e2e · 🔬 device (emulator CI, launch smoke) | e2e: `.flo` via picker, drop and share POST; emulator: Automate installs + launches |
 | V3 | TaskerNet link → graceful card, never blank | ✅ browser e2e | paste + text-only share both covered (`taskernet-link` card + CORS warning) |
-| V4 | Golden equality across drag-drop / picker / paste | ✅ browser e2e | identical `#status` string asserted across all three paths, same fixture |
+| V4 | Golden equality across drag-drop / picker / paste | ✅ browser e2e + unit goldens | e2e: identical `#status` string AND identical rendered cards across all three paths, same fixture; the parser behind all three is golden-tested against the python oracle (full IR deep-compare) in the unit suite |
 | V5 | Offline after first load: parse + review works | ✅ browser e2e · 🔬 device (emulator CI) | e2e: offline reload + offline parse + offline deep-link fallback; emulator: server killed on runner, page reloaded + parsed on device from SW cache |
 | V6 | Tasker corpus parses, 100% builtin code decode | ✅ CI (`fixture-tests-report.json`) | 10 fixtures, 124 actions, 93 builtin all named |
 | V7 | Code tables present, counts sane | ✅ CI | `data/taskerCodes.json` (438/91/56 + sentinels) |
@@ -32,7 +32,7 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
    Chromium):** the full user surface of the PWA in a real browser, run at
    both the server root and a `/autoport/` subpath (GitHub Pages layout):
    SW registration/activation/precache, picker + drag-drop + paste-box +
-   page-paste ingest, V4 status equality across paths, sniffer routes
+   page-paste ingest, V4 equality (status + rendered cards) across paths, sniffer routes
    (Tasker / `.flo` / PNG / unknown / empty / TaskerNet), share-target POST
    (navigational multipart form, exactly what Chrome's Android share sheet
    sends) → 303 → `share.html` inbox card → "Open in converter" `?from=`
@@ -74,3 +74,10 @@ google_apis image, serves the repo over `adb reverse`, drives Chrome via
 `am start` + CDP (`scripts/device_cdp.py`, `scripts/device_pwa_check.py`),
 installs the apps via the gplay-apk-downloader (original signatures), and
 exercises the MCP share-link import.
+- The root-scope service worker's activate-time cache cleanup matched names
+  with `endsWith(BASE)`; for the root scope (`BASE === '/'`) a sibling
+  `/autoport/` deployment's cache names also end with `/`, so a root worker
+  activating on the same origin deleted the subpath deployment's caches.
+  Found by CodeRabbit review (the e2e scopes ran on separate origins/ports,
+  so it never triggered in CI). Fixed with a complete-scope-suffix match and
+  a same-origin cross-scope regression test in the e2e suite.
