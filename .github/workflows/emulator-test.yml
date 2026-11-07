@@ -138,9 +138,10 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: /tmp/apks
+          # exact weekly key only: a cross-week restore-keys fallback would
+          # restore last week's APKs and then SAVE them under the new week's
+          # key, defeating the weekly refresh forever
           key: apks-${{ runner.os }}-w${{ steps.apkweek.outputs.week }}
-          restore-keys: |
-            apks-${{ runner.os }}-
 
       - name: Fetch APKs (Chrome, MacroDroid) via Play
         env:
