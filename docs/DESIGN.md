@@ -7,7 +7,7 @@ Design doc + verification criteria. Static GitHub Pages site, no backend require
 **rev 2 — prove-out integrated (2026-11-07).** Every risky assumption in rev 1 was spiked with runnable code (6-spike workflow + AutoInput APK decompilation); all measured facts below cite their artifact under `autoproof/` (evidence directory, frozen — do not edit). Spike results index: Appendix B.
 
 > [!Note]
-> Generated with Claude (model: Claude Fable 5 / rits GLM-5-3 via EnMaaS) — Claude Code in T3 Code
+> Generated with Claude Code in T3 Code (model: GLM 5.3 via EnMaaS)
 
 ---
 
