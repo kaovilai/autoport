@@ -1,0 +1,15 @@
+# dev workspace artifacts (never commit)
+downloads/
+analysis/
+tools/
+autoproof/
+raw-pool/
+# generated / local
+fixture-tests-report.json
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+*.log
+test-output.txt
+devserver-inbox/

@@ -1,0 +1,268 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "whsatapp_random_words_demo.tsk.xml",
+  "taskerVersion": "6.2.12-rc"
+ },
+ "macros": [
+  {
+   "name": "whsatapp random words demo",
+   "triggers": [],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 339,
+     "codeName": "HTTP_REQUEST",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%http_cookies\nCookies\nThe cookies the server sent in the response in the Cookie:COOKIE_VALUE format. You can use this directly in the 'Headers' field of the HTTP Request action",
+          "%http_data\nData\nData that the server responded from the HTTP request.",
+          "%http_file_output\nFile Output\nWill always contain the file's full path even if you specified a directory as the File to save.",
+          "%http_response_code\nResponse Code\nThe HTTP Code the server responded",
+          "%http_headers()\nResponse Headers\nThe HTTP Headers the server sent in the response. Each header is in the 'key:value' format",
+          "%http_response_length\nResponse Length\nThe size of the response in bytes"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;"
+       }
+      },
+      "arg1": 0,
+      "arg10": 0,
+      "arg11": 0,
+      "arg12": 1,
+      "arg2": "https://random-words-api.vercel.app/word",
+      "arg3": "",
+      "arg4": "",
+      "arg5": "",
+      "arg6": "",
+      "arg7": "",
+      "arg8": 30,
+      "arg9": 0
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 0,
+      "arg1": 3,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act1",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 104,
+     "codeName": "VIEW_URL",
+     "args": {
+      "arg0": "https://whatsapp.com/channel/<channel Id>",
+      "arg1": {
+       "$app": {
+        "appClass": "com.whatsapp.Main",
+        "appPkg": "com.whatsapp",
+        "label": "WhatsApp"
+       }
+      },
+      "arg2": 0,
+      "arg3": ""
+     },
+     "sr": "act2",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 0,
+      "arg1": 3,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act3",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "com.whatsapp:id/entry",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "-1",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "1",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "✍️ Word: %http_data.word\n\n📚 Definition: %http_data.definition\n\n🗣 Pronunciation: %http_data.pronunciation",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Id\nValue: com.whatsapp:id/entry\nText to Write : ✍️ Word: %http_data.word\n\n📚 Definition: %http_data.definition\n\n🗣 Pronunciation: %http_data.pronunciation\nAction : Write",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "TextToWrite ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "ff74f0fb-6cee-41ab-ba7f-51e2d6740cbe",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 23,
+      "arg4": 1
+     },
+     "sr": "act4",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 0,
+      "arg1": 3,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act5",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "com.whatsapp:id/send",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "1",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Id\nValue: com.whatsapp:id/send\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "2858fef5-7b77-475d-92a3-5e69e9cf40c5",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 23,
+      "arg4": 1
+     },
+     "sr": "act6",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 0,
+      "arg1": 3,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act7",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 25,
+     "codeName": "GO_HOME",
+     "args": {
+      "arg0": 0,
+      "arg1": ""
+     },
+     "sr": "act8",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%err",
+     "%errmsg",
+     "%http_cookies",
+     "%http_data",
+     "%http_file_output",
+     "%http_headers",
+     "%http_response_code",
+     "%http_response_length"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "7"
+   ],
+   "kind": "task",
+   "sr": "task7"
+  }
+ ]
+}

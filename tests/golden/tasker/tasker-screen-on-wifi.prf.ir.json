@@ -1,0 +1,120 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "screen-on-wifi.prf.xml",
+  "taskerVersion": "6.6.3-beta"
+ },
+ "macros": [
+  {
+   "name": "Screen On While On Wi-Fi",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 208,
+     "codeName": "SCREEN_ON",
+     "args": {
+      "arg0": 0,
+      "arg1": "",
+      "arg2": 0
+     },
+     "sr": "con0",
+     "ve": "2"
+    },
+    {
+     "family": "state",
+     "code": 160,
+     "codeName": "WIFI_CONNECT",
+     "args": {
+      "arg0": "%WIFII",
+      "arg1": "*",
+      "arg2": 0,
+      "arg3": 2
+     },
+     "sr": "con1",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 547,
+     "codeName": "SET_VARIABLE",
+     "args": {
+      "arg0": "%wifiSeen",
+      "arg1": 0,
+      "arg2": "%WIFII",
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 548,
+     "codeName": "FLASH",
+     "args": {
+      "arg0": "wifi: %wifiSeen via %EnMaasKey",
+      "arg1": 0
+     },
+     "sr": "act1",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 130,
+     "codeName": "RUN_TASK",
+     "args": {
+      "arg0": "Log Status",
+      "arg1": 1,
+      "arg2": "%wifiSeen,%WIFII"
+     },
+     "sr": "act2",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 104,
+     "codeName": "VIEW_URL",
+     "args": {
+      "arg0": "https://example.invalid/status?w=%wifiSeen",
+      "arg1": {
+       "$app": {
+        "appClass": "com.android.chrome.Main",
+        "appPkg": "com.android.chrome",
+        "label": "Chrome"
+       }
+      },
+      "arg2": 0,
+      "arg3": ""
+     },
+     "sr": "act3",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%wifiSeen"
+    ],
+    "global": [
+     "%EnMaasKey",
+     "%WIFII"
+    ]
+   },
+   "taskIds": [
+    "7"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1762430000000",
+    "edate": "1762430000000",
+    "limit": "false",
+    "pri": "5",
+    "enabled": "true"
+   },
+   "profileId": "6",
+   "enabled": "true",
+   "sr": "prof6"
+  }
+ ]
+}

@@ -1,0 +1,149 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "autoport-demo.prj.xml",
+  "taskerVersion": "6.6.3-beta"
+ },
+ "macros": [
+  {
+   "name": "Project Task One",
+   "triggers": [],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "var t = global('Battery'); flash(t);",
+      "arg1": "Battery",
+      "arg2": "%BATT"
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 547,
+     "codeName": "SET_VARIABLE",
+     "args": {
+      "arg0": "%LocalCounter",
+      "arg1": 1,
+      "arg2": "%LocalCounter + 1",
+      "arg3": 2,
+      "arg4": 0
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [],
+    "global": [
+     "%BATT",
+     "%LocalCounter"
+    ]
+   },
+   "taskIds": [
+    "1"
+   ],
+   "kind": "task",
+   "sr": "task1"
+  },
+  {
+   "name": "New Notification Demo",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 461,
+     "codeName": "NEW_NOTIFICATION",
+     "args": {
+      "arg0": "com.whatsapp",
+      "arg1": "*",
+      "arg2": 0
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 339,
+     "codeName": "HTTP_REQUEST",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "com.twofortyfouram.locale.intent.extra.BLURB": "POST to AutoPort",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "arg2 arg6 ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean"
+       }
+      },
+      "arg1": 1,
+      "arg2": "https://api.enmaas.devshift.net/v1/chat/completions",
+      "arg3": "Authorization:Bearer %EnMaasKey\nContent-Type:application/json",
+      "arg4": "",
+      "arg5": "",
+      "arg6": "{\"model\":\"rits/zai-org/glm-5-3\",\"messages\":[{\"role\":\"user\",\"content\":\"%NTITLE\"}]}",
+      "arg7": "",
+      "arg8": 60,
+      "arg9": 1,
+      "arg10": 0,
+      "arg11": 0,
+      "arg12": 1
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 548,
+     "codeName": "FLASH",
+     "args": {
+      "arg0": "posted: %http_data",
+      "arg1": 0
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%http_data"
+    ],
+    "global": [
+     "%EnMaasKey",
+     "%NTITLE"
+    ]
+   },
+   "taskIds": [
+    "2"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1762430000100",
+    "edate": "1762430000100",
+    "limit": "false",
+    "pri": "5"
+   },
+   "profileId": "2",
+   "enabled": null,
+   "sr": "prof2"
+  }
+ ],
+ "projects": [
+  {
+   "id": "0",
+   "name": "AutoPort Demo",
+   "taskIds": [
+    "1",
+    "2"
+   ],
+   "profileIds": [],
+   "scenesEnabled": "true",
+   "sr": "proj0"
+  }
+ ]
+}

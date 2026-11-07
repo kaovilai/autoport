@@ -1,0 +1,698 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "Utils.prj.xml",
+  "taskerVersion": "5.12.24-beta"
+ },
+ "macros": [
+  {
+   "name": "Pause/Resume Multimedia",
+   "triggers": [],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 664,
+     "codeName": "JAVA_FUNC",
+     "args": {
+      "arg0": "(AudioManager) am",
+      "arg1": "CONTEXT",
+      "arg2": "getSystemService\n{Object} (String)",
+      "arg3": "audio",
+      "arg4": "",
+      "arg5": "",
+      "arg6": "",
+      "arg7": "",
+      "arg8": "",
+      "arg9": ""
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 37,
+     "codeName": "IF",
+     "args": {},
+     "sr": "act1",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%par1",
+        "op": "0",
+        "rhs": "pause"
+       }
+      ]
+     }
+    },
+    {
+     "kind": "builtin",
+     "code": 664,
+     "codeName": "JAVA_FUNC",
+     "args": {
+      "arg0": "",
+      "arg1": "am",
+      "arg2": "requestAudioFocus\n{int} (OnAudioFocusChangeListener, int, int)",
+      "arg3": "",
+      "arg4": "3",
+      "arg5": "2",
+      "arg6": "",
+      "arg7": "",
+      "arg8": "",
+      "arg9": ""
+     },
+     "sr": "act2",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 43,
+     "codeName": "ELSE",
+     "args": {},
+     "sr": "act3",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 664,
+     "codeName": "JAVA_FUNC",
+     "args": {
+      "arg0": "",
+      "arg1": "am",
+      "arg2": "abandonAudioFocus\n{int} (OnAudioFocusChangeListener)",
+      "arg3": "",
+      "arg4": "",
+      "arg5": "",
+      "arg6": "",
+      "arg7": "",
+      "arg8": "",
+      "arg9": ""
+     },
+     "sr": "act4",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 38,
+     "codeName": "ENDIF",
+     "args": {},
+     "sr": "act5",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%par1"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "35"
+   ],
+   "kind": "task",
+   "sr": "task35"
+  },
+  {
+   "name": "Unlock Screen",
+   "triggers": [],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 664,
+     "codeName": "JAVA_FUNC",
+     "args": {
+      "label": "Check keyguard on",
+      "arg0": "kgm",
+      "arg1": "CONTEXT",
+      "arg2": "getSystemService\n{KeyguardManager} (String)",
+      "arg3": "keyguard",
+      "arg4": "",
+      "arg5": "",
+      "arg6": "",
+      "arg7": "",
+      "arg8": "",
+      "arg9": ""
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 664,
+     "codeName": "JAVA_FUNC",
+     "args": {
+      "arg0": "%keyguard",
+      "arg1": "kgm",
+      "arg2": "inKeyguardRestrictedInputMode\n{boolean} ()",
+      "arg3": "",
+      "arg4": "",
+      "arg5": "",
+      "arg6": "",
+      "arg7": "",
+      "arg8": "",
+      "arg9": ""
+     },
+     "sr": "act1",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 40,
+     "codeName": "ENDFOR",
+     "args": {},
+     "sr": "act10",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1040876951,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "AppPackage": "<null>",
+        "AppPackage-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "OnlyClickable": "false",
+        "OnlyClickable-type": "java.lang.Boolean",
+        "OnlyVisible": "false",
+        "OnlyVisible-type": "java.lang.Boolean",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "Regex": "false",
+        "Regex-type": "java.lang.Boolean",
+        "UIUpdateFields": "<null>",
+        "UIUpdateFields-type": "java.lang.String",
+        "UIUpdateText": "OK",
+        "UIUpdateText-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Text: OK",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%aiapp\nApp Name\n",
+          "%aicoordinates()\nElement Coordinates\nList of coordinates in the x,y format",
+          "%aiid()\nElement Ids\n",
+          "%aipackage\nApp Package Name\n",
+          "%aitext()\nElement Texts\n",
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "UIUpdateText plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "c0a413c5-b740-407d-8539-6cd6c8f51cf6",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentUIQuery",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery",
+      "arg3": 20,
+      "arg4": 0
+     },
+     "sr": "act11",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "OK",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "0",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Text\nValue: OK\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "95c7b9f2-32d2-42a3-90e7-27fdfdeacb31",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 23,
+      "arg4": 0
+     },
+     "sr": "act12",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 400,
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act13",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 38,
+     "codeName": "ENDIF",
+     "args": {},
+     "sr": "act14",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 37,
+     "codeName": "IF",
+     "args": {},
+     "sr": "act2",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%keyguard",
+        "op": "2",
+        "rhs": "true"
+       }
+      ]
+     }
+    },
+    {
+     "kind": "plugin",
+     "code": 1250249549,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "label": "Turn on screen",
+      "arg0": {
+       "$bundle": {
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Screen Off Or On: Turn On",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS": "parameters",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "parameters plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "parameters": "{\"screenAction\":\"1\",\"generatedValues\":{}}",
+        "parameters-type": "java.lang.String",
+        "plugininstanceid": "1dfce703-516a-48ba-a9c0-66ab432744a4",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentTurnOffScreen",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigTurnOffScreen",
+      "arg3": 60,
+      "arg4": 0
+     },
+     "sr": "act3",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigTurnOffScreen"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 0,
+      "arg1": 2,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act4",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 778682267,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "label": "Swipe up",
+      "arg0": {
+       "$bundle": {
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "GestureType": "0",
+        "GestureType-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Gesture Type: Swipe\nStart Point: 540,1910\nEnd Point: 540,447\nDuration: 300",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS": "parameters",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "parameters GestureType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "parameters": "{\"endPoint\":\"540,447\",\"initialPoint\":\"540,1910\",\"duration\":\"300\",\"generatedValues\":{}}",
+        "parameters-type": "java.lang.String",
+        "plugininstanceid": "b62f2db6-a25f-4bb9-b1d2-62323d2c04a2",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentGestures",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigGestures",
+      "arg3": 60,
+      "arg4": 0
+     },
+     "sr": "act5",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigGestures"
+    },
+    {
+     "kind": "builtin",
+     "code": 590,
+     "codeName": "SPLIT_VARIABLE",
+     "args": {
+      "arg0": "%PIN",
+      "arg1": ",",
+      "arg2": 0,
+      "arg3": 0
+     },
+     "sr": "act6",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 39,
+     "codeName": "FOR",
+     "args": {
+      "label": "Type PIN",
+      "arg0": "%key",
+      "arg1": "%PIN()",
+      "arg2": 0
+     },
+     "sr": "act7",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1040876951,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "AppPackage": "<null>",
+        "AppPackage-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "OnlyClickable": "false",
+        "OnlyClickable-type": "java.lang.Boolean",
+        "OnlyVisible": "false",
+        "OnlyVisible-type": "java.lang.Boolean",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "Regex": "false",
+        "Regex-type": "java.lang.Boolean",
+        "UIUpdateFields": "<null>",
+        "UIUpdateFields-type": "java.lang.String",
+        "UIUpdateText": "%key",
+        "UIUpdateText-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Text: %key",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%aiapp\nApp Name\n",
+          "%aicoordinates()\nElement Coordinates\nList of coordinates in the x,y format",
+          "%aiid()\nElement Ids\n",
+          "%aipackage\nApp Package Name\n",
+          "%aitext()\nElement Texts\n",
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "UIUpdateText plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "c0a413c5-b740-407d-8539-6cd6c8f51cf6",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentUIQuery",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery",
+      "arg3": 20,
+      "arg4": 0
+     },
+     "sr": "act8",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "%key",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "0",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Text\nValue: %key\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "95c7b9f2-32d2-42a3-90e7-27fdfdeacb31",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 23,
+      "arg4": 0
+     },
+     "sr": "act9",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%aiapp",
+     "%aicoordinates",
+     "%aiid",
+     "%aipackage",
+     "%aitext",
+     "%err",
+     "%errmsg",
+     "%key",
+     "%keyguard"
+    ],
+    "global": [
+     "%PIN"
+    ]
+   },
+   "taskIds": [
+    "51"
+   ],
+   "kind": "task",
+   "sr": "task51",
+   "meta": {
+    "icon": {
+     "nme": "hl_device_access_screen_locked_to_portrait"
+    }
+   }
+  },
+  {
+   "name": "Test Lock and Unlock Screen",
+   "triggers": [],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 16,
+     "codeName": "SYSTEM_LOCK",
+     "args": {},
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 548,
+     "codeName": "FLASH",
+     "args": {
+      "arg0": "Waiting",
+      "arg1": 0
+     },
+     "sr": "act1",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 0,
+      "arg1": 3,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act2",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 130,
+     "codeName": "RUN_TASK",
+     "args": {
+      "arg0": "Unlock Screen",
+      "arg1": {
+       "$var": "%priority+1"
+      },
+      "arg10": 0,
+      "arg2": "",
+      "arg3": "",
+      "arg4": "",
+      "arg5": 0,
+      "arg6": 0,
+      "arg7": "",
+      "arg8": 0,
+      "arg9": 0
+     },
+     "sr": "act3",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%priority"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "62"
+   ],
+   "kind": "task",
+   "sr": "task62"
+  }
+ ],
+ "projects": [
+  {
+   "id": null,
+   "name": null,
+   "taskIds": [
+    "51",
+    "35",
+    "62"
+   ],
+   "profileIds": [],
+   "displayName": "Utils",
+   "icon": {
+    "nme": "hl_collections_collection"
+   },
+   "scenesEnabled": null,
+   "sr": "proj0"
+  }
+ ]
+}

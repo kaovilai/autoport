@@ -1,0 +1,59 @@
+{
+  "macroExportVersion": 1,
+  "macro": {
+    "m_name": "AutoPort Spike - HTTP Poll",
+    "m_description": "Every 15 minutes, while connected to Wi-Fi, GET https://example.com/ping and save the body.",
+    "m_enabled": true,
+    "m_completed": true,
+    "m_GUID": 0,
+    "m_category": "Uncategorized",
+    "aiGenerated": 1,
+    "m_triggerList": [
+      {
+        "m_classType": "RegularIntervalTrigger",
+        "m_SIGUID": 112233445566771,
+        "m_seconds": 900,
+        "m_useAlarm": true
+      }
+    ],
+    "m_actionList": [
+      {
+        "m_classType": "HttpRequestAction",
+        "m_SIGUID": 0,
+        "requestConfig": {
+          "requestType": 0,
+          "urlToOpen": "https://example.com/ping",
+          "requestTimeOutSeconds": 30,
+          "followRedirects": true,
+          "saveReturnCodeToVariable": true,
+          "returnCodeVariableName": "http_code",
+          "saveResponseType": 1,
+          "responseVariableName": "http_body"
+        }
+      }
+    ],
+    "m_constraintList": [
+      {
+        "m_classType": "WifiConstraint",
+        "m_SIGUID": 0,
+        "m_wifiState": 0
+      }
+    ],
+    "localVariables": [
+      {
+        "m_name": "http_code",
+        "m_type": 1,
+        "m_intValue": 0,
+        "isLocalVar": true
+      },
+      {
+        "m_name": "http_body",
+        "m_type": 2,
+        "m_stringValue": "",
+        "isLocalVar": true
+      }
+    ]
+  },
+  "globalVariables": [],
+  "userIcons": null
+}

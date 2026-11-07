@@ -1,0 +1,23 @@
+{
+ "actionsTotal": 4,
+ "actionsDecoded": 4,
+ "actionsPlugin": 0,
+ "actionsUnknown": 0,
+ "contextsTotal": 2,
+ "contextsDecoded": 2,
+ "contextsUnknown": 0,
+ "unrepresentable": [],
+ "fixture": "screen-on-wifi.prf.xml",
+ "macros": 1,
+ "actions": 4,
+ "triggers": 2,
+ "variableCount": {
+  "local": [
+   "%wifiSeen"
+  ],
+  "global": [
+   "%EnMaasKey",
+   "%WIFII"
+  ]
+ }
+}

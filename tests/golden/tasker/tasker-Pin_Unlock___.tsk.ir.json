@@ -1,0 +1,380 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "Pin_Unlock___.tsk.xml",
+  "taskerVersion": "6.2.12-rc"
+ },
+ "macros": [
+  {
+   "name": "Pin Unlock 🔓",
+   "triggers": [],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 806,
+     "codeName": "POKE_DISPLAY",
+     "args": {
+      "arg0": 500
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 0,
+      "arg1": 2,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act1",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 107361459,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Actions To Perform: swipe(point,540\\,2037,up,1000)\nNot In AutoInput: true\nNot In Tasker: true\nSeparator: ,\nCheck Millis: 1000",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS": "parameters",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%ailastbounds\nLast Bounds\nBounds (left,top,right,bottom) of the item that the action last interacted with",
+          "%ailastcoordinates\nLast Coordinates\nCenter coordinates (x,y) of the item that the action last interacted with",
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "parameters plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "parameters": "{\"_action\":\"swipe(point,540\\\\,2037,up,1000)\",\"_additionalOptions\":{\"checkMs\":\"1000\",\"separator\":\",\",\"withCoordinates\":false},\"_whenToPerformAction\":{\"notInAutoInput\":true,\"notInTasker\":true},\"generatedValues\":{}}",
+        "parameters-type": "java.lang.String",
+        "plugininstanceid": "02062591-e558-47f7-a75f-ca66475be804",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentActionv2",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigActionv2",
+      "arg3": 60,
+      "arg4": 1
+     },
+     "sr": "act2",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigActionv2"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 0,
+      "arg1": 2,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act3",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "1",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "0",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Text\nValue: 1\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "ee163ed7-07bb-4b0b-bd1d-2c722c88b00a",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 23,
+      "arg4": 1
+     },
+     "sr": "act4",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "2",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "0",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Text\nValue: 2\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "ee163ed7-07bb-4b0b-bd1d-2c722c88b00a",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 23,
+      "arg4": 1
+     },
+     "sr": "act5",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "3",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "0",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Text\nValue: 3\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "ee163ed7-07bb-4b0b-bd1d-2c722c88b00a",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 23,
+      "arg4": 1
+     },
+     "sr": "act6",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "4",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "0",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Text\nValue: 4\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "ee163ed7-07bb-4b0b-bd1d-2c722c88b00a",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 23,
+      "arg4": 1
+     },
+     "sr": "act7",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "on": "false",
+      "arg0": 0,
+      "arg1": 8,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act8",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 248,
+     "codeName": "ACCESSIBILITY_LOCK_SCREEN",
+     "args": {
+      "on": "false",
+      "arg0": 1,
+      "arg1": 1
+     },
+     "sr": "act9",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%ailastbounds",
+     "%ailastcoordinates",
+     "%err",
+     "%errmsg"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "11"
+   ],
+   "kind": "task",
+   "sr": "task11"
+  }
+ ]
+}

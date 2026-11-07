@@ -1,0 +1,543 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "CyanBridge_LocalAgent_Tasker.prj.xml",
+  "taskerVersion": "6.5.11"
+ },
+ "macros": [
+  {
+   "name": "CyanBridge LocalAgent Observe",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "com.fersaiyan.cyanbridge.TASKER_AGENT_OBSERVE",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "plugin",
+     "code": 1040876951,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "AppPackage": "<null>",
+        "AppPackage-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "OnlyClickable": "false",
+        "OnlyClickable-type": "java.lang.Boolean",
+        "OnlyVisible": "true",
+        "OnlyVisible-type": "java.lang.Boolean",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "Regex": "false",
+        "Regex-type": "java.lang.Boolean",
+        "UIUpdateFields": "<null>",
+        "UIUpdateFields-type": "java.lang.String",
+        "UIUpdateText": "<null>",
+        "UIUpdateText-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Query current visible UI for CyanBridge Local Agent",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "plugininstanceid": "cyanbridge-localagent-query-v1",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentUIQuery",
+        "plugintypeid-type": "java.lang.String",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "AppPackage UIUpdateFields plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery",
+      "arg3": 10,
+      "arg4": 1
+     },
+     "sr": "act0",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery"
+    },
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "function arr(v) {\n    if (typeof v === \"undefined\" || v === null) return [];\n    if (Array.isArray(v)) return v;\n    return [v];\n}\nfunction parsePackages(raw) {\n    var out = {};\n    String(raw == null ? \"\" : raw).toLowerCase().split(/[\\s,;]+/).forEach(function(v){ if (v) out[v] = true; });\n    return out;\n}\nvar pkg = (typeof aipackage !== \"undefined\") ? String(aipackage || \"\").trim().toLowerCase() : \"\";\nvar blockedPackages = parsePackages(global(\"CB_LocalAgentBlocked\"));\nvar response = \"\";\nif (pkg && blockedPackages[pkg]) {\n    var blockedEnvelope = {\n        contract_version: 1,\n        request_id: String(request_id || \"\"),\n        callback_token: String(callback_token || \"\"),\n        success: false,\n        payload: null,\n        error: \"blocked_package:\" + pkg\n    };\n    response = JSON.stringify(blockedEnvelope);\n}\nif (!response) {\nvar texts = (typeof aitext !== \"undefined\") ? arr(aitext) : [];\nvar ids = (typeof aiid !== \"undefined\") ? arr(aiid) : [];\nvar coords = [];\nif (typeof aicoordinates !== \"undefined\") coords = arr(aicoordinates);\nelse if (typeof aicoords !== \"undefined\") coords = arr(aicoords);\nvar count = Math.max(texts.length, ids.length, coords.length);\nvar nodes = [];\nfor (var i = 0; i < count && i < 160; i++) {\n    var coord = String(coords[i] || \"\");\n    var match = coord.match(/(-?\\d+)\\s*,\\s*(-?\\d+)/);\n    var x = match ? parseInt(match[1], 10) : 0;\n    var y = match ? parseInt(match[2], 10) : 0;\n    nodes.push({\n        index: i,\n        depth: 0,\n        // Gmail's compose accessibility tree can contain long message bodies.\n        // Bound every field before serializing the broadcast response; a large\n        // binder envelope can vanish without a callback to CyanBridge.\n        text: String(texts[i] || \"\").slice(0, 240),\n        content_description: \"\",\n        hint_text: \"\",\n        class_name: \"\",\n        view_id: String(ids[i] || \"\").slice(0, 160),\n        clickable: false,\n        editable: false,\n        scrollable: false,\n        password: false,\n        checkable: false,\n        checked: false,\n        focused: false,\n        bounds: {left:x, top:y, right:x, bottom:y}\n    });\n}\nvar summary = texts.slice(0, 160).map(function(v){ return String(v || \"\").slice(0, 240); })\n    .filter(function(v){ return v.trim().length > 0; })\n    .join(\"\\n\").slice(0, 6000);\nvar observation = {\n    created_at_ms: Date.now(),\n    package_name: pkg,\n    text_summary: summary,\n    nodes: nodes\n};\nvar envelope = {\n    contract_version: 1,\n    request_id: String(request_id || \"\"),\n    callback_token: String(callback_token || \"\"),\n    success: true,\n    payload: JSON.stringify(observation),\n    error: null\n};\nresponse = JSON.stringify(envelope);\n}",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act1",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 877,
+     "codeName": "SEND_INTENT",
+     "args": {
+      "arg0": "com.fersaiyan.cyanbridge.TASKER_AGENT_RESPONSE",
+      "arg1": 0,
+      "arg2": "",
+      "arg3": "",
+      "arg4": "response:%response",
+      "arg5": "",
+      "arg6": "",
+      "arg7": "com.fersaiyan.cyanbridge",
+      "arg8": "",
+      "arg9": 0
+     },
+     "sr": "act2",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%response"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "211"
+   ],
+   "kind": "profile",
+   "meta": {
+    "button": "false",
+    "description": "Receives CyanBridge Local Agent observation requests, queries the current UI with AutoInput, blocks packages listed in %CB_LocalAgentBlocked before returning screen content, and returns a compact JSON response envelope.",
+    "tags": "CyanBridge,Local Agent,AutoInput,Privacy",
+    "public": "true",
+    "title": ""
+   },
+   "profileId": "201",
+   "enabled": null,
+   "sr": "prof201"
+  },
+  {
+   "name": "CyanBridge LocalAgent Execute",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "com.fersaiyan.cyanbridge.TASKER_AGENT_EXECUTE",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "function aiEscape(value) {\n    return String(value == null ? \"\" : value)\n        .replace(/\\\\/g, \"\\\\\\\\\")\n        .replace(/,/g, \"\\\\,\")\n        .replace(/\\r?\\n/g, \" \");\n}\nfunction recordBuiltin(result, detail, error) {\n    if (result === false) {\n        execution_success = \"false\";\n        execution_error = error;\n    } else {\n        execution_detail = detail;\n    }\n}\nvar execution_success = \"true\";\nvar execution_detail = \"\";\nvar execution_error = \"\";\nvar use_ai_v2 = \"false\";\nvar global_action = \"\";\nvar read_aloud = \"false\";\nvar toggle_flashlight = \"false\";\nvar ai_command = \"\";\nvar action_type = \"\";\nvar err = \"\";\nvar errmsg = \"\";\ntry {\n    var action = JSON.parse(String(payload || \"{}\"));\n    action_type = String(action.type || \"\");\n    switch (action_type) {\n        case \"click_text\":\n            ai_command = \"click(text,\" + aiEscape(action.text) + \")\";\n            use_ai_v2 = \"true\";\n            break;\n        case \"click_coord\":\n            ai_command = \"click(point,\" + Number(action.x || 0) + \"\\\\,\" + Number(action.y || 0) + \")\";\n            use_ai_v2 = \"true\";\n            break;\n        case \"type_text\":\n            ai_command = \"setText(focus,,\" + aiEscape(action.text) + \")\";\n            use_ai_v2 = \"true\";\n            break;\n        case \"long_press\":\n            ai_command = \"longClick(point,\" + Number(action.x || 0) + \"\\\\,\" + Number(action.y || 0) + \")\";\n            use_ai_v2 = \"true\";\n            break;\n        case \"global_back\":\n            global_action = \"1\";\n            break;\n        case \"global_home\":\n            global_action = \"2\";\n            break;\n        case \"open_recents\":\n            global_action = \"3\";\n            break;\n        case \"open_notifications\":\n            global_action = \"4\";\n            break;\n        case \"scroll\":\n            ai_command = String(action.direction || \"\").toLowerCase() === \"up\"\n                ? \"scroll(backward)\"\n                : \"scroll(forward)\";\n            use_ai_v2 = \"true\";\n            break;\n        case \"open_app\":\n            recordBuiltin(loadApp(String(action.app_name || \"\"), undefined, false), \"open_app:launched\", \"tasker_open_app_failed\");\n            break;\n        case \"make_call\":\n            recordBuiltin(call(String(action.number || \"\"), false), \"make_call:dialer_opened\", \"tasker_dialer_failed\");\n            break;\n        case \"send_sms\":\n            recordBuiltin(composeSMS(String(action.number || \"\"), String(action.message || \"\")), \"send_sms:composer_opened\", \"tasker_sms_composer_failed\");\n            break;\n        case \"send_email\":\n            // composeEmail() uses generic ACTION_SEND and can choose Gmail's\n            // share deep-link handler, which immediately closes without a draft.\n            // SENDTO mailto: resolves to the actual email composer on Android.\n            var emailUri = \"mailto:\" + encodeURIComponent(String(action.to || \"\"))\n                + \"?subject=\" + encodeURIComponent(String(action.subject || \"\"))\n                + \"&body=\" + encodeURIComponent(String(action.body || \"\"));\n            recordBuiltin(sendIntent(\"android.intent.action.SENDTO\", \"activity\", undefined, undefined, undefined, emailUri, undefined, undefined),\n                \"send_email:composer_requested\", \"tasker_email_composer_failed\");\n            break;\n        case \"set_alarm\":\n            recordBuiltin(setAlarm(Number(action.hour || 0), Number(action.minute || 0), String(action.label || \"\"), true), \"set_alarm:clock_opened\", \"tasker_set_alarm_failed\");\n            break;\n        case \"open_contacts\":\n            recordBuiltin(sendIntent(\"android.intent.action.VIEW\", \"activity\", undefined, undefined, undefined, \"content://contacts/people\", undefined, undefined), \"open_contacts:opened\", \"tasker_open_contacts_failed\");\n            break;\n        case \"toggle_wifi\":\n            recordBuiltin(settings(\"wifi\"), \"toggle_wifi:settings_opened\", \"tasker_wifi_settings_failed\");\n            break;\n        case \"toggle_bluetooth\":\n            recordBuiltin(settings(\"bluetooth\"), \"toggle_bluetooth:settings_opened\", \"tasker_bluetooth_settings_failed\");\n            break;\n        case \"toggle_flashlight\":\n            toggle_flashlight = \"true\";\n            break;\n        case \"read_screen_aloud\":\n            read_aloud = \"true\";\n            break;\n        case \"wait\":\n            wait(Math.max(0, Number(action.ms || 0)));\n            execution_detail = \"wait:ok\";\n            break;\n        case \"finish\":\n            execution_success = \"false\";\n            execution_error = \"internal_action_should_not_reach_tasker:finish\";\n            break;\n        case \"press_enter\":\n            execution_success = \"false\";\n            execution_error = \"tasker_press_enter_adapter_not_configured\";\n            break;\n        case \"swipe\":\n            execution_success = \"false\";\n            execution_error = \"tasker_swipe_adapter_not_configured\";\n            break;\n        default:\n            execution_success = \"false\";\n            execution_error = \"unsupported_tasker_action:\" + action_type;\n    }\n} catch (e) {\n    action_type = \"\";\n    execution_success = \"false\";\n    execution_error = \"invalid_action_json:\" + String(e);\n}",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 107361459,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Dynamic CyanBridge Local Agent UI primitive: %ai_command",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS": "parameters",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "parameters plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "parameters": "{\"_action\":\"%ai_command\\n\",\"_additionalOptions\":{\"checkMs\":\"750\",\"preActionDelay\":\"75\",\"separator\":\",\",\"withCoordinates\":false},\"_whenToPerformAction\":{\"notInAutoInput\":true,\"notInTasker\":false},\"generatedValues\":{}}",
+        "parameters-type": "java.lang.String",
+        "plugininstanceid": "cyanbridge-localagent-action-v1",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentActionv2",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigActionv2",
+      "arg3": 20,
+      "arg4": 1
+     },
+     "sr": "act1",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%use_ai_v2",
+        "op": "2",
+        "rhs": "true"
+       }
+      ]
+     },
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigActionv2"
+    },
+    {
+     "kind": "plugin",
+     "code": 811079103,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "GlobalAction": "1",
+        "GlobalAction-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "CyanBridge AutoInput Back",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "plugininstanceid": "cyanbridge-global-back",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformGlobalAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformGlobalAction",
+      "arg3": 10,
+      "arg4": 1
+     },
+     "sr": "act2",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%global_action",
+        "op": "2",
+        "rhs": "1"
+       }
+      ]
+     },
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformGlobalAction"
+    },
+    {
+     "kind": "plugin",
+     "code": 811079103,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "GlobalAction": "2",
+        "GlobalAction-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "CyanBridge AutoInput Home",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "plugininstanceid": "cyanbridge-global-home",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformGlobalAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformGlobalAction",
+      "arg3": 10,
+      "arg4": 1
+     },
+     "sr": "act3",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%global_action",
+        "op": "2",
+        "rhs": "2"
+       }
+      ]
+     },
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformGlobalAction"
+    },
+    {
+     "kind": "plugin",
+     "code": 811079103,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "GlobalAction": "3",
+        "GlobalAction-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "CyanBridge AutoInput Recents",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "plugininstanceid": "cyanbridge-global-recents",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformGlobalAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformGlobalAction",
+      "arg3": 10,
+      "arg4": 1
+     },
+     "sr": "act4",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%global_action",
+        "op": "2",
+        "rhs": "3"
+       }
+      ]
+     },
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformGlobalAction"
+    },
+    {
+     "kind": "plugin",
+     "code": 811079103,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "GlobalAction": "4",
+        "GlobalAction-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "CyanBridge AutoInput Notifications",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "plugininstanceid": "cyanbridge-global-notifications",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformGlobalAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformGlobalAction",
+      "arg3": 10,
+      "arg4": 1
+     },
+     "sr": "act5",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%global_action",
+        "op": "2",
+        "rhs": "4"
+       }
+      ]
+     },
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformGlobalAction"
+    },
+    {
+     "kind": "builtin",
+     "code": 511,
+     "codeName": "TORCH",
+     "args": {
+      "arg0": 2
+     },
+     "sr": "act6",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%toggle_flashlight",
+        "op": "2",
+        "rhs": "true"
+       }
+      ]
+     }
+    },
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "if (typeof errmsg !== \"undefined\" && String(errmsg || \"\") !== \"\") {\n    execution_success = \"false\";\n    execution_error = \"tasker_action_error:\" + String(err) + \":\" + String(typeof errmsg !== \"undefined\" ? errmsg : \"\");\n} else if (execution_success === \"true\" && !String(execution_detail || \"\")) {\n    execution_detail = \"tasker:\" + String(action_type || \"\") + \":ok\";\n}",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act7",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1040876951,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Query screen text for CyanBridge read aloud",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "plugininstanceid": "cyanbridge-localagent-read-query-v1",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentUIQuery",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery",
+      "arg3": 10,
+      "arg4": 1
+     },
+     "sr": "act8",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%read_aloud",
+        "op": "2",
+        "rhs": "true"
+       }
+      ]
+     },
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery"
+    },
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "var speakText = \"\";\nif (typeof aitext !== \"undefined\") {\n    var parts = Array.isArray(aitext) ? aitext : [aitext];\n    speakText = parts.filter(function(v){return String(v || \"\").trim().length > 0;}).join(\". \").slice(0, 6000);\n}\nif (!speakText) {\n    execution_success = \"false\";\n    execution_error = \"autoinput_screen_text_empty\";\n} else {\n    var spoken = say(speakText, undefined, undefined, \"media\", 5, 5);\n    if (spoken === false) {\n        execution_success = \"false\";\n        execution_error = \"tasker_tts_failed\";\n    } else {\n        execution_detail = \"read_screen_aloud:ok\";\n    }\n}",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act9",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%read_aloud",
+        "op": "2",
+        "rhs": "true"
+       }
+      ]
+     }
+    },
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "var ok = String(execution_success || \"false\") === \"true\";\nvar envelope = {\n    contract_version: 1,\n    request_id: String(request_id || \"\"),\n    callback_token: String(callback_token || \"\"),\n    success: ok,\n    payload: ok ? String(execution_detail || (\"tasker:\" + String(action_type || \"\") + \":ok\")) : null,\n    error: ok ? null : String(execution_error || \"tasker_execution_failed\")\n};\nvar response = JSON.stringify(envelope);",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act10",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 877,
+     "codeName": "SEND_INTENT",
+     "args": {
+      "arg0": "com.fersaiyan.cyanbridge.TASKER_AGENT_RESPONSE",
+      "arg1": 0,
+      "arg2": "",
+      "arg3": "",
+      "arg4": "response:%response",
+      "arg5": "",
+      "arg6": "",
+      "arg7": "com.fersaiyan.cyanbridge",
+      "arg8": "",
+      "arg9": 0
+     },
+     "sr": "act11",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%ai_command",
+     "%global_action",
+     "%read_aloud",
+     "%response",
+     "%toggle_flashlight",
+     "%use_ai_v2"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "212"
+   ],
+   "kind": "profile",
+   "meta": {
+    "button": "false",
+    "description": "Single device-execution boundary for CyanBridge Local Agent. Executes every model-selected device action through Tasker/AutoInput or Tasker built-ins and returns the exact result. Tasker performs no independent action-risk filtering; CyanBridge owns policy and approvals.",
+    "tags": "CyanBridge,Local Agent,AutoInput",
+    "public": "true",
+    "title": ""
+   },
+   "profileId": "202",
+   "enabled": null,
+   "sr": "prof202"
+  }
+ ],
+ "projects": [
+  {
+   "id": null,
+   "name": null,
+   "taskIds": [
+    "211",
+    "212"
+   ],
+   "profileIds": [
+    "201",
+    "202"
+   ],
+   "displayName": "CyanBridge Local Agent",
+   "scenesEnabled": null,
+   "sr": "proj0"
+  }
+ ]
+}

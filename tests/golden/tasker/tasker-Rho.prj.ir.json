@@ -1,0 +1,1383 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "Rho.prj.xml",
+  "taskerVersion": "6.6.17-rc"
+ },
+ "macros": [
+  {
+   "name": "Profile prof152",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.open_url",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 104,
+     "codeName": "VIEW_URL",
+     "args": {
+      "arg0": "%url",
+      "arg1": {
+       "$app": {}
+      },
+      "arg2": 0,
+      "arg3": ""
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":true}",
+      "arg2": 0,
+      "arg3": 0
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%result_file",
+     "%url"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "151"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770066287707",
+    "clp": "true",
+    "edate": "1770074736688",
+    "flags": "8"
+   },
+   "profileId": "152",
+   "enabled": null,
+   "sr": "prof152"
+  },
+  {
+   "name": "Profile prof153",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.click",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 37,
+     "codeName": "IF",
+     "args": {},
+     "sr": "act0",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%xcoord",
+        "op": "7",
+        "rhs": "0"
+       }
+      ]
+     }
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "se": "false",
+      "arg0": {
+       "$bundle": {
+        "ActionId": "%xcoord,%ycoord",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "5",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Point\nValue: %xcoord,%ycoord\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "c7939456-0636-4c5d-825a-efe921b5d144",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 3,
+      "arg4": 1
+     },
+     "sr": "act1",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":true,\"clicked\":\"%target\"}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act10",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 38,
+     "codeName": "ENDIF",
+     "args": {},
+     "sr": "act11",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 43,
+     "codeName": "ELSE",
+     "args": {},
+     "sr": "act2",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%elementId",
+        "op": "12",
+        "rhs": "0"
+       }
+      ]
+     }
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "se": "false",
+      "arg0": {
+       "$bundle": {
+        "ActionId": "%elementId",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "1",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Id\nValue: %elementId\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "c7939456-0636-4c5d-825a-efe921b5d144",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 3,
+      "arg4": 1
+     },
+     "sr": "act3",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "builtin",
+     "code": 43,
+     "codeName": "ELSE",
+     "args": {},
+     "sr": "act4",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "se": "false",
+      "arg0": {
+       "$bundle": {
+        "ActionId": "%target",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "0",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Text\nValue: %target\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "c7939456-0636-4c5d-825a-efe921b5d144",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 3,
+      "arg4": 1
+     },
+     "sr": "act5",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "builtin",
+     "code": 38,
+     "codeName": "ENDIF",
+     "args": {},
+     "sr": "act6",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 37,
+     "codeName": "IF",
+     "args": {},
+     "sr": "act7",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%err",
+        "op": "12",
+        "rhs": ""
+       }
+      ]
+     }
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":false,\"error\":\"Element not found: %target\"}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act8",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 43,
+     "codeName": "ELSE",
+     "args": {},
+     "sr": "act9",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%elementId",
+     "%err",
+     "%errmsg",
+     "%result_file",
+     "%target",
+     "%xcoord",
+     "%ycoord"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "158"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770066526711",
+    "clp": "true",
+    "edate": "1770070994669",
+    "flags": "8"
+   },
+   "profileId": "153",
+   "enabled": null,
+   "sr": "prof153"
+  },
+  {
+   "name": "Launch App",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.launch_app",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 20,
+     "codeName": "LOAD_APP",
+     "args": {
+      "arg0": {
+       "$app": {
+        "appClass": "",
+        "appPkg": "%package",
+        "label": "%package"
+       }
+      },
+      "arg1": "",
+      "arg2": 0,
+      "arg3": 0
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":true}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%package",
+     "%result_file"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "159"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770083398942",
+    "edate": "1706900000000"
+   },
+   "profileId": "160",
+   "enabled": null,
+   "sr": "prof160"
+  },
+  {
+   "name": "Profile prof162",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.type",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 328,
+     "codeName": "KEYBOARD",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%kb_text_selected\nSelected Text\nText selected on the current input, if any",
+          "%kb_text\nText\nText present on the current input, if any",
+          "%kb_text_after_cursor\nText After Cursor\nText after the cursor on the current input, if any",
+          "%kb_text_before_cursor\nText Before Cursor\nText before the cursor on the current input, if any"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;"
+       }
+      },
+      "arg1": "write(%text)",
+      "arg2": 243,
+      "arg3": 0
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 37,
+     "codeName": "IF",
+     "args": {},
+     "sr": "act1",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%err",
+        "op": "12",
+        "rhs": ""
+       }
+      ]
+     }
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":false,\"error\":\"Unable to write: %err\"}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act2",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 43,
+     "codeName": "ELSE",
+     "args": {},
+     "sr": "act3",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":true,\"typed\":\"%text\"}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act4",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 38,
+     "codeName": "ENDIF",
+     "args": {},
+     "sr": "act5",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%err",
+     "%kb_text",
+     "%kb_text_after_cursor",
+     "%kb_text_before_cursor",
+     "%kb_text_selected",
+     "%result_file",
+     "%text"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "161"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770068416695",
+    "clp": "true",
+    "edate": "1770077535039",
+    "flags": "8"
+   },
+   "profileId": "162",
+   "enabled": null,
+   "sr": "prof162"
+  },
+  {
+   "name": "Profile prof163",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.read_screen",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 421,
+     "codeName": "GET_ASSISTANT_INFO",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%ai_app_name\nApp Name\nName of the App",
+          "%ai_app_class\nClass\nClass name of the currently opened screen.",
+          "%ai_extras\nExtras\nJSON structure representing all extra info about the screen at the moment of the request",
+          "%ai_app_package\nPackage\nPackage name of the currently opened app. Get More info on it with the App Info action.",
+          "%ai_texts\nTexts\nJSON structure representing all texts that the assistant can see at the moment of the request",
+          "%ai_url\nURL\nPossible URL associated with the current screen"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;"
+       }
+      }
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1040876951,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "AppPackage": "<null>",
+        "AppPackage-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "OnlyClickable": "false",
+        "OnlyClickable-type": "java.lang.Boolean",
+        "OnlyVisible": "false",
+        "OnlyVisible-type": "java.lang.Boolean",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "Regex": "false",
+        "Regex-type": "java.lang.Boolean",
+        "UIUpdateFields": "<null>",
+        "UIUpdateFields-type": "java.lang.String",
+        "UIUpdateText": "<null>",
+        "UIUpdateText-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "133188cc-2c7e-4ac4-a1e0-fbae55d274d0",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentUIQuery",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery",
+      "arg3": 20,
+      "arg4": 1
+     },
+     "sr": "act1",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery"
+    },
+    {
+     "kind": "builtin",
+     "code": 592,
+     "codeName": "JOIN_VARIABLE",
+     "args": {
+      "arg0": "%aicoordinates",
+      "arg1": "|||",
+      "arg2": 0
+     },
+     "sr": "act2",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 592,
+     "codeName": "JOIN_VARIABLE",
+     "args": {
+      "arg0": "%aitext",
+      "arg1": "|||",
+      "arg2": 0
+     },
+     "sr": "act3",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 592,
+     "codeName": "JOIN_VARIABLE",
+     "args": {
+      "arg0": "%aiid",
+      "arg1": "|||",
+      "arg2": 0
+     },
+     "sr": "act4",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "%aiapp\n~~~\n%aicoordinates()\n~~~\n%aiid()\n~~~\n%aitext()\n~~~\n%ai_texts()\n~~~\n%ai_extras()\n~~~\n%err:%errmsg",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act5",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%ai_app_class",
+     "%ai_app_name",
+     "%ai_app_package",
+     "%ai_extras",
+     "%ai_texts",
+     "%ai_url",
+     "%aiapp",
+     "%aicoordinates",
+     "%aiid",
+     "%aitext",
+     "%err",
+     "%errmsg",
+     "%result_file"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "164"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770068995908",
+    "clp": "true",
+    "edate": "1770075897991",
+    "flags": "8"
+   },
+   "profileId": "163",
+   "enabled": null,
+   "sr": "prof163"
+  },
+  {
+   "name": "Profile prof167",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.back",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 245,
+     "codeName": "BACK_BUTTON",
+     "args": {
+      "se": "false"
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\": true}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%result_file"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "166"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770074407197",
+    "clp": "true",
+    "edate": "1770074743808",
+    "flags": "8"
+   },
+   "profileId": "167",
+   "enabled": null,
+   "sr": "prof167"
+  },
+  {
+   "name": "Profile prof168",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.read_screenshot",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 176,
+     "codeName": "TAKE_SCREENSHOT",
+     "args": {
+      "arg0": "%screenshot_file",
+      "arg1": 0
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":true,\"path\":\"%screenshot_file\"}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%result_file",
+     "%screenshot_file"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "169"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770074485447",
+    "clp": "true",
+    "edate": "1770075414604",
+    "flags": "8"
+   },
+   "profileId": "168",
+   "enabled": null,
+   "sr": "prof168"
+  },
+  {
+   "name": "Profile prof171",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.scroll",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "plugin",
+     "code": 778682267,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "GestureType": "0",
+        "GestureType-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Gesture Type: Swipe\nStart Point: 540,1500\nEnd Point: 540,500\nDuration: 300",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS": "parameters",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "parameters GestureType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "parameters": "{\"endPoint\":\"540,500\",\"initialPoint\":\"540,1500\",\"duration\":\"300\",\"generatedValues\":{}}",
+        "parameters-type": "java.lang.String",
+        "plugininstanceid": "f5e86969-acde-4bc3-b41a-5492167d7b44",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentGestures",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigGestures",
+      "arg3": 60,
+      "arg4": 1
+     },
+     "sr": "act0",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%direction",
+        "op": "0",
+        "rhs": "down"
+       }
+      ]
+     },
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigGestures"
+    },
+    {
+     "kind": "plugin",
+     "code": 778682267,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "GestureType": "0",
+        "GestureType-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Gesture Type: Swipe\nStart Point: 540,500\nEnd Point: 540,1500\nDuration: 300",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS": "parameters",
+        "net.dinglisch.android.tasker.JSON_ENCODED_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "parameters GestureType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "parameters": "{\"endPoint\":\"540,1500\",\"initialPoint\":\"540,500\",\"duration\":\"300\",\"generatedValues\":{}}",
+        "parameters-type": "java.lang.String",
+        "plugininstanceid": "f5e86969-acde-4bc3-b41a-5492167d7b44",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentGestures",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigGestures",
+      "arg3": 60,
+      "arg4": 1
+     },
+     "sr": "act1",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%direction",
+        "op": "0",
+        "rhs": "up"
+       }
+      ]
+     },
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigGestures"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":true}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act2",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%direction",
+     "%err",
+     "%errmsg",
+     "%result_file"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "172"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770076233835",
+    "clp": "true",
+    "edate": "1770076923623",
+    "flags": "8"
+   },
+   "profileId": "171",
+   "enabled": null,
+   "sr": "prof171"
+  },
+  {
+   "name": "Profile prof176",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.read_screen_text",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "plugin",
+     "code": 1040876951,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "AppPackage": "<null>",
+        "AppPackage-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "OnlyClickable": "false",
+        "OnlyClickable-type": "java.lang.Boolean",
+        "OnlyVisible": "true",
+        "OnlyVisible-type": "java.lang.Boolean",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "Regex": "false",
+        "Regex-type": "java.lang.Boolean",
+        "UIUpdateFields": "<null>",
+        "UIUpdateFields-type": "java.lang.String",
+        "UIUpdateText": "<null>",
+        "UIUpdateText-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Only Visible: true",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": {
+         "$array": [
+          "%aiapp\nApp Name\n",
+          "%aicoordinates()\nElement Coordinates\nList of coordinates in the x,y format",
+          "%aiid()\nElement Ids\n",
+          "%aipackage\nApp Package Name\n",
+          "%aitext()\nElement Texts\n",
+          "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+          "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+         ]
+        },
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "9199c06a-c8c6-4b43-b0c9-012be056b9e1",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentUIQuery",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery",
+      "arg3": 20,
+      "arg4": 1
+     },
+     "sr": "act0",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":true,\"text\":\"%aitext()\"}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%aiapp",
+     "%aicoordinates",
+     "%aiid",
+     "%aipackage",
+     "%aitext",
+     "%err",
+     "%errmsg",
+     "%result_file"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "175"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770081080699",
+    "clp": "true",
+    "edate": "1770081086186",
+    "flags": "8"
+   },
+   "profileId": "176",
+   "enabled": null,
+   "sr": "prof176"
+  },
+  {
+   "name": "Profile prof177",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.home",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 25,
+     "codeName": "GO_HOME",
+     "args": {
+      "arg0": 0,
+      "arg1": ""
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\": true}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%result_file"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "178"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770074407197",
+    "clp": "true",
+    "edate": "1770081389173",
+    "flags": "8"
+   },
+   "profileId": "177",
+   "enabled": null,
+   "sr": "prof177"
+  },
+  {
+   "name": "List Apps",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "rho.tasker.list_apps",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 815,
+     "codeName": "LIST_APPS",
+     "args": {
+      "arg0": 0,
+      "arg1": "",
+      "arg2": "%apps"
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":true,\"apps\":\"%apps()\"}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%apps",
+     "%result_file"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "180"
+   ],
+   "kind": "profile",
+   "meta": {
+    "cdate": "1770082440763",
+    "clp": "true",
+    "edate": "1770082930457"
+   },
+   "profileId": "181",
+   "enabled": null,
+   "sr": "prof181"
+  }
+ ],
+ "projects": [
+  {
+   "id": null,
+   "name": null,
+   "taskIds": [
+    "161",
+    "159",
+    "172",
+    "158",
+    "175",
+    "180",
+    "164",
+    "166",
+    "178",
+    "169",
+    "151"
+   ],
+   "profileIds": [
+    "181",
+    "163",
+    "160",
+    "162",
+    "177",
+    "167",
+    "152",
+    "168",
+    "153",
+    "176",
+    "171"
+   ],
+   "displayName": "Rho",
+   "scenesEnabled": null,
+   "sr": "proj0"
+  }
+ ]
+}

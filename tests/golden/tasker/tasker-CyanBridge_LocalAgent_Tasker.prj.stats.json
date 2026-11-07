@@ -1,0 +1,33 @@
+{
+ "actionsTotal": 15,
+ "actionsDecoded": 8,
+ "actionsPlugin": 7,
+ "actionsUnknown": 0,
+ "contextsTotal": 2,
+ "contextsDecoded": 2,
+ "contextsUnknown": 0,
+ "unrepresentable": [
+  "plugin bundle action code=1040876951 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)",
+  "plugin bundle action code=107361459 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)",
+  "plugin bundle action code=811079103 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)",
+  "plugin bundle action code=811079103 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)",
+  "plugin bundle action code=811079103 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)",
+  "plugin bundle action code=811079103 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)",
+  "plugin bundle action code=1040876951 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)"
+ ],
+ "fixture": "CyanBridge_LocalAgent_Tasker.prj.xml",
+ "macros": 2,
+ "actions": 15,
+ "triggers": 2,
+ "variableCount": {
+  "local": [
+   "%ai_command",
+   "%global_action",
+   "%read_aloud",
+   "%response",
+   "%toggle_flashlight",
+   "%use_ai_v2"
+  ],
+  "global": []
+ }
+}

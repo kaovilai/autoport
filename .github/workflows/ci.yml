@@ -1,0 +1,80 @@
+name: ci
+
+# AutoPort CI: no dependency installation. GitHub-hosted ubuntu runners already
+# ship python3; every test is python3 stdlib only. Node is preinstalled too but
+# is only used for `node --check` syntax validation of the browser modules.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  # Weekly drift watch on the upstream Tasker code tables. Enable once the
+  # drift gate has proven stable for a few weeks.
+  # schedule:
+  #   - cron: "17 4 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain
+        run: |
+          python3 --version
+          node --version
+
+      - name: Fixture tests (Tasker XML -> IR, .flo T0, code tables, negatives)
+        run: python3 -I scripts/fixture_tests.py --out fixture-tests-report.json
+
+      - name: Golden IR regression (python reference oracle vs committed goldens)
+        run: |
+          set -e
+          status=0
+          for golden in tests/golden/tasker/*.ir.json; do
+            base=$(basename "$golden" .ir.json)
+            stem="${base#tasker-}"
+            fixture=$(find tests/fixtures/tasker -maxdepth 1 -name "$stem.xml" | head -1)
+            [ -n "$fixture" ] || { echo "no fixture for $base (skipping)"; continue; }
+            python3 -I scripts/tasker_xml_ir.py "$fixture" \
+              --codes data/taskerCodes.json \
+              --out /tmp/regen.ir.json --stats /tmp/regen.stats.json
+            if ! diff -q "$golden" /tmp/regen.ir.json > /dev/null; then
+              echo "GOLDEN MISMATCH: $base"; status=1
+            fi
+          done
+          exit $status
+
+      - name: Browser modules syntax gate
+        run: |
+          status=0
+          while IFS= read -r f; do
+            node --check "$f" || status=1
+          done < <(find js -name '*.js')
+          exit $status
+
+      - name: Regenerate Tasker code tables (upstream fetch)
+        run: python3 -I scripts/gen_tasker_codes.py --fetch --out data/taskerCodes.json
+
+      - name: Upstream drift gate
+        run: |
+          git diff --exit-code -- data/taskerCodes.json || {
+            echo "::error::tasker.joaoapps.com code tables changed upstream."
+            echo "Regenerate locally and commit the updated data/taskerCodes.json."
+            exit 1
+          }
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixture-tests-report
+          path: fixture-tests-report.json
+          if-no-files-found: ignore

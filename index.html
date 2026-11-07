@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AutoPort — Tasker / Automate → MacroDroid</title>
+<meta name="description" content="Convert Tasker and Automate automations into MacroDroid macros. Share a file in, get a macro out.">
+<meta name="theme-color" content="#0f1419">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="brand">
+    <img src="/icons/icon-192.png" alt="" width="40" height="40">
+    <div>
+      <h1>AutoPort</h1>
+      <p class="tag">Tasker / Automate → MacroDroid</p>
+    </div>
+  </div>
+  <nav>
+    <a href="/share.html" class="btn small">Inbox</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="panel">
+    <h2>1 · Bring a file in</h2>
+    <p class="muted">
+      On Android: install this app, then use the <strong>share sheet</strong> from Tasker, Automate,
+      or your file manager and pick <em>AutoPort</em>. In a browser: pick or drop a file below.
+    </p>
+
+    <input id="file-input" type="file" multiple hidden
+           accept=".xml,.tsk.xml,.prf.xml,.prj.xml,.flo,.json,.pdf,.png,application/xml,text/xml,application/vnd.com.llamalab.automate.flow,application/octet-stream,application/pdf,image/png">
+
+    <div id="drop" class="drop" tabindex="0" role="button"
+         aria-label="Choose files or drop them here">
+      <strong>Choose files</strong> or drop them here
+      <span class="muted">.tsk.xml · .prf.xml · .prj.xml · .flo · flow .pdf/.png</span>
+    </div>
+
+    <details class="paste-wrap">
+      <summary>…or paste XML / a TaskerNet link</summary>
+      <label class="sr" for="paste">Paste Tasker XML</label>
+      <textarea id="paste" rows="8" spellcheck="false"
+                placeholder="&lt;TaskerData sr=&quot;&quot; dvi=&quot;1&quot; tv=&quot;6.6.3-beta&quot;&gt; … &lt;/TaskerData&gt;"></textarea>
+      <button id="analyze" class="btn primary" type="button">Analyze pasted text</button>
+      <p class="muted small">
+        TaskerNet links (<code>taskernet.com/shares/…</code>) cannot be fetched from the page —
+        TaskerNet sends no CORS headers. Open the link, copy the XML, paste it here.
+      </p>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2>2 · What we recognized</h2>
+    <p id="status" class="status" role="status" aria-live="polite">Waiting for a file…</p>
+    <pre id="results" class="results" tabindex="0"></pre>
+  </section>
+
+  <section class="panel">
+    <h2>3 · Shared inbox</h2>
+    <p class="muted small">Items delivered through the Android share sheet (stored in IndexedDB, on this device only).</p>
+    <div id="inbox" class="inbox"></div>
+  </section>
+
+</main>
+
+<footer class="bottom">
+  <p class="muted small">
+    Everything runs on-device. No uploads, no accounts. Phase 1 target: MacroDroid macro JSON.
+  </p>
+</footer>
+
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>

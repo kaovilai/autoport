@@ -1,0 +1,86 @@
+{
+  "_source": {
+    "app": "AutoInput v104 (com.joaomgcd.autoinput), Play-delivered APK, jadx-decompiled 2026-11-06",
+    "decompiled": "analysis/autoinput-src/",
+    "authority": "com/joaomgcd/common/tasker/Constants.java, TaskerPlugin.java, IntentTaskerPlugin.java; com/joaomgcd/autoinput/actionv2/json/*; res/values/strings.xml (tasker_input_*)"
+  },
+  "outerProtocol": {
+    "actions": {
+      "editSetting": "com.twofortyfouram.locale.intent.action.EDIT_SETTING",
+      "fireSetting": "com.twofortyfouram.locale.intent.action.FIRE_SETTING",
+      "editCondition": "com.twofortyfouram.locale.intent.action.EDIT_CONDITION",
+      "queryCondition": "com.twofortyfouram.locale.intent.action.QUERY_CONDITION",
+      "requestQuery": "com.twofortyfouram.locale.intent.action.REQUEST_QUERY"
+    },
+    "extras": {
+      "configBundle": "com.twofortyfouram.locale.intent.extra.BUNDLE",
+      "blurb": "com.twofortyfouram.locale.intent.extra.BLURB",
+      "breadcrumb": "com.twofortyfouram.locale.intent.extra.BREADCRUMB",
+      "activity": "com.twofortyfouram.locale.intent.extra.ACTIVITY"
+    },
+    "taskerHostExtras": {
+      "variableReplaceKeys": "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS",
+      "relevantVariables": "net.dinglisch.android.tasker.RELEVANT_VARIABLES",
+      "jsonEncodedKeys": "net.dinglisch.android.tasker.JSON_ENCODED_KEYS",
+      "hintsBundle": "net.dinglisch.android.tasker.extras.HINTS",
+      "hintTimeout": "net.dinglisch.android.tasker.hints.TIMEOUT",
+      "hostCapabilities": "net.dinglisch.android.tasker.extras.HOST_CAPABILITIES",
+      "variablesOut": "net.dinglisch.android.tasker.extras.VARIABLES"
+    }
+  },
+  "configStorage": {
+    "mechanism": "TaskerDynamicInput: each @TaskerInput property is a String entry in the inner config Bundle, keyed by its LOCALIZED display name (English default below). VARIABLE_REPLACE_KEYS lists the inner keys Tasker should %variable-substitute.",
+    "footgun": "keys are localized — on a non-English Tasker install the keys differ; parser must match English defaults and fall back to fuzzy/description matching"
+  },
+  "ops": {
+    "uiAction": {
+      "configActivity": "ActivityConfigActionv2",
+      "model": "actionv2/json/InputActionv2",
+      "innerKeys": {
+        "Actions To Perform": "one or more action strings, encoded Name(arg1,arg2,...); multiple separated by the Additional Options separator (default ','). Parsed in InputActionv2.getActionInternal().",
+        "Element To Perform Action On": "target element selector",
+        "Text To Click": "text selector",
+        "Special Path": "exact element path",
+        "Nearby Text": "disambiguator when multiple matches",
+        "Text That Must Be Present": "optional page precondition"
+      },
+      "nestedAdditionalOptions": {
+        "Separator": "default ','",
+        "Pre-Action Delay": "ms after element found",
+        "Check Millis": "default 1000, poll interval",
+        "With Coordinates": "bool — click by element-derived coordinates"
+      },
+      "nestedWhenToPerform": {
+        "App To Act In": "package name; wait for app",
+        "Not In AutoInput": "bool",
+        "Not In Tasker": "bool"
+      }
+    },
+    "gesture": {
+      "configActivity": "ActivityConfigGestures",
+      "innerKeys": {
+        "Gesture Type": "gesture kind",
+        "Start Point": "x,y",
+        "End Point": "x,y",
+        "Duration": "ms",
+        "Finger 1..10": "multi-finger paths, each with Duration",
+        "Center Point": "pinch center x,y",
+        "Start Spacing": "pinch start px",
+        "End Spacing": "pinch end px",
+        "Orientation": "pinch angle degrees"
+      }
+    },
+    "globalAction": { "configActivity": "ActivityConfigPerformGlobalAction" },
+    "uiQuery": { "configActivity": "ActivityConfigUIQuery", "notes": "screen read into %variables (RELEVANT_VARIABLES lists outputs)" },
+    "uiState": { "configActivity": "ActivityConfigUIState" },
+    "keyEvent": { "configActivity": "ActivityConfigKeyEvent" },
+    "screenCapture": { "configActivity": "ActivityConfigScreenCapture" },
+    "screenOnOff": { "configActivity": "ActivityConfigTurnOffScreen", "innerKeys": { "Screen Off Or On": "select" } },
+    "events": {
+      "inputActionEvent": "ActivityConfigInputActionEvent",
+      "uiUpdateEvent": "ActivityConfigUIUpdateEvent",
+      "gestureEvent": "ActivityConfigGestureEvent"
+    }
+  },
+  "parserGuidance": "In a Tasker XML export a plugin Action appears as <Action><code>=plugin code with <Bundle sr=\"arg0\"><Vals> containing pluginName (com.joaomgcd.autoinput), the com.twofortyfouram.locale.intent.extra.BUNDLE nested Bundle (flattened by Tasker's XML as <Vals> with -type companions), and the blurb. Decode inner keys per this schema; the Actions To Perform value needs the Name(args) mini-grammar parser."
+}

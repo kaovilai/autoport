@@ -1,0 +1,62 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "enmaas-glm-ask.tsk.xml",
+  "taskerVersion": "6.6.3-beta"
+ },
+ "macros": [
+  {
+   "name": "EnMaaS Ask GLM",
+   "triggers": [],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 339,
+     "codeName": "HTTP_REQUEST",
+     "args": {
+      "arg1": 1,
+      "arg2": "https://api.enmaas.devshift.net/v1/chat/completions",
+      "arg3": "Authorization:Bearer %EnMaasKey\nContent-Type:application/json",
+      "arg4": "",
+      "arg5": "",
+      "arg6": "{\"model\":\"rits/zai-org/glm-5-3\",\"max_tokens\":1024,\"messages\":[{\"role\":\"user\",\"content\":\"%prompt\"}]}",
+      "arg7": "",
+      "arg8": 60,
+      "arg9": 1,
+      "arg10": 0,
+      "arg11": 0,
+      "arg12": 1
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 548,
+     "codeName": "FLASH",
+     "args": {
+      "arg0": "%http_response_code: %http_data",
+      "arg1": 0
+     },
+     "sr": "act1",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%http_data",
+     "%http_response_code",
+     "%prompt"
+    ],
+    "global": [
+     "%EnMaasKey"
+    ]
+   },
+   "taskIds": [
+    "1"
+   ],
+   "kind": "task",
+   "sr": "task1"
+  }
+ ]
+}

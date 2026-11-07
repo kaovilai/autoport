@@ -1,0 +1,204 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "LaunchInstagram.tsk.xml",
+  "taskerVersion": "5.15.14"
+ },
+ "macros": [
+  {
+   "name": "Launch Instagram",
+   "triggers": [],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 20,
+     "codeName": "LOAD_APP",
+     "args": {
+      "arg0": {
+       "$app": {
+        "appClass": "com.instagram.android.activity.MainTabActivity",
+        "appPkg": "com.instagram.android",
+        "label": "Instagram"
+       }
+      },
+      "arg1": "",
+      "arg2": 0,
+      "arg3": 0
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 0,
+      "arg1": 1,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act1",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "com.instagram.android:id/icon_view",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "1",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Id\nValue: com.instagram.android:id/icon_view\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": [
+         {
+          "$array": [
+           "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+           "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+          ]
+         }
+        ],
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "b3bb3012-6205-472e-8339-28637b3e2094",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 3,
+      "arg4": 1
+     },
+     "sr": "act2",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    },
+    {
+     "kind": "builtin",
+     "code": 30,
+     "codeName": "WAIT",
+     "args": {
+      "arg0": 100,
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": 0,
+      "arg4": 0
+     },
+     "sr": "act3",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1732635924,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "ActionId": "com.instagram.android:id/context_menu_item",
+        "ActionId-type": "java.lang.String",
+        "ActionType": "16",
+        "ActionType-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "FieldSelectionType": "1",
+        "FieldSelectionType-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "IsTaskerAction": "false",
+        "IsTaskerAction-type": "java.lang.Boolean",
+        "NearbyText": "<null>",
+        "NearbyText-type": "java.lang.String",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "RepeatInterval": "<null>",
+        "RepeatInterval-type": "java.lang.String",
+        "RepeatTimes": "<null>",
+        "RepeatTimes-type": "java.lang.String",
+        "StoredAction": "<null>",
+        "StoredAction-type": "java.lang.String",
+        "TextToWrite": "<null>",
+        "TextToWrite-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Type: Id\nValue: com.instagram.android:id/context_menu_item\nAction : Click",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES": [
+         {
+          "$array": [
+           "%err\nError Code\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error",
+           "%errmsg\nError Message\nOnly available if you select <b>Continue Task After Error</b> and the action ends in error"
+          ]
+         }
+        ],
+        "net.dinglisch.android.tasker.RELEVANT_VARIABLES-type": "[Ljava.lang.String;",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean",
+        "plugininstanceid": "9f12efcb-1179-4f42-8c7f-4f28a3ed53cd",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+        "plugintypeid-type": "java.lang.String"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "arg3": 3,
+      "arg4": 1
+     },
+     "sr": "act4",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%err",
+     "%errmsg"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "69"
+   ],
+   "kind": "task",
+   "sr": "task69",
+   "meta": {
+    "icon": {
+     "cls": "com.instagram.android.activity.MainTabActivity",
+     "pkg": "com.instagram.android"
+    }
+   }
+  }
+ ]
+}

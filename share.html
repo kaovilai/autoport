@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shared with AutoPort</title>
+<meta name="theme-color" content="#0f1419">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <img src="/icons/icon-192.png" alt="" width="40" height="40">
+    <div>
+      <h1>Shared with AutoPort</h1>
+      <p class="tag">Inbox</p>
+    </div>
+  </div>
+  <nav><a href="/" class="btn small">Converter</a></nav>
+</header>
+
+<main id="main">
+  <p id="banner" class="banner" role="status" aria-live="polite" hidden></p>
+
+  <section id="cards" class="cards"></section>
+
+  <p id="empty" class="empty" hidden>
+    The inbox is empty. Share a <code>.tsk.xml</code> or <code>.flo</code> to AutoPort from another app,
+    or <a href="/">use the file picker</a>.
+  </p>
+
+  <p class="row">
+    <a class="btn" href="/">← Back to converter</a>
+    <button id="clear-all" class="btn danger" type="button">Clear inbox</button>
+  </p>
+
+  <details class="paste-wrap">
+    <summary>Why is my file missing?</summary>
+    <ul class="muted small">
+      <li>The share sheet only lists AutoPort after the PWA is <strong>installed</strong> (Add to Home screen).</li>
+      <li>Chrome filters by the <strong>MIME type the sending app reports</strong>. A file manager that
+          reports nothing (<code>''</code>) or <code>application/octet-stream</code> is matched because both
+          are in <code>accept</code>; a type outside the list (e.g. <code>application/zip</code>) will not be.</li>
+      <li>After changing <code>share_target</code> in the manifest you must <strong>uninstall and reinstall</strong>
+          the PWA — the share registration is captured at install time.</li>
+    </ul>
+  </details>
+</main>
+
+<footer class="bottom">
+  <p class="muted small">Data stays in this browser profile. Nothing is uploaded.</p>
+</footer>
+
+<script type="module" src="/js/share.js"></script>
+</body>
+</html>

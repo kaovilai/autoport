@@ -1,0 +1,406 @@
+{
+ "source": {
+  "app": "tasker",
+  "file": "CyanBridge_AutoDiary_Tasker.prj.xml",
+  "taskerVersion": "6.5.11"
+ },
+ "macros": [
+  {
+   "name": "CyanBridge AutoDiary Observe Debug",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "com.fersaiyan.cyanbridge.TASKER_AUTO_DIARY_OBSERVE",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "plugin",
+     "code": 1040876951,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "AppPackage": "<null>",
+        "AppPackage-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "OnlyClickable": "false",
+        "OnlyClickable-type": "java.lang.Boolean",
+        "OnlyVisible": "true",
+        "OnlyVisible-type": "java.lang.Boolean",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "Regex": "false",
+        "Regex-type": "java.lang.Boolean",
+        "UIUpdateFields": "<null>",
+        "UIUpdateFields-type": "java.lang.String",
+        "UIUpdateText": "<null>",
+        "UIUpdateText-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Query visible Android UI for CyanBridge AutoDiary debug capture",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "plugininstanceid": "cyanbridge-autodiary-query-v2-debug",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentUIQuery",
+        "plugintypeid-type": "java.lang.String",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "AppPackage UIUpdateFields plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery",
+      "arg3": 10,
+      "arg4": 1
+     },
+     "sr": "act0",
+     "ve": "7",
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery"
+    },
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "function arr(v) {\n    if (typeof v === \"undefined\" || v === null) return [];\n    if (Array.isArray(v)) return v;\n    return [v];\n}\nfunction clean(v) { return String(v == null ? \"\" : v).trim(); }\nvar texts = (typeof aitext !== \"undefined\") ? arr(aitext) : [];\nvar ids = (typeof aiid !== \"undefined\") ? arr(aiid) : [];\nvar coords = (typeof aicoordinates !== \"undefined\") ? arr(aicoordinates) : ((typeof aicoords !== \"undefined\") ? arr(aicoords) : []);\nvar count = Math.max(texts.length, ids.length, coords.length);\nvar nodes = [];\nfor (var i = 0; i < count && i < 240; i++) {\n    var match = String(coords[i] || \"\").match(/(-?\\d+)\\s*,\\s*(-?\\d+)/);\n    var x = match ? parseInt(match[1], 10) : 0;\n    var y = match ? parseInt(match[2], 10) : 0;\n    nodes.push({index:i,depth:0,text:clean(texts[i]),content_description:\"\",hint_text:\"\",class_name:\"\",view_id:clean(ids[i]),clickable:false,editable:false,scrollable:false,password:false,checkable:false,checked:false,focused:false,bounds:{left:x,top:y,right:x,bottom:y}});\n}\nvar seen = {};\nvar summaryParts = [];\nfor (var j = 0; j < texts.length && summaryParts.length < 400; j++) {\n    var value = clean(texts[j]);\n    if (!value || seen[value]) continue;\n    seen[value] = true;\n    summaryParts.push(value);\n}\nvar pkg = (typeof aipackage !== \"undefined\") ? clean(aipackage) : \"\";\nvar observation = {created_at_ms:Date.now(),package_name:pkg,text_summary:summaryParts.join(\"\\n\").slice(0,25000),nodes:nodes};\nvar envelope = {contract_version:1,request_id:String(request_id || \"\"),callback_token:String(callback_token || \"\"),success:true,payload:JSON.stringify(observation),error:null};\n// Same transport-escaping rationale as the periodic handler below.\nvar response = JSON.stringify(envelope).replace(/\\\\/g, \"\\\\\\\\\");",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act1",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 877,
+     "codeName": "SEND_INTENT",
+     "args": {
+      "arg0": "com.fersaiyan.cyanbridge.TASKER_AGENT_RESPONSE",
+      "arg1": 0,
+      "arg2": "",
+      "arg3": "",
+      "arg4": "response:%response",
+      "arg5": "",
+      "arg6": "",
+      "arg7": "com.fersaiyan.cyanbridge",
+      "arg8": "",
+      "arg9": 0
+     },
+     "sr": "act2",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%response"
+    ],
+    "global": []
+   },
+   "taskIds": [
+    "311"
+   ],
+   "kind": "profile",
+   "meta": {
+    "button": "false",
+    "description": "Manual/debug request-response observation path. Normal AutoDiary capture is scheduled and pushed by Tasker.",
+    "tags": "CyanBridge,AutoDiary,AutoInput",
+    "public": "true",
+    "title": ""
+   },
+   "profileId": "301",
+   "enabled": null,
+   "sr": "prof301"
+  },
+  {
+   "name": "CyanBridge AutoDiary Enable",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "com.fersaiyan.cyanbridge.TASKER_AUTO_DIARY_ENABLE",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "setGlobal(\"CB_AutoDiaryEnabled\", \"1\");\nif (global(\"CB_AutoDiaryExcluded\") == null) setGlobal(\"CB_AutoDiaryExcluded\", \"\");",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act0",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [],
+    "global": []
+   },
+   "taskIds": [
+    "312"
+   ],
+   "kind": "profile",
+   "meta": {},
+   "profileId": "302",
+   "enabled": null,
+   "sr": "prof302"
+  },
+  {
+   "name": "CyanBridge AutoDiary Disable",
+   "triggers": [
+    {
+     "family": "event",
+     "code": 599,
+     "codeName": "INTENT_RECEIVED",
+     "args": {
+      "arg0": "com.fersaiyan.cyanbridge.TASKER_AUTO_DIARY_DISABLE",
+      "arg1": 0,
+      "arg2": 0,
+      "arg3": "",
+      "arg4": ""
+     },
+     "sr": "con0",
+     "ve": "2"
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "setGlobal(\"CB_AutoDiaryEnabled\", \"0\");",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act0",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [],
+    "global": []
+   },
+   "taskIds": [
+    "313"
+   ],
+   "kind": "profile",
+   "meta": {},
+   "profileId": "303",
+   "enabled": null,
+   "sr": "prof303"
+  },
+  {
+   "name": "CyanBridge AutoDiary Periodic Capture",
+   "triggers": [
+    {
+     "family": "time",
+     "code": null,
+     "codeName": "TIME",
+     "args": {
+      "fh": "-1",
+      "fm": "-1",
+      "rep": "2",
+      "repval": "10",
+      "th": "-1",
+      "tm": "-1"
+     },
+     "sr": "con0",
+     "ve": null
+    }
+   ],
+   "actions": [
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "var cb_enabled = global(\"CB_AutoDiaryEnabled\") === \"1\" ? \"true\" : \"false\";",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act0",
+     "ve": "7"
+    },
+    {
+     "kind": "plugin",
+     "code": 1040876951,
+     "codeName": "PLUGIN(com.joaomgcd.autoinput)",
+     "args": {
+      "arg0": {
+       "$bundle": {
+        "AppPackage": "<null>",
+        "AppPackage-type": "java.lang.String",
+        "EnableDisableAccessibilityService": "<null>",
+        "EnableDisableAccessibilityService-type": "java.lang.String",
+        "IsFirstAction": "false",
+        "IsFirstAction-type": "java.lang.Boolean",
+        "OnlyClickable": "false",
+        "OnlyClickable-type": "java.lang.Boolean",
+        "OnlyVisible": "true",
+        "OnlyVisible-type": "java.lang.Boolean",
+        "Password": "<null>",
+        "Password-type": "java.lang.String",
+        "Regex": "false",
+        "Regex-type": "java.lang.Boolean",
+        "UIUpdateFields": "<null>",
+        "UIUpdateFields-type": "java.lang.String",
+        "UIUpdateText": "<null>",
+        "UIUpdateText-type": "java.lang.String",
+        "com.twofortyfouram.locale.intent.extra.BLURB": "Periodic CyanBridge AutoDiary UI Query",
+        "com.twofortyfouram.locale.intent.extra.BLURB-type": "java.lang.String",
+        "plugininstanceid": "cyanbridge-autodiary-query-v2-periodic",
+        "plugininstanceid-type": "java.lang.String",
+        "plugintypeid": "com.joaomgcd.autoinput.intent.IntentUIQuery",
+        "plugintypeid-type": "java.lang.String",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "AppPackage UIUpdateFields plugininstanceid plugintypeid ",
+        "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type": "java.lang.String",
+        "net.dinglisch.android.tasker.subbundled": "true",
+        "net.dinglisch.android.tasker.subbundled-type": "java.lang.Boolean"
+       }
+      },
+      "arg1": "com.joaomgcd.autoinput",
+      "arg2": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery",
+      "arg3": 10,
+      "arg4": 1
+     },
+     "sr": "act1",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%cb_enabled",
+        "op": "2",
+        "rhs": "true"
+       }
+      ]
+     },
+     "package": "com.joaomgcd.autoinput",
+     "pluginClass": "com.joaomgcd.autoinput.activity.ActivityConfigUIQuery"
+    },
+    {
+     "kind": "builtin",
+     "code": 129,
+     "codeName": "JAVASCRIPTLET",
+     "args": {
+      "arg0": "var capture_payload = \"\";\nfunction arr(v) {\n    if (typeof v === \"undefined\" || v === null) return [];\n    if (Array.isArray(v)) return v;\n    return [v];\n}\nfunction clean(v) { return String(v == null ? \"\" : v).trim(); }\nfunction parsePackages(raw) {\n    var out = {};\n    String(raw == null ? \"\" : raw).toLowerCase().split(/[\\s,;]+/).forEach(function(v){ if (v) out[v] = true; });\n    return out;\n}\n// Foreground package comes from Tasker's %WIN (requires Tasker accessibility);\n// AutoInput's %aipackage is only a fallback because it stays empty unless an\n// app filter was configured on the UI Query action.\nvar winInfo = clean(global(\"WIN\"));\nvar winPkg = winInfo.split(\"/\")[0].trim().toLowerCase();\nvar pkg = \"\";\nif (winPkg && winPkg.indexOf(\".\") > 0) {\n    pkg = winPkg;\n} else if (typeof aipackage !== \"undefined\") {\n    pkg = clean(aipackage).toLowerCase();\n}\nif (!pkg) exit();\nvar excluded = parsePackages(global(\"CB_AutoDiaryExcluded\"));\nvar fixedExcluded = pkg === \"com.android.systemui\" || pkg.indexOf(\"com.android.launcher\") === 0 || pkg.indexOf(\"com.google.android.launcher\") === 0 || pkg.indexOf(\"com.samsung.android.launcher\") === 0;\nif (fixedExcluded || excluded[pkg]) exit();\nvar texts = (typeof aitext !== \"undefined\") ? arr(aitext) : [];\nvar ids = (typeof aiid !== \"undefined\") ? arr(aiid) : [];\nvar coords = (typeof aicoordinates !== \"undefined\") ? arr(aicoordinates) : ((typeof aicoords !== \"undefined\") ? arr(aicoords) : []);\nvar count = Math.max(texts.length, ids.length, coords.length);\nvar nodes = [];\nfor (var i = 0; i < count && i < 240; i++) {\n    var match = String(coords[i] || \"\").match(/(-?\\d+)\\s*,\\s*(-?\\d+)/);\n    var x = match ? parseInt(match[1], 10) : 0;\n    var y = match ? parseInt(match[2], 10) : 0;\n    nodes.push({index:i,depth:0,text:clean(texts[i]),content_description:\"\",hint_text:\"\",class_name:\"\",view_id:clean(ids[i]),clickable:false,editable:false,scrollable:false,password:false,checkable:false,checked:false,focused:false,bounds:{left:x,top:y,right:x,bottom:y}});\n}\nvar seen = {};\nvar summaryParts = [];\nfor (var j = 0; j < texts.length && summaryParts.length < 400; j++) {\n    var value = clean(texts[j]);\n    if (!value || seen[value]) continue;\n    seen[value] = true;\n    summaryParts.push(value);\n}\nif (!summaryParts.length) exit();\nvar observation = {created_at_ms:Date.now(),package_name:pkg,text_summary:summaryParts.join(\"\\n\").slice(0,25000),nodes:nodes};\n// Tasker decodes one backslash-escape level inside Send Intent extra values, which would\n// turn JSON \\n sequences into raw newlines and corrupt the payload for org.json. Escape\n// for transport so CyanBridge receives exactly JSON.stringify output.\nvar capture_payload = JSON.stringify(observation).replace(/\\\\/g, \"\\\\\\\\\");",
+      "arg1": "",
+      "arg2": 1,
+      "arg3": 45
+     },
+     "sr": "act2",
+     "ve": "7",
+     "condition": {
+      "sr": "if",
+      "conditions": [
+       {
+        "tag": "Condition",
+        "sr": "c0",
+        "ve": "3",
+        "lhs": "%cb_enabled",
+        "op": "2",
+        "rhs": "true"
+       }
+      ]
+     }
+    },
+    {
+     "kind": "builtin",
+     "code": 877,
+     "codeName": "SEND_INTENT",
+     "args": {
+      "arg0": "com.fersaiyan.cyanbridge.TASKER_AUTO_DIARY_CAPTURE",
+      "arg1": 0,
+      "arg2": "",
+      "arg3": "",
+      "arg4": "payload:%capture_payload",
+      "arg5": "",
+      "arg6": "",
+      "arg7": "com.fersaiyan.cyanbridge",
+      "arg8": "",
+      "arg9": 0
+     },
+     "sr": "act3",
+     "ve": "7"
+    }
+   ],
+   "variables": {
+    "local": [
+     "%aipackage",
+     "%capture_payload",
+     "%cb_enabled"
+    ],
+    "global": [
+     "%WIN"
+    ]
+   },
+   "taskIds": [
+    "314"
+   ],
+   "kind": "profile",
+   "meta": {
+    "button": "false",
+    "description": "Default every 10 minutes. Edit this Time context in Tasker to change periodicity. Excluded packages are read from the Tasker global variable %CB_AutoDiaryExcluded as comma, semicolon, space or newline separated package names.",
+    "tags": "CyanBridge,AutoDiary,Schedule,Privacy",
+    "public": "true",
+    "title": ""
+   },
+   "profileId": "304",
+   "enabled": null,
+   "sr": "prof304"
+  }
+ ],
+ "projects": [
+  {
+   "id": null,
+   "name": null,
+   "taskIds": [
+    "311",
+    "312",
+    "313",
+    "314"
+   ],
+   "profileIds": [
+    "301",
+    "302",
+    "303",
+    "304"
+   ],
+   "displayName": "CyanBridge AutoDiary",
+   "scenesEnabled": null,
+   "sr": "proj0"
+  }
+ ]
+}

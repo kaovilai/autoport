@@ -1,0 +1,28 @@
+{
+ "actionsTotal": 9,
+ "actionsDecoded": 7,
+ "actionsPlugin": 2,
+ "actionsUnknown": 0,
+ "contextsTotal": 4,
+ "contextsDecoded": 4,
+ "contextsUnknown": 0,
+ "unrepresentable": [
+  "plugin bundle action code=1040876951 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)",
+  "plugin bundle action code=1040876951 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)"
+ ],
+ "fixture": "CyanBridge_AutoDiary_Tasker.prj.xml",
+ "macros": 4,
+ "actions": 9,
+ "triggers": 4,
+ "variableCount": {
+  "local": [
+   "%aipackage",
+   "%capture_payload",
+   "%cb_enabled",
+   "%response"
+  ],
+  "global": [
+   "%WIN"
+  ]
+ }
+}

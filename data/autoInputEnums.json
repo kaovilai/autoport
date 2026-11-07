@@ -1,0 +1,240 @@
+{
+ "source": "AutoInput APK res/values/{arrays,strings}.xml (jadx resource export)",
+ "apkSha256": "fe5a6cfe2769b17d6c179faf65ef154823b518262ab4f8e76cdaacf26a6bdffe",
+ "pluginPackage": "com.joaomgcd.autoinput",
+ "enums": {
+  "ActionType": [
+   {
+    "value": 16,
+    "name": "Click"
+   },
+   {
+    "value": 32,
+    "name": "Long Click"
+   },
+   {
+    "value": 32768,
+    "name": "Paste"
+   },
+   {
+    "value": 131072,
+    "name": "Select Text"
+   },
+   {
+    "value": 65536,
+    "name": "Cut"
+   },
+   {
+    "value": 1,
+    "name": "Focus"
+   },
+   {
+    "value": 4096,
+    "name": "Scroll Forward"
+   },
+   {
+    "value": 8192,
+    "name": "Scroll Backward"
+   },
+   {
+    "value": -1,
+    "name": "Write"
+   },
+   {
+    "value": -2,
+    "name": "Replace"
+   }
+  ],
+  "FieldSelectionType": [
+   {
+    "value": 0,
+    "name": "Text"
+   },
+   {
+    "value": 1,
+    "name": "Id"
+   },
+   {
+    "value": 2,
+    "name": "Focus"
+   },
+   {
+    "value": 3,
+    "name": "List"
+   },
+   {
+    "value": 5,
+    "name": "Point"
+   }
+  ],
+  "GestureType": [
+   {
+    "value": 0,
+    "name": "Swipe"
+   },
+   {
+    "value": 1,
+    "name": "Pinch"
+   },
+   {
+    "value": 2,
+    "name": "Multiple"
+   }
+  ],
+  "GlobalAction": [
+   {
+    "value": 1,
+    "name": "Back"
+   },
+   {
+    "value": 2,
+    "name": "Home"
+   },
+   {
+    "value": 3,
+    "name": "Recent Apps"
+   },
+   {
+    "value": 4,
+    "name": "Open Notifications"
+   },
+   {
+    "value": 5,
+    "name": "Quick Settings"
+   },
+   {
+    "value": 6,
+    "name": "Power Dialog"
+   }
+  ],
+  "ActionTypeUIAction": [
+   {
+    "value": 1,
+    "name": "Clicks"
+   },
+   {
+    "value": 2,
+    "name": "Long Clicks"
+   },
+   {
+    "value": -8,
+    "name": "Input Element Focused"
+   },
+   {
+    "value": -9,
+    "name": "Input Element Focus Lost"
+   }
+  ],
+  "KeyAction": [
+   {
+    "value": -1,
+    "name": "All"
+   },
+   {
+    "value": 0,
+    "name": "Key Down"
+   },
+   {
+    "value": 1,
+    "name": "Key Up"
+   }
+  ],
+  "EnableGestureMode": [
+   {
+    "value": 0,
+    "name": "Don\\'t Change"
+   },
+   {
+    "value": 1,
+    "name": "Enable"
+   },
+   {
+    "value": 2,
+    "name": "Disable"
+   },
+   {
+    "value": 3,
+    "name": "Toggle"
+   }
+  ]
+ },
+ "extraKeyLiterals": {
+  "ActionId": "ActionId",
+  "ActionTimeout": "ActionTimeout",
+  "ActionType": "ActionType",
+  "ActionTypes": "ActionTypes",
+  "AppPackage": "AppPackage",
+  "Bitrate": "Bitrate",
+  "CaptureMode": "CaptureMode",
+  "CaptureScreen": "CaptureScreen",
+  "CatpureAudio": "CatpureAudio",
+  "CatpureScreenshot": "CatpureScreenshot",
+  "Command": "Command",
+  "CommandCaseInsensitive": "CommandCaseInsensitive",
+  "CommandExact": "CommandExact",
+  "CommandRegex": "CommandRegex",
+  "CompareTo": "CompareTo",
+  "Crop": "Crop",
+  "Duration": "Duration",
+  "ElementText": "ElementText",
+  "EnableDisableAccessibilityService": "EnableDisableAccessibilityService",
+  "EnableGestureMode": "EnableGestureMode",
+  "EnableKeySurpressMode": "EnableKeySurpressMode",
+  "FieldSelectionType": "FieldSelectionType",
+  "FieldText": "FieldText",
+  "FieldsToGet": "FieldsToGet",
+  "File": "File",
+  "Gesture": "Gesture",
+  "GestureType": "GestureType",
+  "GetAverageColor": "GetAverageColor",
+  "GlobalAction": "GlobalAction",
+  "Height": "Height",
+  "InputsName": "InputsName",
+  "IsFirstAction": "IsFirstAction",
+  "IsTaskerAction": "IsTaskerAction",
+  "IssueCommandName": "IssueCommandName",
+  "IssueCommandString": "IssueCommandString",
+  "KeyAction": "KeyAction",
+  "KeyCode": "KeyCode",
+  "KeyCodePress": "KeyCodePress",
+  "KeyguardEvents": "KeyguardEvents",
+  "LedColor": "LedColor",
+  "LedOff": "LedOff",
+  "LedOn": "LedOn",
+  "MacroId": "MacroId",
+  "ManualKeyCode": "ManualKeyCode",
+  "ManualKeyCodes": "ManualKeyCodes",
+  "NearbyText": "NearbyText",
+  "NotificationIcon": "NotificationIcon",
+  "NotificationText": "NotificationText",
+  "NotificationTitle": "NotificationTitle",
+  "OnlyClickable": "OnlyClickable",
+  "OnlyVisible": "OnlyVisible",
+  "Palette": "Palette",
+  "Password": "Password",
+  "PersistentNotification": "PersistentNotification",
+  "PixelColor": "PixelColor",
+  "PlaybackSpeed": "PlaybackSpeed",
+  "RecentFieldIds": "RecentFieldIds",
+  "Regex": "Regex",
+  "RepeatInterval": "RepeatInterval",
+  "RepeatTimes": "RepeatTimes",
+  "Resolution": "Resolution",
+  "StartStop": "StartStop",
+  "Stop": "Stop",
+  "StoredAction": "StoredAction",
+  "TextToWrite": "TextToWrite",
+  "TouchX": "TouchX",
+  "TouchXEnd": "TouchXEnd",
+  "TouchY": "TouchY",
+  "TouchYEnd": "TouchYEnd",
+  "UIUpdateApps": "UIUpdateApps",
+  "UIUpdateFields": "UIUpdateFields",
+  "UIUpdateText": "UIUpdateText",
+  "UnlockScreen": "UnlockScreen",
+  "UseWakelock": "UseWakelock",
+  "VariableArray": "VariableArray",
+  "VariableNames": "VariableNames",
+  "Width": "Width"
+ }
+}

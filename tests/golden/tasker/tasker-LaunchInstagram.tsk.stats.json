@@ -1,0 +1,24 @@
+{
+ "actionsTotal": 5,
+ "actionsDecoded": 3,
+ "actionsPlugin": 2,
+ "actionsUnknown": 0,
+ "contextsTotal": 0,
+ "contextsDecoded": 0,
+ "contextsUnknown": 0,
+ "unrepresentable": [
+  "plugin bundle action code=1732635924 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)",
+  "plugin bundle action code=1732635924 package=com.joaomgcd.autoinput: inner extras kept raw, no semantic op decode (AutoInput decoder is a separate workstream)"
+ ],
+ "fixture": "LaunchInstagram.tsk.xml",
+ "macros": 1,
+ "actions": 5,
+ "triggers": 0,
+ "variableCount": {
+  "local": [
+   "%err",
+   "%errmsg"
+  ],
+  "global": []
+ }
+}

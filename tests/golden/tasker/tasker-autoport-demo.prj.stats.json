@@ -1,0 +1,25 @@
+{
+ "actionsTotal": 4,
+ "actionsDecoded": 4,
+ "actionsPlugin": 0,
+ "actionsUnknown": 0,
+ "contextsTotal": 1,
+ "contextsDecoded": 1,
+ "contextsUnknown": 0,
+ "unrepresentable": [],
+ "fixture": "autoport-demo.prj.xml",
+ "macros": 2,
+ "actions": 4,
+ "triggers": 1,
+ "variableCount": {
+  "local": [
+   "%http_data"
+  ],
+  "global": [
+   "%BATT",
+   "%EnMaasKey",
+   "%LocalCounter",
+   "%NTITLE"
+  ]
+ }
+}
