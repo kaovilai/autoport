@@ -436,7 +436,7 @@ export function emitMacros(ir, options = {}) {
     } else if (out.report.error) {
       emissions.push({ macro: null, report: out.report });
     } else {
-      emissions.push({ macro: null, report: { ...out.report, note: 'no plugin actions — macro not emitted' } });
+      emissions.push({ macro: null, report: { ...out.report, note: 'no emittable plugin actions — macro not emitted' } });
     }
   }
   return { emissions };

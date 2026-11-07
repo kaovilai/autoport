@@ -362,7 +362,7 @@ await test('emitMacros: one broken macro does not take down the rest (per-macro 
   assert.equal(emissions[0].macro, null);
   assert.match(emissions[0].report.error, /bad IR/);
   assert.equal(emissions[1].macro, null);
-  assert.equal(emissions[1].report.note, 'no plugin actions — macro not emitted');
+  assert.equal(emissions[1].report.note, 'no emittable plugin actions — macro not emitted');
 });
 
 await test('emitMacro: plugin action disabled in the source task (<on>false</on>) is skipped', () => {

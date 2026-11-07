@@ -192,6 +192,9 @@ async function renderTasker(name, buffer) {
     }
   } catch (e) {
     console.warn('[autoport] macro emission failed', e);
+    // per-macro failures are caught inside emitMacros; this outer catch
+    // covers validateMacro/rendering throws — still tell the user something
+    log(`   ⚠ MacroDroid emission failed: ${e && e.message ? e.message : e}`);
   }
   lastTaskerEmission = lastEmission;
 
