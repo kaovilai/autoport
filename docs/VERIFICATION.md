@@ -17,6 +17,7 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
 | V13 | Generated macro JSON passes MCP validate | ✅ proven offline (recorded probes) | `tests/fixtures/macrodroid/validator-probes/validate-ok.json` |
 | V14 | Structural validator rejects adversarial shapes | ✅ probe evidence recorded | `validate-probe-*.json` (bad classtype, unbalanced If rejected) |
 | V15 | End-to-end macro import into MacroDroid on device | ✅ emulator CI (manual dispatch) | MCP share link → MacroDroid macro editor (run 42341971557) |
+| M3.1 | Emit MacroDroid macro JSON from IR (plugin pass-through) | ✅ unit + e2e (every push) · MCP-validated live · 🔬 device import (emulator CI) | emitter suite (23 tests): Java-ObjectSerialization writer **byte-for-byte vs a JVM reference** (real AutoInput v1/v2 bundles included) + CI drift gate regenerating the reference; emitted LaunchInstagram macro `VALID` on the live MacroDroid MCP (recorded probe, parity-tested); browser e2e renders the macro card + copy button in both scopes; emulator CI imports the emitted pass-through macro via share link |
 | V12 | PDF/PNG block count vs T0 | ❌ unproven (path demoted) | design §5.4 |
 
 ## Test layers (what runs where)
@@ -81,3 +82,13 @@ exercises the MCP share-link import.
   Found by CodeRabbit review (the e2e scopes ran on separate origins/ports,
   so it never triggered in CI). Fixed with a complete-scope-suffix match and
   a same-origin cross-scope regression test in the e2e suite.
+
+- The converter's AutoInput branch read `act.plugin?.package` /
+  `act.plugin?.pluginTypeId` / `act.plugin?.configClass`, but the IR carries
+  flat `act.package` / `act.pluginClass` (and the decoder takes the action
+  node itself) — so every plugin action rendered as `plugin: unknown` and the
+  AutoInput decoder was never invoked from the UI. Surfaced while building
+  M3.1 (the earlier e2e `/AutoInput/` assertion had passed vacuously off the
+  unrepresentable-note text, which contains the literal string "AutoInput").
+  Fixed; the e2e now pins the chip markup and the decoded `click` op, and
+  fails on `plugin: unknown`.

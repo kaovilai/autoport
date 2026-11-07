@@ -236,7 +236,14 @@ async function runScope(scopeName, base, context) {
     // Cards must carry real decoded content, not just counts (the JS parser
     // itself is golden-tested against the python oracle in the unit suite).
     const html = await cardsHtml(page);
-    assert.match(html, /AutoInput/, 'no AutoInput chip in rendered cards');
+    // The plugin branch must actually decode: AutoInput chip + decoded op,
+    // never the 'plugin: unknown' fallback (regression: act.plugin?.package
+    // vs the IR's flat act.package made every plugin render as unknown while
+    // this assertion passed vacuously off the unrepresentable-note text).
+    // cardsHtml is outerHTML — the chip renders as <span class="chip plugin">AutoInput</span>.
+    assert.match(html, /chip plugin">AutoInput</, 'no AutoInput chip in rendered cards');
+    assert.match(html, /<code>click<\/code>/, 'AutoInput action did not decode to a click op');
+    assert.doesNotMatch(html, /plugin: unknown/, 'plugin action rendered as unknown');
     assert.match(html, /WAIT/, 'no decoded builtin action name in rendered cards (code tables not applied?)');
     await page.close();
   });
@@ -374,6 +381,35 @@ async function runScope(scopeName, base, context) {
       document.querySelector('#drop').dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true }));
     });
     await page.locator('#status').filter({ hasText: 'Empty file' }).waitFor();
+    await page.close();
+  });
+
+  await t(`${scopeName}: MacroDroid pass-through macro card renders with valid JSON (M3.1)`, async () => {
+    const page = await newPage();
+    await page.goto(base);
+    await page.setInputFiles('#file-input', path.join(repoRoot, 'tests/fixtures/tasker/LaunchInstagram.tsk.xml'));
+    await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
+    const card = page.locator('#results .card', { hasText: 'MacroDroid macro — plugin pass-through' });
+    await card.waitFor();
+    // 2 plugin actions delegated, 3 builtins reported as not-yet-converted
+    assert.match(await card.textContent(), /2 plugin action\(s\) delegated/);
+    assert.match(await card.textContent(), /Not converted yet \(3\)/);
+    assert.match(await card.textContent(), /structural check: valid/);
+    // the macro JSON itself must carry the pass-through nodes
+    const macroJson = await card.locator('pre.preview').textContent();
+    const macro = JSON.parse(macroJson);
+    assert.equal(macro.macro.m_actionList.length, 2);
+    assert.ok(macro.macro.m_actionList.every((a) => a.m_classType === 'LocalePluginAction'));
+    assert.equal(macro.macro.m_actionList[0].m_plugin.mReceiverClassName,
+      'com.joaomgcd.autoinput.broadcastreceiver.BroadcastReceiverFire');
+    assert.ok(macro.macro.m_actionList[0].m_pluginInstanceData.mSerializedBundle.length > 100);
+    // in-page structural validation of the same JSON
+    const verdict = await page.evaluate((json) => window.autoport.validateMacro(JSON.parse(json)), macroJson);
+    assert.ok(verdict.ok, `in-page validation failed: ${JSON.stringify(verdict.errors)}`);
+    // copy button hands the JSON to the clipboard
+    await card.locator('summary').click();
+    await card.getByRole('button', { name: 'Copy macro JSON' }).click();
+    await page.locator('#status').filter({ hasText: 'Macro JSON copied' }).waitFor();
     await page.close();
   });
 
@@ -690,8 +726,9 @@ try {
 
   try {
     // Each scope gets its own context (different origins -> isolated SW/IDB state).
-    const rootCtx = await browser.newContext();
-    const subCtx = await browser.newContext();
+    // clipboard-write: the macro copy button test needs it on the app origin.
+    const rootCtx = await browser.newContext({ permissions: ['clipboard-write', 'clipboard-read'] });
+    const subCtx = await browser.newContext({ permissions: ['clipboard-write', 'clipboard-read'] });
     await runScope('root', rootBase, rootCtx);
     await runScope('subpath', subBase, subCtx);
     await rootCtx.close();

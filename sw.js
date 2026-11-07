@@ -14,7 +14,7 @@
  * answers 405 (python3 -m http.server answers 501) — the user sees an error page, no app.
  */
 
-const VERSION = 'v7';
+const VERSION = 'v8';
 /* Base path derived from the SW scope, so the app works when hosted at a subpath
  * (e.g. GitHub Pages project site https://host/autoport/). Scope always ends in '/'. */
 const BASE = new URL(self.registration.scope).pathname;
@@ -40,6 +40,10 @@ const SHELL = [
   '/js/sources/automate/floParser.js',
   '/js/targets/macrodroid/structuralValidator.js',
   '/js/targets/macrodroid/classTypes.js',
+  '/js/targets/macrodroid/emitter.js',
+  '/js/targets/macrodroid/bundleSerializer.js',
+  '/js/targets/macrodroid/javaObjectStream.js',
+  '/js/targets/macrodroid/pluginRegistry.js',
   '/data/taskerCodes.json',
   '/data/macrodroid/mappingTable.json',
   '/manifest.webmanifest',

@@ -255,6 +255,57 @@ GitHub Pages serves no response headers, and a `<meta>` CSP cannot inject a user
 
 `list_macrodroid_features` returns a 49 KB markdown catalog (126/211/88 = fingerprint); one `get_macrodroid_schema` call is ~52 KB text / ~220–232 KB JSON — **raw dumps stay out of git**. `scripts/trim_mcp_snapshot.py` produces `catalog.json` (class → description + counts) and per-class trimmed schemas under `data/macrodroid/schemas/` (m_classType, field names/types/required/enums), sharing the ~800-line protocol boilerplate once. A scheduled CI job (weekly) re-fetches and PRs on drift; counts change = schema refresh required before merging mapping-table edits.
 
+### 7.7 Plugin pass-through via LocalePluginAction (M3.1 — shipped)
+
+Instead of mapping every Tasker action (and every AutoInput verb) to native
+MacroDroid actions, plugin-shaped IR actions are emitted as MacroDroid's
+**Tasker/Locale Plugin action** (`m_classType: "LocalePluginAction"`), which
+delegates execution to the plugin app itself at runtime. This covers the full
+plugin vocabulary (AutoInput touch/swipe/drag/click/multi-click/…, AutoRemote,
+any Locale plugin) with one bridge; native mapping stays worthwhile for the
+exact-mapped builtins (M3.2).
+
+Wire format (all verified against decompiled MacroDroid
+(`Mohsenabn78/macro-reverse-engineering`) and the live MCP):
+
+- **classType** `LocalePluginAction` — named as the correct type by the live
+  `get_macrodroid_schema`; accepted by `validate_macrodroid_macro` (recorded
+  probe: `tests/fixtures/macrodroid/passthrough-probes/`). `LocalePluginTrigger`
+  is the condition/event counterpart (future: Tasker plugin conditions).
+- **`m_plugin`** — plugin identity: `mType: "SETTING"`, package (Tasker arg1),
+  config activity (arg2), FIRE receiver + versionCode from
+  `js/targets/macrodroid/pluginRegistry.js` (AutoInput entry measured from the
+  real APK manifest: `BroadcastReceiverFire`, versionCode 104),
+  `mRegistryName = "package:activity"`, capability flags all false.
+- **`m_pluginInstanceData`** — `mBlurb` (the BLURB extra) and
+  **`mSerializedBundle`**: the plugin's configuration Bundle, serialized by the
+  twofortyfouram locale SDK's `BundleSerializer` — a Java Object Serialization
+  stream (`scripts/josref/GenRef.java` mirrors the decompiled method;
+  `js/targets/macrodroid/javaObjectStream.js` + `bundleSerializer.js` port it
+  byte-for-byte, proven against the committed JVM reference vectors including
+  real AutoInput v1/v2 bundles, nested bundles, String[], nulls, UTF-8 edge
+  cases and JVM identity dedup — Boolean singletons, the Integer.valueOf
+  cache — because Android's `Bundle.putBoolean/putInt` hit exactly those).
+- **`blockActions: true`** (preserve Tasker action order), `arrayHandlingOption: 0`,
+  `m_variableMap: {}` (no output-variable mapping in M3.1).
+- **Variable translation**: Tasker `%var` references in bundle string values
+  become MacroDroid magic text (`{lv=}` local, `{v=}` global — MacroDroid
+  applies magic text to plugin text fields at runtime), the used variables are
+  declared in `localVariables`/`globalVariables`. Tasker built-ins (`%err`,
+  `%TIME`, …) stay literal and are reported in the conversion report.
+- **Triggers**: `EmptyTrigger` (manual run) until trigger mapping lands (M3.2).
+
+Emission contract code: `js/targets/macrodroid/emitter.js` (`emitMacro`/
+`emitMacros`); typed-bundle reconstruction from the IR's flattened Vals uses
+the `-type` companions (`java.lang.String/Boolean/Integer`), `<null>`
+sentinels → null, `$array` → String[], `$bundle` → nested bundle.
+
+Known limitation: the exact Jackson field-name spelling inside
+`m_plugin`/`m_pluginInstanceData` follows MacroDroid's decompiled classes and
+default Jackson behavior (field names as-is, enum names, byte[] as base64);
+import into the real app (emulator CI step "M3.1") is the end-to-end proof.
+
+
 ## 8. AutoInput → MacroDroid touch mapping (proven classes)
 
 | AutoInput op | MacroDroid class / action |

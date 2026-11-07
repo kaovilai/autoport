@@ -211,6 +211,52 @@ jobs:
           echo "top activity after link: $top"
           echo "$top" | grep -qi macrodroid || echo "::warning::MacroDroid not foreground; check screenshot"
 
+      - name: "M3.1: import AutoPort-emitted pass-through macro (LocalePluginAction)"
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          ADB="$ANDROID_HOME/platform-tools/adb"
+          # Emit the macro on the runner from the committed golden IR (no
+          # browser needed — the emitter is pure JS).
+          node --input-type=module -e "
+            import { readFileSync, writeFileSync } from 'node:fs';
+            const { emitMacro } = await import('$GITHUB_WORKSPACE/js/targets/macrodroid/emitter.js');
+            const ir = JSON.parse(readFileSync('$GITHUB_WORKSPACE/tests/golden/tasker/tasker-LaunchInstagram.tsk.ir.json', 'utf8'));
+            const { macro } = emitMacro(ir.macros[0], { sourceFile: 'LaunchInstagram.tsk.xml' });
+            writeFileSync('/tmp/passthrough.macro.json', JSON.stringify(macro));
+            console.log('emitted actions:', macro.macro.m_actionList.length);
+          "
+          # Validate + mint a share link via the live MacroDroid MCP server.
+          python3 - <<'EOF' > /tmp/passthrough-link.txt
+          import json, re, sys, urllib.request
+          macro = open('/tmp/passthrough.macro.json').read()
+          def rpc(method, params, mid):
+              data = json.dumps({'jsonrpc':'2.0','id':mid,'method':method,'params':params}).encode()
+              req = urllib.request.Request('https://remote.macrodroid.com/mcp', data=data,
+                  headers={'Content-Type':'application/json','Accept':'application/json, text/event-stream'})
+              return json.loads(urllib.request.urlopen(req, timeout=60).read())
+          rpc('initialize', {'protocolVersion':'2025-03-26','capabilities':{},
+              'clientInfo':{'name':'autoport-ci','version':'1.0'}}, 1)
+          v = rpc('tools/call', {'name':'validate_macrodroid_macro',
+              'arguments':{'macro_json': macro}}, 2)
+          verdict = json.dumps(v)
+          print(verdict[:300], file=sys.stderr)
+          if '"VALID' not in verdict and 'VALID' not in verdict:
+              print('VALIDATION FAILED', file=sys.stderr); sys.exit(1)
+          s = rpc('tools/call', {'name':'share_macrodroid_macro',
+              'arguments':{'macro_json': macro}}, 3)
+          m = re.search(r'https?://[^"\\\\ ]+', json.dumps(s))
+          print(m.group(0) if m else '')
+          EOF
+          PLINK=$(tail -1 /tmp/passthrough-link.txt)
+          echo "pass-through share link: $PLINK"
+          if [ -z "$PLINK" ]; then echo "::error::no pass-through share link minted"; cat /tmp/passthrough-link.txt; exit 1; fi
+          "$ADB" shell am start -a android.intent.action.VIEW -d "$PLINK"
+          sleep 20
+          "$ADB" exec-out screencap -p > /tmp/macrodroid-passthrough-import.png
+          top=$("$ADB" shell dumpsys activity activities | grep -i 'topResumedActivity' | head -1)
+          echo "top activity after pass-through link: $top"
+          echo "$top" | grep -qi macrodroid || echo "::warning::MacroDroid not foreground; check screenshot"
+
       - name: Upload screenshots + logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -222,6 +268,7 @@ jobs:
             /tmp/pwa-load.png
             /tmp/pwa-offline-reload.png
             /tmp/macrodroid-import.png
+            /tmp/macrodroid-passthrough-import.png
             /tmp/emulator.log
             /tmp/share-link.txt
           if-no-files-found: ignore

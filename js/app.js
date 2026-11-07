@@ -12,6 +12,8 @@ import * as idb from './idb.js';
 import { parseTaskerXml } from './sources/tasker/taskerXml.js';
 import { decodeAutoInput } from './sources/tasker/pluginAutoInput.js';
 import { parseFloT0 } from './sources/automate/floParser.js';
+import { emitMacros } from './targets/macrodroid/emitter.js';
+import { validateMacro } from './targets/macrodroid/structuralValidator.js';
 
 const $ = (sel) => document.querySelector(sel);
 const out = $('#results');
@@ -47,6 +49,8 @@ let mappingTable = null;
  * for the e2e suite (V4: golden equality across ingest paths). Test hook
  * only; nothing in the product reads it. */
 let lastTaskerIr = null;
+/* Last MacroDroid emission for that IR (e2e hook: {macros, reports}). */
+let lastTaskerEmission = null;
 async function loadMappingTable() {
   if (mappingTable) return mappingTable;
   try {
@@ -106,9 +110,11 @@ async function renderTasker(name, buffer) {
       if (act.kind === 'builtin') {
         main = `<code>${escapeHtml(act.codeName || `code ${act.code}`)}</code> ${mappingChip(act.code)}`;
       } else if (act.kind === 'plugin') {
-        const pkg = act.plugin?.package || '';
-        if (pkg.includes('autoinput')) {
-          const d = decodeAutoInput({ pluginTypeId: act.plugin?.pluginTypeId, pluginConfig: act.plugin?.configClass, args: act.args });
+        // IR plugin actions carry flat fields (act.package / act.pluginClass);
+        // decodeAutoInput accepts the action node itself (normalizeInput case 1).
+        const pkg = act.package || '';
+        if (pkg.toLowerCase().includes('autoinput')) {
+          const d = decodeAutoInput(act);
           const sel = d.selector ? ` ${escapeHtml(JSON.stringify(d.selector))}` : '';
           extra = ` <code>${escapeHtml(d.op)}</code>${sel}`;
           main = chip('plugin', 'AutoInput') + extra;
@@ -136,7 +142,47 @@ async function renderTasker(name, buffer) {
     cards.push(`<article class="card"><h3>Not representable</h3><p class="muted">${stats.unrepresentable.map(escapeHtml).join('<br>')}</p></article>`);
   }
 
+  // M3.1: emit MacroDroid macro JSON via plugin pass-through and render it.
+  let lastEmission = null;
+  try {
+    lastEmission = emitMacros(ir);
+    for (const { macro, report } of lastEmission.emissions || []) {
+      if (!macro) continue;
+      const verdict = validateMacro(macro);
+      const skipped = report.skipped.length
+        ? `<p class="muted small">Not converted yet (${report.skipped.length}): ${report.skipped.map((s) => escapeHtml(s.codeName || `code ${s.code}`)).join(', ')}</p>` : '';
+      const unresolved = report.unresolvedVariables.length
+        ? `<p class="muted small">⚠️ Tasker variables left literal (no MacroDroid equivalent declared): ${report.unresolvedVariables.map(escapeHtml).join(', ')}</p>` : '';
+      const unknownPlugins = report.unknownPlugins.length
+        ? `<p class="muted small">⚠️ Plugin not in the registry (receiver unknown): ${report.unknownPlugins.map(escapeHtml).join(', ')}</p>` : '';
+      cards.push(`<article class="card">
+        <h3>MacroDroid macro — plugin pass-through</h3>
+        <p class="muted">${report.emitted.length} plugin action(s) delegated to their plugin apps · structural check: ${verdict.ok ? '<strong>valid</strong>' : `<strong>${verdict.errors.length} issue(s)</strong>`}</p>
+        ${skipped}${unresolved}${unknownPlugins}
+        <details><summary>Macro JSON (share into MacroDroid)</summary>
+          <pre class="preview" tabindex="0">${escapeHtml(JSON.stringify(macro, null, 1))}</pre>
+          <button class="btn primary" type="button" data-copy-macro>Copy macro JSON</button>
+        </details>
+      </article>`);
+    }
+  } catch (e) {
+    console.warn('[autoport] macro emission failed', e);
+  }
+  lastTaskerEmission = lastEmission;
+
   out.insertAdjacentHTML('beforeend', cards.join('\n'));
+  // wire the macro copy buttons (the cards were just inserted above)
+  for (const btn of out.querySelectorAll('[data-copy-macro]')) {
+    btn.addEventListener('click', async () => {
+      try {
+        const json = btn.parentElement.querySelector('pre').textContent;
+        await navigator.clipboard.writeText(json);
+        setStatus('Macro JSON copied — paste into MacroDroid (Add Macro → Import/Clipboard)', 'ok');
+      } catch (e) {
+        setStatus('Clipboard write failed — select the JSON and copy manually', 'warn');
+      }
+    });
+  }
   const totalActions = (ir.macros || []).reduce((n, m) => n + (m.actions?.length || 0), 0);
   const decoded = (stats.actionsDecoded ?? 0) + (stats.actionsPlugin ?? 0);
   setStatus(`Tasker parsed: ${(ir.macros || []).length} macro(s), ${totalActions} action(s), ${decoded} identified${stats.actionsUnknown ? `, ${stats.actionsUnknown} unknown` : ''}`, 'ok');
@@ -335,5 +381,11 @@ if (fromId) {
   });
 }
 
-// expose for manual console poking during the spike; lastIr is an e2e hook (V4)
-window.autoport = { idb, ingest, classify, parseTaskerXml, parseFloT0, decodeAutoInput, get lastIr() { return lastTaskerIr; } };
+// expose for manual console poking during the spike; lastIr/lastEmission are
+// e2e hooks (V4 / M3.1)
+window.autoport = {
+  idb, ingest, classify, parseTaskerXml, parseFloT0, decodeAutoInput,
+  emitMacros, validateMacro,
+  get lastIr() { return lastTaskerIr; },
+  get lastEmission() { return lastTaskerEmission; },
+};

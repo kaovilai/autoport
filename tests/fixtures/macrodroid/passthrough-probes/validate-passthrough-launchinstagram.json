@@ -1,0 +1,103 @@
+{
+ "description": "MCP validate_macrodroid_macro verdict for the AutoPort-emitted plugin pass-through macro (Tasker LaunchInstagram.tsk.xml -> 2 LocalePluginAction nodes carrying the original AutoInput v1 bundles). Emitted by js/targets/macrodroid/emitter.js; bundle blobs via bundleSerializer.js (JVM-verified byte format).",
+ "recorded": "2026-11-07T11:37:09.618689+00:00",
+ "fixture": "tests/fixtures/tasker/LaunchInstagram.tsk.xml",
+ "mcp": "https://remote.macrodroid.com/mcp validate_macrodroid_macro",
+ "verdict": "VALID. Macro \"Launch Instagram\": 1 trigger(s), 2 action(s), 0 macro-level constraint(s).",
+ "macro": {
+  "macroExportVersion": 1,
+  "macro": {
+   "m_name": "Launch Instagram",
+   "m_description": "AutoPort plugin pass-through. 2 plugin action(s) delegated to their plugin apps; 3 action(s) not yet converted (see conversion report).",
+   "m_enabled": true,
+   "m_completed": true,
+   "m_GUID": 0,
+   "m_category": "AutoPort",
+   "aiGenerated": 1,
+   "m_triggerList": [
+    {
+     "m_classType": "EmptyTrigger",
+     "m_SIGUID": 0
+    }
+   ],
+   "m_actionList": [
+    {
+     "m_classType": "LocalePluginAction",
+     "m_SIGUID": 0,
+     "blockActions": true,
+     "arrayHandlingOption": 0,
+     "m_variableMap": {},
+     "m_plugin": {
+      "mType": "SETTING",
+      "mPackageName": "com.joaomgcd.autoinput",
+      "mActivityClassName": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "mReceiverClassName": "com.joaomgcd.autoinput.broadcastreceiver.BroadcastReceiverFire",
+      "mRegistryName": "com.joaomgcd.autoinput:com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "mVersionCode": 104,
+      "mConfiguration": {
+       "mIsBackwardsCompatibilityEnabled": false,
+       "mIsRequiresConnectivity": false,
+       "mIsDisruptsConnectivity": false,
+       "mIsDrainsBattery": false,
+       "mIsBuggy": false,
+       "mIsBlacklisted": false,
+       "mAlternatives": []
+      }
+     },
+     "m_pluginInstanceData": {
+      "mType": "SETTING",
+      "mRegistryName": "com.joaomgcd.autoinput:com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "mSerializedBundle": "rO0ABXcMAAAAAQAAAAEAAAAAdAAIQWN0aW9uSWR0ACJjb20uaW5zdGFncmFtLmFuZHJvaWQ6aWQvaWNvbl92aWV3dwgAAAABAAAAAHQACkFjdGlvblR5cGV0AAIxNncIAAAAAQAAAAB0ACxjb20udHdvZm9ydHlmb3VyYW0ubG9jYWxlLmludGVudC5leHRyYS5CTFVSQnQAQVR5cGU6IElkClZhbHVlOiBjb20uaW5zdGFncmFtLmFuZHJvaWQ6aWQvaWNvbl92aWV3CkFjdGlvbiA6IENsaWNrdwgAAAABAAAAAHQAIUVuYWJsZURpc2FibGVBY2Nlc3NpYmlsaXR5U2VydmljZXB3CAAAAAEAAAAAdAASRmllbGRTZWxlY3Rpb25UeXBldAABMXcIAAAAAQAAAAB0AA1Jc0ZpcnN0QWN0aW9uc3IAEWphdmEubGFuZy5Cb29sZWFuzSBygNWc+u4CAAFaAAV2YWx1ZXhwAHcIAAAAAQAAAAB0AA5Jc1Rhc2tlckFjdGlvbnEAfgALdwgAAAABAAAAAHQACk5lYXJieVRleHRwdwgAAAABAAAAAHQAOW5ldC5kaW5nbGlzY2guYW5kcm9pZC50YXNrZXIuZXh0cmFzLlZBUklBQkxFX1JFUExBQ0VfS0VZU3QARUFjdGlvbklkIEZpZWxkU2VsZWN0aW9uVHlwZSBBY3Rpb25UeXBlIHBsdWdpbmluc3RhbmNlaWQgcGx1Z2ludHlwZWlkIHcIAAAAAQAAAAB0AC9uZXQuZGluZ2xpc2NoLmFuZHJvaWQudGFza2VyLlJFTEVWQU5UX1ZBUklBQkxFU3QAD1tvYmplY3QgT2JqZWN0XXcIAAAAAQAAAAB0ACduZXQuZGluZ2xpc2NoLmFuZHJvaWQudGFza2VyLnN1YmJ1bmRsZWRzcQB+AAoBdwgAAAABAAAAAHQACFBhc3N3b3JkcHcIAAAAAQAAAAB0ABBwbHVnaW5pbnN0YW5jZWlkdAAkYjNiYjMwMTItNjIwNS00NzJlLTgzMzktMjg2MzdiM2UyMDk0dwgAAAABAAAAAHQADHBsdWdpbnR5cGVpZHQAMWNvbS5qb2FvbWdjZC5hdXRvaW5wdXQuaW50ZW50LkludGVudFBlcmZvcm1BY3Rpb253CAAAAAEAAAAAdAAOUmVwZWF0SW50ZXJ2YWxwdwgAAAABAAAAAHQAC1JlcGVhdFRpbWVzcHcIAAAAAQAAAAB0AAxTdG9yZWRBY3Rpb25wdwgAAAABAAAAAHQAC1RleHRUb1dyaXRlcHcEAAAAAA==",
+      "mBlurb": "Type: Id\nValue: com.instagram.android:id/icon_view\nAction : Click"
+     }
+    },
+    {
+     "m_classType": "LocalePluginAction",
+     "m_SIGUID": 0,
+     "blockActions": true,
+     "arrayHandlingOption": 0,
+     "m_variableMap": {},
+     "m_plugin": {
+      "mType": "SETTING",
+      "mPackageName": "com.joaomgcd.autoinput",
+      "mActivityClassName": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "mReceiverClassName": "com.joaomgcd.autoinput.broadcastreceiver.BroadcastReceiverFire",
+      "mRegistryName": "com.joaomgcd.autoinput:com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "mVersionCode": 104,
+      "mConfiguration": {
+       "mIsBackwardsCompatibilityEnabled": false,
+       "mIsRequiresConnectivity": false,
+       "mIsDisruptsConnectivity": false,
+       "mIsDrainsBattery": false,
+       "mIsBuggy": false,
+       "mIsBlacklisted": false,
+       "mAlternatives": []
+      }
+     },
+     "m_pluginInstanceData": {
+      "mType": "SETTING",
+      "mRegistryName": "com.joaomgcd.autoinput:com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+      "mSerializedBundle": "rO0ABXcMAAAAAQAAAAEAAAAAdAAIQWN0aW9uSWR0ACpjb20uaW5zdGFncmFtLmFuZHJvaWQ6aWQvY29udGV4dF9tZW51X2l0ZW13CAAAAAEAAAAAdAAKQWN0aW9uVHlwZXQAAjE2dwgAAAABAAAAAHQALGNvbS50d29mb3J0eWZvdXJhbS5sb2NhbGUuaW50ZW50LmV4dHJhLkJMVVJCdABJVHlwZTogSWQKVmFsdWU6IGNvbS5pbnN0YWdyYW0uYW5kcm9pZDppZC9jb250ZXh0X21lbnVfaXRlbQpBY3Rpb24gOiBDbGlja3cIAAAAAQAAAAB0ACFFbmFibGVEaXNhYmxlQWNjZXNzaWJpbGl0eVNlcnZpY2VwdwgAAAABAAAAAHQAEkZpZWxkU2VsZWN0aW9uVHlwZXQAATF3CAAAAAEAAAAAdAANSXNGaXJzdEFjdGlvbnNyABFqYXZhLmxhbmcuQm9vbGVhbs0gcoDVnPruAgABWgAFdmFsdWV4cAB3CAAAAAEAAAAAdAAOSXNUYXNrZXJBY3Rpb25xAH4AC3cIAAAAAQAAAAB0AApOZWFyYnlUZXh0cHcIAAAAAQAAAAB0ADluZXQuZGluZ2xpc2NoLmFuZHJvaWQudGFza2VyLmV4dHJhcy5WQVJJQUJMRV9SRVBMQUNFX0tFWVN0AEVBY3Rpb25JZCBGaWVsZFNlbGVjdGlvblR5cGUgQWN0aW9uVHlwZSBwbHVnaW5pbnN0YW5jZWlkIHBsdWdpbnR5cGVpZCB3CAAAAAEAAAAAdAAvbmV0LmRpbmdsaXNjaC5hbmRyb2lkLnRhc2tlci5SRUxFVkFOVF9WQVJJQUJMRVN0AA9bb2JqZWN0IE9iamVjdF13CAAAAAEAAAAAdAAnbmV0LmRpbmdsaXNjaC5hbmRyb2lkLnRhc2tlci5zdWJidW5kbGVkc3EAfgAKAXcIAAAAAQAAAAB0AAhQYXNzd29yZHB3CAAAAAEAAAAAdAAQcGx1Z2luaW5zdGFuY2VpZHQAJDlmMTJlZmNiLTExNzktNGY0Mi04YzdmLTRmMjhhM2VkNTNjZHcIAAAAAQAAAAB0AAxwbHVnaW50eXBlaWR0ADFjb20uam9hb21nY2QuYXV0b2lucHV0LmludGVudC5JbnRlbnRQZXJmb3JtQWN0aW9udwgAAAABAAAAAHQADlJlcGVhdEludGVydmFscHcIAAAAAQAAAAB0AAtSZXBlYXRUaW1lc3B3CAAAAAEAAAAAdAAMU3RvcmVkQWN0aW9ucHcIAAAAAQAAAAB0AAtUZXh0VG9Xcml0ZXB3BAAAAAA=",
+      "mBlurb": "Type: Id\nValue: com.instagram.android:id/context_menu_item\nAction : Click"
+     }
+    }
+   ],
+   "m_constraintList": [],
+   "localVariables": [
+    {
+     "m_name": "errmsg",
+     "m_type": 2,
+     "m_stringValue": "",
+     "isLocalVar": true
+    },
+    {
+     "m_name": "err",
+     "m_type": 2,
+     "m_stringValue": "",
+     "isLocalVar": true
+    }
+   ],
+   "globalVariables": []
+  }
+ }
+}

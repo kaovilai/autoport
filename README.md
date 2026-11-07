@@ -27,8 +27,9 @@ Legend: ☑ done · ◐ partial · ☐ not started
 - [x] Decode AutoInput plugin actions → touch ops (click / swipe / scroll / gestures / UI query)
 - [x] Action mapping table: 19 exact · 6 partial · 3 manual of the 28 corpus codes (410 candidate suggestions)
 - [x] Offline MacroDroid structural validation (MCP-parity rules)
-- [ ] Emit MacroDroid macro JSON from IR (M3)
-- [ ] One-tap delivery: clipboard / connector handoff (M3)
+- [x] Emit MacroDroid macro JSON from IR — **plugin pass-through (M3.1)**: every Tasker plugin action (AutoInput v1/v2, any Locale plugin) becomes a MacroDroid Tasker/Locale Plugin action (`LocalePluginAction`) carrying the plugin's **original configuration bundle** in the byte-exact locale-SDK format (JVM-verified), with `%var` → magic-text translation; validated against the live MacroDroid MCP server
+- [ ] Native emission for exact-mapped builtin actions + trigger mapping (M3.2)
+- [ ] One-tap delivery: clipboard / connector handoff (M3) — clipboard copy of the emitted macro JSON is live
 - [x] End-to-end delivery proof: MCP share link → MacroDroid macro editor on device ([emulator CI](.github/workflows/emulator-test.yml))
 
 ### Automate → MacroDroid
@@ -61,6 +62,7 @@ Legend: ☑ done · ◐ partial · ☐ not started
 - [x] Golden IR regression vs the Python reference oracle
 - [x] JS suites: Tasker parser **golden parity with the Python oracle**, AutoInput decoder, `.flo` T0, MacroDroid validator
 - [x] Content-sniffer unit suite (every `classify()` route pinned)
+- [x] **Plugin pass-through emission suite**: Java-ObjectSerialization writer byte-for-byte against a committed JVM reference (incl. real AutoInput v1/v2 bundles), typed-bundle reconstruction, `%var` translation, emitter contract, MCP-probe parity — plus a CI drift gate that regenerates the JVM reference
 - [x] PWA site-integrity suite (manifest contract, real PNG icons, SW precache list exists **and** covers every module/data file — the offline gate)
 - [x] **Browser e2e** ([ci.yml](.github/workflows/ci.yml) `e2e` job, Playwright + pinned Chromium): SW registration + precache, every ingest path (picker / drag-drop / paste box / page paste), V4 equality across paths (status + rendered cards; parser oracle-golden-tested), share-target POST → 303 → inbox card → "Open in converter" handoff, text-only / empty / >25 MiB shares, IndexedDB persistence + clear, offline reload + **offline parse** + offline deep-link fallback — run twice: at the server root **and** under `/autoport/` (GitHub Pages layout)
 - [x] Upstream drift gate on `tasker.joaoapps.com` code tables

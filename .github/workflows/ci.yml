@@ -73,6 +73,18 @@ jobs:
       - name: MacroDroid mapping table check
         run: python3 -I scripts/check_mapping_table.py --table data/macrodroid/mappingTable.json
 
+      # M3.1 plugin pass-through: the committed JVM reference for the plugin
+      # bundle byte format must stay reproducible. javac/java are preinstalled.
+      - name: JVM reference drift gate (plugin bundle byte format)
+        run: |
+          javac scripts/josref/GenRef.java -d /tmp/josref
+          java -cp /tmp/josref GenRef > /tmp/jos-reference.json
+          diff -u tests/fixtures/macrodroid/jos-reference.json /tmp/jos-reference.json || {
+            echo "::error::jos-reference.json drifted from scripts/josref/GenRef.java output."
+            echo "Regenerate: java -cp /tmp/josref GenRef > tests/fixtures/macrodroid/jos-reference.json"
+            exit 1
+          }
+
       - name: Regenerate Tasker code tables (upstream fetch)
         run: python3 -I scripts/gen_tasker_codes.py --fetch --out data/taskerCodes.json
 
