@@ -217,6 +217,7 @@ async function renderTasker(name, buffer) {
     // per-macro failures are caught inside emitMacros; this outer catch
     // covers validateMacro/rendering throws — still tell the user something
     log(`   ⚠ MacroDroid emission failed: ${e && e.message ? e.message : e}`);
+    setStatus('MacroDroid emission failed — see the log', 'warn');
   }
   lastTaskerEmission = lastEmission;
 
@@ -232,7 +233,10 @@ async function renderTasker(name, buffer) {
 /* ------------------------------------------------------------------ */
 
 function renderFlo(name, buffer) {
-  const u8 = buffer instanceof Uint8Array ? u8 : new Uint8Array(buffer);
+  // (the ternary used to read `? u8 :` — a TDZ ReferenceError whenever the
+  // caller actually passed a Uint8Array; dormant because every ingest path
+  // arrives with a Buffer/ArrayBuffer)
+  const u8 = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
   const t0 = parseFloT0(u8); // never throws
   if (t0.error) {
     log(`   ✗ ${t0.error}`);
@@ -298,6 +302,7 @@ function renderFlo(name, buffer) {
     } catch (e) {
       console.warn('[autoport] Automate macro emission failed', e);
       log(`   ⚠ Automate macro emission failed: ${e && e.message ? e.message : e}`);
+      setStatus('Automate macro emission failed — see the log', 'warn');
     }
   }
   setStatus(`Automate flow: v${t0.version}, ${t0.statementCount} statements${scan && scan.pluginCount ? `, ${scan.pluginCount} plug-in block(s)` : ''}`, 'ok');
