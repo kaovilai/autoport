@@ -1,7 +1,19 @@
 # AutoPort
 
+[![emulator-test](https://github.com/kaovilai/autoport/actions/workflows/emulator-test.yml/badge.svg)](https://github.com/kaovilai/autoport/actions/workflows/emulator-test.yml)
+
 Convert Android automations between apps. Runs entirely in your browser; no
 server, no account, no telemetry.
+
+## CI-tested app versions
+
+Device tests run on KVM emulator runners ([emulator-test.yml](.github/workflows/emulator-test.yml), manual dispatch) with the real apps installed from their original sources; versions below are what the last run verified.
+
+| App | Version | Install source | Verified |
+|---|---|---|---|
+| Tasker | 6.6.3-beta (2025-10-02) | official trial server (pinned) | installs + launches |
+| Automate | b267 (v1.43) | Google Play (latest) | installs + launches |
+| MacroDroid | from Play (latest) | Google Play | installs, launches, **imports AutoPort macro via MCP share link** |
 
 ## Conversion directions
 
@@ -19,9 +31,8 @@ Legend: ☑ done · ◐ partial · ☐ not started
 ### Automate → MacroDroid
 - [x] `.flo` T0 inventory: magic / version / statement count / strings
 - [x] Graceful rejection of truncated / malformed flows
-- [ ] `.flo` T1 full parse (block registry specced; spike in `scripts/t1probe.py`)
-- [ ] PDF/PNG flow export → vision/manual mapping (demoted — unproven)
-- [ ] Conversion to MacroDroid
+- [ ] `.flo` T1 full parse — format is fully structured (typed object graph; probe walks FlowBeginning → blocks until unregistered type ids); needs the ~620-entry block-type registry generated from the decompiled statement classes (spike: `scripts/t1probe.py`)
+- [ ] Conversion to MacroDroid (via T1; PNG/PDF export path dropped — unnecessary given the structured format)
 
 ### Other directions (roadmap — drop-in adapters)
 - [ ] MacroDroid → Tasker (reverse)

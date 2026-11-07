@@ -75,15 +75,46 @@ jobs:
           cd /tmp/gplay
           .venv/bin/python gplay-downloader.py download com.android.chrome -o /tmp/apks || true
           .venv/bin/python gplay-downloader.py download com.arlosoft.macrodroid -o /tmp/apks
+          .venv/bin/python gplay-downloader.py download com.llamalab.automate -o /tmp/apks
+          python3 - <<'PYEOF'
+          # Tasker trial APK from the official trial server (pinned build)
+          import urllib.request
+          url = "https://tasker.joaoapps.com/releases/nightly/Tasker-6.6.3-beta-20251002_1340.apk"
+          urllib.request.urlretrieve(url, "/tmp/apks/Tasker-6.6.3-beta.apk")
+          print("fetched Tasker trial APK")
+          PYEOF
           ls -la /tmp/apks
 
-      - name: Install APKs
+      - name: "Install APKs (Chrome, MacroDroid, Automate, Tasker)"
         run: |
           export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
           for apk in /tmp/apks/*.apk; do
-            "$ANDROID_HOME/platform-tools/adb" install -r "$apk" || echo "install failed: $apk"
+            "$ANDROID_HOME/platform-tools/adb" install -r -t "$apk" || echo "install failed: $apk"
           done
-          "$ANDROID_HOME/platform-tools/adb" shell pm list packages | grep -E 'macrodroid|chrome'
+          "$ANDROID_HOME/platform-tools/adb" shell pm list packages | grep -E 'macrodroid|chrome|automate|dinglisch'
+
+      - name: "Device matrix: versions + launch smoke for all three apps"
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          ADB="$ANDROID_HOME/platform-tools/adb"
+          for pkg in net.dinglisch.android.taskerm com.llamalab.automate com.arlosoft.macrodroid; do
+            ver=$("$ADB" shell dumpsys package "$pkg" 2>/dev/null | grep -m1 versionName | tr -d '\r' | sed 's/.*versionName=//')
+            echo "$pkg versionName=$ver"
+            # launch smoke: start the main activity, wait, confirm the process is alive
+            "$ADB" shell monkey -p "$pkg" -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
+            sleep 8
+            if "$ADB" shell pidof "$pkg" | grep -q .; then
+              echo "$pkg: LAUNCH OK"
+              launch=ok
+            else
+              echo "::warning::$pkg did not stay running after launch"
+              launch=failed
+            fi
+            "$ADB" exec-out screencap -p > "/tmp/app-${pkg##*.}.png"
+            printf '%s|%s|%s\n' "$pkg" "${ver:-unknown}" "$launch" >> /tmp/device-matrix.txt
+          done
+          cat /tmp/device-matrix.txt
+          "$ADB" exec-out screencap -p > /tmp/three-apps-smoke.png || true
 
       - name: Serve AutoPort PWA + adb reverse
         run: |
@@ -144,6 +175,8 @@ jobs:
         with:
           name: emulator-evidence
           path: |
+            /tmp/device-matrix.txt
+            /tmp/three-apps-smoke.png
             /tmp/pwa-load.png
             /tmp/macrodroid-import.png
             /tmp/emulator.log
