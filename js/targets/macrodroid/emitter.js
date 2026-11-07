@@ -13,22 +13,56 @@
 //   - wrapper shape follows data/macrodroid/minimal-macro.json (MCP-validated)
 //   - plugin bundle -> m_pluginInstanceData.mSerializedBundle via
 //     bundleSerializer (byte-exact port of the twofortyfouram SDK; verified
-//     against a JVM reference, see tests/fixtures/macrodroid/jos-reference.json)
+//     against a JVM reference, see tests/fixtures/macrodroid/jos-reference.json),
+//     emitted as a JSON NUMERIC BYTE ARRAY: MacroDroid imports macros with
+//     Gson (GsonUtils.getMacroGson, no custom byte[] adapter), and Gson's
+//     ArrayTypeAdapter only reads byte[] as a number array — a base64 string
+//     throws and MacroDeserializer silently drops the whole action (proven on
+//     device: the emulator import showed "Actions 0" with a base64 blob).
 //   - Tasker %variables -> MacroDroid magic text ({lv=} local, {v=} global)
-//     in bundle string values + blurb; Tasker built-ins (%err etc.) are left
-//     literal and reported
+//     in top-level bundle string values + blurb; Tasker built-ins (%err etc.)
+//     are left literal and reported; nested bundles keep %vars literal
+//     (reported) because MacroDroid only expands magic text in the values it
+//     rewrites itself
+//   - plugin actions carrying a Tasker If-guard are skipped and reported
+//     (guard translation is M3.2 — a guard must not be silently dropped)
 //   - builtin/unknown actions are skipped and reported (native emission for
 //     the exact-mapped codes is M3.2)
 //   - triggers: EmptyTrigger (manual run) — Tasker trigger mapping is M3.2
 //
-// The m_plugin / m_pluginInstanceData JSON field names follow MacroDroid's
-// Jackson field-name serialization of the decompiled classes (see
-// docs/DESIGN.md §7.7); enum mType serializes as its name ("SETTING").
+// The m_plugin / m_pluginInstanceData JSON field names follow the decompiled
+// twofortyfouram locale SDK classes (see docs/DESIGN.md §7.7); enum mType
+// serializes as its name ("SETTING").
 
-import { serializeBundleB64 } from './bundleSerializer.js';
+import { serializeBundle } from './bundleSerializer.js';
 import { lookupPlugin } from './pluginRegistry.js';
 
 const BLURB_KEY = 'com.twofortyfouram.locale.intent.extra.BLURB';
+
+/** Tasker built-in variables (user guide "Variables" section). They carry
+ *  runtime values inside Tasker and have no MacroDroid equivalent, so they
+ *  must stay literal and be reported — never translated to magic text and
+ *  never declared as MacroDroid variables. */
+const TASKER_BUILTINS = new Set([
+  '%err', '%errmsg', '%http_response_code', '%http_response_data',
+  '%http_response_headers', '%http_files', '%http_local_response_code',
+  '%http_local_response_data', '%http_local_response_headers',
+  '%time', '%timems', '%times', '%date', '%day', '%daym', '%dayofmonth',
+  '%dayofweek', '%dayofyear', '%month', '%year', '%minute', '%hour',
+  '%hour12', '%minuteofhour', '%secondofminute', '%dayofweekn', '%monthn',
+  '%location', '%locationspeed', '%locationaccuracy', '%locationfix',
+  '%locationalt', '%bearing', '%speed', '%netlat', '%netlong',
+  '%wifi', '%cellid', '%cellsig', '%cellnet', '%network', '%netsig',
+  '%air', '%airr', '%batt', '%battp', '%temp', '%nfc', '%flash',
+  '%bright', '%screen', '%silent', '%volume', '%vols', '%volc', '%volm',
+  '%volr', '%volb', '%voic', '%keyg', '%locks', '%phone', '%data',
+  '%sdvolfree', '%sdcard', '%ups', '%uprev', '%uptime', '%mtimes',
+  '%qtime', '%mon', '%mtrack', '%ntitle', '%ntext', '%lights',
+  '%memavail', '%memfree', '%diskfree', '%diskavail', '%notification',
+  '%enabledairplanemode', '%enablenotification', '%enabletethering',
+  '%icons', '%activeapps', '%fields', '%context', '%par1', '%par2',
+  '%taskname', '%tasktype', '%taskstatus', '%taskdevice', '%tasktime',
+]);
 
 /* ------------------------------------------------------------------ */
 /* Tasker Vals (flattened, with -type companions) -> typed bundle      */
@@ -36,22 +70,41 @@ const BLURB_KEY = 'com.twofortyfouram.locale.intent.extra.BLURB';
 
 /** Reconstruct the plugin's typed Bundle from the IR's raw flattened Vals:
  *  {key: value, 'key-type': 'java.lang.String'|'java.lang.Boolean'|
- *   'java.lang.Integer', ...}, '<null>' sentinels, {$array:[...]} wrappers,
- *  {$bundle:{...}} sub-bundles. */
-export function typedBundle(rawVals) {
+ *   'java.lang.Integer', ...}, '<null>' sentinels, {$array:[...]} wrappers
+ *  (sometimes wrapped in a one-element array: [{$array:[...]}]),
+ *  {$bundle:{...}} sub-bundles.
+ *  `report` (optional) collects unrepresentable values: java.lang.Long has
+ *  no slot in the twofortyfouram BundleSerializer (String/Boolean/Integer/
+ *  byte[]/String[]/Bundle only), so Long-typed keys are dropped and reported
+ *  rather than silently mangled. */
+export function typedBundle(rawVals, report = null) {
   const out = {};
   if (!rawVals || typeof rawVals !== 'object') return out;
   for (const [k, v] of Object.entries(rawVals)) {
     if (k.endsWith('-type')) continue;
     const t = rawVals[`${k}-type`] || 'java.lang.String';
+    if (t === 'java.lang.Long') {
+      if (report) report.rejectedLongValues.push({ key: k, value: String(v) });
+      continue;
+    }
     if (v === '<null>') { out[k] = null; continue; }
-    if (v && typeof v === 'object' && !Array.isArray(v)) {
-      if (Array.isArray(v.$array)) { out[k] = v.$array.map(String); continue; }
-      if (v.$bundle && typeof v.$bundle === 'object') { out[k] = typedBundle(v.$bundle); continue; }
+    let val = v;
+    // normalize the [{$array:[...]}] single-element array wrapper
+    if (Array.isArray(val) && val.length === 1 && val[0] && typeof val[0] === 'object'
+        && !Array.isArray(val[0]) && (val[0].$array || val[0].$bundle)) {
+      val = val[0];
+    }
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+      if (Array.isArray(val.$array)) { out[k] = val.$array.map(String); continue; }
+      if (val.$bundle && typeof val.$bundle === 'object') {
+        out[k] = typedBundle(val.$bundle, report);
+        continue;
+      }
       continue; // unrecognized shape — skip rather than guess
     }
+    if (Array.isArray(val)) { out[k] = val.map(String); continue; }
     if (t === 'java.lang.Boolean') out[k] = String(v) === 'true';
-    else if (t === 'java.lang.Integer' || t === 'java.lang.Long') {
+    else if (t === 'java.lang.Integer') {
       const n = parseInt(v, 10);
       out[k] = Number.isFinite(n) ? n : String(v);
     } else out[k] = String(v);
@@ -63,10 +116,14 @@ export function typedBundle(rawVals) {
 /* Tasker %variable -> MacroDroid magic text                           */
 /* ------------------------------------------------------------------ */
 
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 /** Translate Tasker variable references in a string. Only variables the IR
- *  knows (macro.variables.local/global) are translated — never guessed.
+ *  knows (macro.variables.local/global) are translated — never guessed, and
+ *  only on whole-name boundaries (%msg must not match inside %errmsg).
  *  Tasker built-ins (%err, %errmsg, %TIME, ...) stay literal and are
- *  reported so the UI can warn. Longest names first (%msg inside %errmsg). */
+ *  reported so the UI can warn. A variable counts as "used" only when an
+ *  actual replacement happened. */
 export function translateVars(text, variables, report) {
   const names = [
     ...(variables?.local || []).map((n) => ({ name: n, magic: 'lv' })),
@@ -76,8 +133,15 @@ export function translateVars(text, variables, report) {
   for (const { name, magic } of names) {
     const bare = name.replace(/^%+/, '');
     if (!bare) continue;
-    out = out.split(name).join(`{${magic}=${bare}}`);
-    report.variablesUsed.add(name);
+    if (TASKER_BUILTINS.has(name.toLowerCase())) {
+      report.builtinVariables.add(name); // runtime value lives in Tasker only
+      continue;
+    }
+    // whole-name match: the next character must not extend a Tasker var name
+    const rx = new RegExp(`${escapeRe(name)}(?![A-Za-z0-9_])`, 'g');
+    let hits = 0;
+    out = out.replace(rx, () => { hits += 1; return `{${magic}=${bare}}`; });
+    if (hits > 0) report.variablesUsed.add(name);
   }
   // report remaining %references that were NOT translated (Tasker builtins
   // or unknown locals): they will not expand at runtime
@@ -87,13 +151,40 @@ export function translateVars(text, variables, report) {
   return out;
 }
 
+/** Collect (without translating) Tasker %vars left inside nested bundles:
+ *  MacroDroid only expands magic text in the values it rewrites itself, so
+ *  nested plugin bundles keep their %vars literal — surface them instead of
+ *  silently rewriting what the plugin will actually receive. */
+function reportNestedBundleVars(bundle, report) {
+  for (const v of Object.values(bundle)) {
+    if (typeof v === 'string') {
+      for (const m of v.matchAll(/%[A-Za-z][A-Za-z0-9_]*/g)) {
+        report.unresolvedVariables.add(m[0]);
+      }
+    } else if (Array.isArray(v)) {
+      for (const el of v) if (typeof el === 'string') {
+        for (const m of el.matchAll(/%[A-Za-z][A-Za-z0-9_]*/g)) {
+          report.unresolvedVariables.add(m[0]);
+        }
+      }
+    } else if (v && typeof v === 'object') {
+      reportNestedBundleVars(v, report);
+    }
+  }
+}
+
+/** Translate ONLY top-level string values (and string[] elements) of the
+ *  bundle; nested bundles are passed through untouched (their %vars are
+ *  reported literal by reportNestedBundleVars). */
 function translateStringValues(bundle, variables, report) {
   const out = {};
   for (const [k, v] of Object.entries(bundle)) {
     if (typeof v === 'string') out[k] = translateVars(v, variables, report);
     else if (Array.isArray(v)) out[k] = v.map((el) => translateVars(el, variables, report));
-    else if (v && typeof v === 'object') out[k] = translateStringValues(v, variables, report);
-    else out[k] = v;
+    else if (v && typeof v === 'object') {
+      out[k] = v;
+      reportNestedBundleVars(v, report);
+    } else out[k] = v;
   }
   return out;
 }
@@ -103,6 +194,13 @@ function translateStringValues(bundle, variables, report) {
 /* ------------------------------------------------------------------ */
 
 function emitPluginAction(act, variables, report) {
+  if (act.condition) {
+    report.skipped.push({
+      sr: act.sr, kind: act.kind, codeName: act.codeName,
+      reason: 'plugin action carries a Tasker If-guard; guard translation is not implemented yet (M3.2) — the action is skipped rather than losing its condition',
+    });
+    return null;
+  }
   const packageName = act.package || (act.args && act.args.arg1) || null;
   const activity = act.pluginClass || (act.args && act.args.arg2) || null;
   if (!packageName) {
@@ -112,10 +210,19 @@ function emitPluginAction(act, variables, report) {
   const plugin = lookupPlugin(packageName);
   const rawVals = act.args && act.args.arg0 && act.args.arg0.$bundle
     ? act.args.arg0.$bundle : {};
-  const bundle = typedBundle(rawVals);
+  const bundle = typedBundle(rawVals, report);
   const translated = translateStringValues(bundle, variables, report);
   const blurbRaw = typeof rawVals[BLURB_KEY] === 'string' ? rawVals[BLURB_KEY] : '';
   const blurb = translateVars(blurbRaw, variables, report);
+
+  const bytes = serializeBundle(translated);
+  if (bytes.length > 25000) { // twofortyfouram locale SDK MAXIMUM_BUNDLE_SIZE_BYTES
+    report.skipped.push({
+      sr: act.sr, kind: act.kind, codeName: act.codeName,
+      reason: `plugin bundle is ${bytes.length} bytes, over the locale SDK 25000-byte limit`,
+    });
+    return null;
+  }
 
   const registryName = `${packageName}:${activity || ''}`;
   const node = {
@@ -144,14 +251,17 @@ function emitPluginAction(act, variables, report) {
     m_pluginInstanceData: {
       mType: 'SETTING',
       mRegistryName: registryName,
-      mSerializedBundle: serializeBundleB64(translated),
+      // JSON numeric byte array — MacroDroid's Gson importer has no base64
+      // adapter for byte[] (com.arlosoft.macrodroid.gson.GsonUtils); a
+      // base64 string makes the whole action fail to deserialize.
+      mSerializedBundle: Array.from(bytes),
       mBlurb: blurb,
     },
   };
   if (!plugin.known) {
     report.unknownPlugins.add(packageName);
   }
-  report.emitted.push({ sr: act.sr, package: packageName, activity, known: plugin.known, blurb: blurbRaw });
+  report.emitted.push({ sr: act.sr, package: packageName, activity, known: plugin.known, blurb: blurbRaw, bundleBytes: bytes.length });
   return node;
 }
 
@@ -166,8 +276,10 @@ export function emitMacro(irMacro, options = {}) {
   const report = {
     emitted: [],
     skipped: [],
+    rejectedLongValues: [],
     variablesUsed: new Set(),
     unresolvedVariables: new Set(),
+    builtinVariables: new Set(),
     unknownPlugins: new Set(),
   };
   const actionList = [];
@@ -219,21 +331,43 @@ export function emitMacro(irMacro, options = {}) {
 
   report.variablesUsed = [...report.variablesUsed];
   report.unresolvedVariables = [...report.unresolvedVariables];
+  report.builtinVariables = [...report.builtinVariables];
   report.unknownPlugins = [...report.unknownPlugins];
+  // Tasker global variables the macro references: declared in the exported
+  // macro, but their VALUES live in Tasker — the user must set them in
+  // MacroDroid. Surfaced so the UI can warn about the external prerequisite.
+  report.globalVariablesRequired = globalVars.map((v) => v.m_name);
   return { macro, report };
 }
 
 /** Emit every macro in an IR.
  *  @returns {{emissions: Array<{macro: object|null, report: object}>}}
- *  `macro` is null when an IR macro produced no plugin actions. */
+ *  `macro` is null when an IR macro produced no plugin actions or failed to
+ *  emit; a failure is reported in `report.error` (never thrown, so one bad
+ *  macro cannot take down the whole conversion). */
 export function emitMacros(ir, options = {}) {
   const emissions = [];
   for (const m of ir.macros || []) {
-    const { macro, report } = emitMacro(m, { ...options, sourceFile: ir.source?.file });
-    if ((macro.macro.m_actionList || []).length) {
-      emissions.push({ macro, report });
+    let out;
+    try {
+      out = emitMacro(m, { ...options, sourceFile: ir.source?.file });
+    } catch (e) {
+      out = {
+        macro: null,
+        report: {
+          emitted: [], skipped: [], rejectedLongValues: [],
+          variablesUsed: [], unresolvedVariables: [], builtinVariables: [],
+          unknownPlugins: [], globalVariablesRequired: [],
+          error: `emission failed: ${e && e.message ? e.message : String(e)}`,
+        },
+      };
+    }
+    if (out.macro && (out.macro.macro.m_actionList || []).length) {
+      emissions.push(out);
+    } else if (out.report.error) {
+      emissions.push({ macro: null, report: out.report });
     } else {
-      emissions.push({ macro: null, report: { ...report, note: 'no plugin actions — macro not emitted' } });
+      emissions.push({ macro: null, report: { ...out.report, note: 'no plugin actions — macro not emitted' } });
     }
   }
   return { emissions };

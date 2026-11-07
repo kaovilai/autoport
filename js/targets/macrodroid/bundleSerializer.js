@@ -66,9 +66,10 @@ export function serializeBundle(bundle) {
   return oos.toBytes();
 }
 
-/** Base64 of serializeBundle — the exact string MacroDroid's JSON carries
- *  in m_pluginInstanceData.mSerializedBundle (Jackson encodes byte[] as
- *  base64). */
+/** Base64 of serializeBundle. Used only as a COMPACT ENCODING in the JVM
+ *  reference fixture (tests/fixtures/macrodroid/jos-reference.json) — the
+ *  macro JSON itself must carry mSerializedBundle as a numeric byte array,
+ *  because MacroDroid's importer (Gson) has no base64 adapter for byte[]. */
 export function serializeBundleB64(bundle) {
   const bytes = serializeBundle(bundle);
   let bin = '';

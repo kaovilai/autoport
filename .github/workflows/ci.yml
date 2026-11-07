@@ -77,7 +77,7 @@ jobs:
       # bundle byte format must stay reproducible. javac/java are preinstalled.
       - name: JVM reference drift gate (plugin bundle byte format)
         run: |
-          javac scripts/josref/GenRef.java -d /tmp/josref
+          javac -encoding UTF-8 scripts/josref/GenRef.java -d /tmp/josref
           java -cp /tmp/josref GenRef > /tmp/jos-reference.json
           diff -u tests/fixtures/macrodroid/jos-reference.json /tmp/jos-reference.json || {
             echo "::error::jos-reference.json drifted from scripts/josref/GenRef.java output."

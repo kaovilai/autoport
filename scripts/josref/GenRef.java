@@ -1,6 +1,7 @@
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedHashMap;
@@ -256,6 +257,9 @@ public class GenRef {
             sb.append("\"}");
         }
         sb.append("]}\n");
-        System.out.print(sb);
+        // UTF-8 bytes, not the platform default charset: the vectors carry
+        // NUL/emoji/CJK text (escaped in JSON, but the writer must still be
+        // deterministic regardless of the JVM's default encoding).
+        System.out.write(sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 }

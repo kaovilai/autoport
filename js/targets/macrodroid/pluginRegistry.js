@@ -30,7 +30,10 @@ export const PLUGIN_REGISTRY = Object.freeze({
  *  derived from the Tasker XML itself (receiver unknown -> null; MacroDroid
  *  will show the action but cannot fire it until the plugin is picked). */
 export function lookupPlugin(packageName) {
-  const hit = PLUGIN_REGISTRY[packageName];
+  // own-property only: a package name is untrusted input from the shared
+  // Tasker XML — never resolve through the prototype chain
+  const hit = Object.prototype.hasOwnProperty.call(PLUGIN_REGISTRY, packageName)
+    ? PLUGIN_REGISTRY[packageName] : undefined;
   if (hit) return { ...hit, known: true };
   return {
     package: packageName,

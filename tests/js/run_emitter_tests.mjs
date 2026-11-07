@@ -119,13 +119,79 @@ await test('typedBundle: -type companions drive Boolean/Integer/null/array/neste
   });
 });
 
-await test('translateVars: longest-first, local/global magic text, unresolved flagged', () => {
-  const report = { variablesUsed: new Set(), unresolvedVariables: new Set() };
+await test('typedBundle: [{$array:[...]}] single-element wrapper normalizes to String[]', () => {
+  const raw = { 'arr': [{$array: ['a', 'b']}], 'arr-type': '[Ljava.lang.String;' };
+  assert.deepEqual(typedBundle(raw), { arr: ['a', 'b'] });
+});
+
+await test('typedBundle: java.lang.Long values are rejected and reported, never mangled', () => {
+  const report = { rejectedLongValues: [] };
+  const raw = { 'ok': '1', 'ok-type': 'java.lang.Integer', 'big': '9999999999', 'big-type': 'java.lang.Long' };
+  const out = typedBundle(raw, report);
+  assert.deepEqual(out, { ok: 1 }, 'Long-typed key must be dropped');
+  assert.deepEqual(report.rejectedLongValues, [{ key: 'big', value: '9999999999' }]);
+});
+
+await test('translateVars: whole-name boundaries, local/global magic text, builtins stay literal', () => {
+  const report = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
   const vars = { local: ['%msg', '%errmsg'], global: ['%EnMaasKey'] };
   const out = translateVars('fail:%errmsg key:%EnMaasKey msg:%msg builtin:%err', vars, report);
-  assert.equal(out, 'fail:{lv=errmsg} key:{v=EnMaasKey} msg:{lv=msg} builtin:%err');
-  assert.deepEqual([...report.variablesUsed].sort(), ['%EnMaasKey', '%errmsg', '%msg']);
-  assert.deepEqual([...report.unresolvedVariables], ['%err'], 'Tasker builtins must be flagged, not translated');
+  // %errmsg is a Tasker BUILTIN (last action error message) even when the
+  // parser collected it as a local — it must stay literal, not become magic
+  // text that would read an unrelated MacroDroid local.
+  assert.equal(out, 'fail:%errmsg key:{v=EnMaasKey} msg:{lv=msg} builtin:%err');
+  assert.deepEqual([...report.variablesUsed].sort(), ['%EnMaasKey', '%msg']);
+  assert.deepEqual([...report.unresolvedVariables].sort(), ['%err', '%errmsg'], 'Tasker builtins must be flagged, not translated');
+});
+
+await test('translateVars: %msg must not match inside %errmsg (name boundary)', () => {
+  const report = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
+  const out = translateVars('only %msg here', { local: ['%msg', '%errmsg'], global: [] }, report);
+  assert.equal(out, 'only {lv=msg} here');
+  // %errmsg in the variables list but never referenced -> not "used"
+  assert.deepEqual([...report.variablesUsed], ['%msg']);
+  // and the prefix case: %errmsg text with only %msg known must stay literal
+  const r2 = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
+  assert.equal(translateVars('x %errmsg', { local: ['%msg'], global: [] }, r2), 'x %errmsg');
+  assert.deepEqual([...r2.unresolvedVariables], ['%errmsg']);
+});
+
+await test('translateVars: variablesUsed only records actual replacements', () => {
+  const report = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
+  translateVars('nothing to see', { local: ['%msg'], global: [] }, report);
+  assert.equal(report.variablesUsed.size, 0, 'unreferenced variable must not count as used');
+});
+
+await test('translateVars: Tasker builtins are never translated even when collected as locals', () => {
+  const report = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
+  const out = translateVars('err=%err msg=%errmsg', { local: ['%err', '%errmsg'], global: [] }, report);
+  assert.equal(out, 'err=%err msg=%errmsg', 'builtins must stay literal (runtime values live in Tasker)');
+  assert.equal(report.variablesUsed.size, 0);
+  assert.deepEqual([...report.unresolvedVariables].sort(), ['%err', '%errmsg']);
+});
+
+await test('translateStringValues: nested bundles keep %vars literal and are reported', () => {
+  const irMacro = {
+    name: 'nested',
+    variables: { local: ['%q'], global: [] },
+    actions: [{
+      kind: 'plugin', code: 2000, codeName: 'PLUGIN(com.joaomgcd.autoinput)', sr: 'act0',
+      package: 'com.joaomgcd.autoinput', pluginClass: 'com.joaomgcd.autoinput.activity.ActivityConfigActionv2',
+      args: { arg0: { $bundle: {
+        'top': '%q', 'top-type': 'java.lang.String',
+        'sub': { $bundle: { 'inner': '%q and %err' } }, 'sub-type': 'android.os.Bundle',
+      } } },
+    }],
+  };
+  const { macro, report } = emitMacro(irMacro);
+  assert.ok(macro, 'macro must be emitted');
+  const bytes = Buffer.from(macro.macro.m_actionList[0].m_pluginInstanceData.mSerializedBundle);
+  const text = bytes.toString('latin1');
+  assert.ok(text.includes('{lv=q}'), 'top-level string must be translated');
+  assert.ok(text.includes('%q and %err'), 'nested bundle must keep %vars literal');
+  assert.ok(report.unresolvedVariables.includes('%q'), 'nested %q reported');
+  assert.ok(report.unresolvedVariables.includes('%err'), 'nested builtin %err reported');
+  assert.deepEqual(report.variablesUsed, ['%q'], 'only the top-level use counts as used');
 });
 
 /* ------------------------------------------------------------------ */
@@ -148,7 +214,13 @@ await test('emitMacro: LaunchInstagram -> 2 LocalePluginAction nodes, 3 skipped 
   assert.equal(a.m_plugin.mRegistryName, 'com.joaomgcd.autoinput:com.joaomgcd.autoinput.activity.ActivityConfigPerformAction');
   assert.equal(a.m_plugin.mVersionCode, 104);
   assert.equal(a.m_pluginInstanceData.mBlurb, 'Type: Id\nValue: com.instagram.android:id/icon_view\nAction : Click');
-  assert.ok(a.m_pluginInstanceData.mSerializedBundle.length > 100, 'bundle blob missing');
+  // Gson importer contract: byte[] MUST be a numeric array, not base64
+  const sb = a.m_pluginInstanceData.mSerializedBundle;
+  assert.ok(Array.isArray(sb), 'mSerializedBundle must be a JSON array (Gson byte[])');
+  assert.ok(sb.length > 100, 'bundle blob missing');
+  assert.ok(sb.every((b) => Number.isInteger(b) && b >= 0 && b <= 255), 'bundle must be bytes');
+  // and it must decode to the JVM-verified bundle format (magic AC ED 00 05)
+  assert.deepEqual(sb.slice(0, 4), [0xac, 0xed, 0x00, 0x05], 'Java serialization stream magic missing');
   assert.equal(a.blockActions, true, 'plugin actions must block to preserve Tasker order');
 });
 
@@ -183,9 +255,81 @@ await test('emitMacros: v2 DSL fixture translates %variables and declares them',
   assert.ok(validateMacro(macro).ok);
   // the translated bundle must mention the magic text, not the Tasker var
   const action = macro.macro.m_actionList[0];
-  const decoded = Buffer.from(action.m_pluginInstanceData.mSerializedBundle, 'base64').toString('latin1');
+  const decoded = Buffer.from(action.m_pluginInstanceData.mSerializedBundle).toString('latin1');
   assert.ok(decoded.includes('{lv=question}'), 'bundle must carry {lv=question} magic text');
   assert.ok(!decoded.includes('%question'), 'raw %question must not remain in the bundle');
+});
+
+await test('emitMacro: plugin action with a Tasker If-guard is skipped and reported', () => {
+  const irMacro = {
+    name: 'guarded',
+    variables: { local: [], global: [] },
+    actions: [{
+      kind: 'plugin', code: 2000, codeName: 'PLUGIN(com.joaomgcd.autoinput)', sr: 'act0',
+      package: 'com.joaomgcd.autoinput', pluginClass: 'com.joaomgcd.autoinput.activity.ActivityConfigPerformAction',
+      condition: { left: '%x', op: 'eq', right: '1' },
+      args: { arg0: { $bundle: { 'com.twofortyfouram.locale.intent.extra.BLURB': 'hi', 'com.twofortyfouram.locale.intent.extra.BLURB-type': 'java.lang.String' } } },
+    }],
+  };
+  const { macro, report } = emitMacro(irMacro);
+  assert.equal(report.emitted.length, 0, 'guarded plugin action must not be emitted');
+  assert.equal(report.skipped.length, 1);
+  assert.match(report.skipped[0].reason, /guard/i);
+  assert.equal(macro.macro.m_actionList.length, 0);
+});
+
+await test('emitMacro: over-25000-byte plugin bundle is skipped and reported', () => {
+  const big = 'x'.repeat(26000);
+  const irMacro = {
+    name: 'big',
+    variables: { local: [], global: [] },
+    actions: [{
+      kind: 'plugin', code: 2000, codeName: 'PLUGIN(com.joaomgcd.autoinput)', sr: 'act0',
+      package: 'com.joaomgcd.autoinput', pluginClass: 'com.joaomgcd.autoinput.activity.ActivityConfigPerformAction',
+      args: { arg0: { $bundle: { 'big': big, 'big-type': 'java.lang.String' } } },
+    }],
+  };
+  const { macro, report } = emitMacro(irMacro);
+  assert.equal(report.emitted.length, 0, 'oversized bundle must not be emitted');
+  assert.equal(report.skipped.length, 1);
+  assert.match(report.skipped[0].reason, /25000/);
+  assert.equal(macro.macro.m_actionList.length, 0);
+});
+
+await test('emitMacro: Tasker globals used by the macro are reported as external prerequisites', () => {
+  const irMacro = {
+    name: 'globals',
+    variables: { local: [], global: ['%EnMaasKey'] },
+    actions: [{
+      kind: 'plugin', code: 2000, codeName: 'PLUGIN(com.joaomgcd.autoinput)', sr: 'act0',
+      package: 'com.joaomgcd.autoinput', pluginClass: 'com.joaomgcd.autoinput.activity.ActivityConfigPerformAction',
+      args: { arg0: { $bundle: {
+        'key': '%EnMaasKey', 'key-type': 'java.lang.String',
+        'com.twofortyfouram.locale.intent.extra.BLURB': 'key %EnMaasKey',
+        'com.twofortyfouram.locale.intent.extra.BLURB-type': 'java.lang.String',
+      } } },
+    }],
+  };
+  const { macro, report } = emitMacro(irMacro);
+  assert.equal(report.emitted.length, 1);
+  assert.deepEqual(report.globalVariablesRequired, ['EnMaasKey']);
+  assert.deepEqual(macro.macro.globalVariables.map((v) => v.m_name), ['EnMaasKey']);
+  assert.deepEqual(macro.macro.localVariables, [], 'global must not be declared local');
+});
+
+await test('emitMacros: one broken macro does not take down the rest (per-macro try/catch)', () => {
+  const ir = { macros: [
+    Object.defineProperty({ name: 'throws' }, 'actions', {
+      get() { throw new Error('bad IR'); },
+    }),
+    { name: 'fine', variables: { local: [], global: [] }, actions: [] },
+  ] };
+  const { emissions } = emitMacros(ir);
+  assert.equal(emissions.length, 2);
+  assert.equal(emissions[0].macro, null);
+  assert.match(emissions[0].report.error, /bad IR/);
+  assert.equal(emissions[1].macro, null);
+  assert.equal(emissions[1].report.note, 'no plugin actions — macro not emitted');
 });
 
 await test('emitMacro: unknown plugin package is reported, node still emitted', () => {

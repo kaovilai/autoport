@@ -17,7 +17,7 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
 | V13 | Generated macro JSON passes MCP validate | ✅ proven offline (recorded probes) | `tests/fixtures/macrodroid/validator-probes/validate-ok.json` |
 | V14 | Structural validator rejects adversarial shapes | ✅ probe evidence recorded | `validate-probe-*.json` (bad classtype, unbalanced If rejected) |
 | V15 | End-to-end macro import into MacroDroid on device | ✅ emulator CI (manual dispatch) | MCP share link → MacroDroid macro editor (run 42341971557) |
-| M3.1 | Emit MacroDroid macro JSON from IR (plugin pass-through) | ✅ unit + e2e (every push) · MCP-validated live · 🔬 device import (emulator CI) | emitter suite (23 tests): Java-ObjectSerialization writer **byte-for-byte vs a JVM reference** (real AutoInput v1/v2 bundles included) + CI drift gate regenerating the reference; emitted LaunchInstagram macro `VALID` on the live MacroDroid MCP (recorded probe, parity-tested); browser e2e renders the macro card + copy button in both scopes; emulator CI imports the emitted pass-through macro via share link |
+| M3.1 | Emit MacroDroid macro JSON from IR (plugin pass-through) | ✅ unit + e2e (every push) · MCP-validated live · 🔬 device import (emulator CI) | emitter suite (33 tests): Java-ObjectSerialization writer **byte-for-byte vs a JVM reference** (real AutoInput v1/v2 bundles included) + CI drift gate regenerating the reference; emitted LaunchInstagram macro `VALID` on the live MacroDroid MCP (recorded probe, parity-tested); browser e2e renders the macro card + copy button in both scopes and pins the Gson importer contract (numeric byte array); emulator CI imports the emitted pass-through macro via share link and **asserts macro name + non-zero actions via uiautomator** |
 | V12 | PDF/PNG block count vs T0 | ❌ unproven (path demoted) | design §5.4 |
 
 ## Test layers (what runs where)
@@ -92,3 +92,17 @@ exercises the MCP share-link import.
   unrepresentable-note text, which contains the literal string "AutoInput").
   Fixed; the e2e now pins the chip markup and the decoded `click` op, and
   fails on `plugin: unknown`.
+
+- The pass-through emitter encoded `mSerializedBundle` as a base64 string.
+  MacroDroid imports macros with Gson (`GsonUtils.getMacroGson()`, no base64
+  adapter for `byte[]`), so the base64 string failed to deserialize and
+  `MacroDeserializer` silently dropped **every** `LocalePluginAction`: the
+  emulator run 8 import showed the macro with "Actions 0 — No Actions" while
+  the run's own gate passed ("editor opened" + a substring `VALID` check that
+  `INVALID` also satisfies). Fixed by emitting a numeric byte array (Gson's
+  `ArrayTypeAdapter` format), proven against the Gson source, and the device
+  step now gates on the MCP's structured `valid` flag and asserts via
+  uiautomator that the imported macro shows its name and non-zero actions.
+  Found by CodeRabbit review + the on-device screenshot; the unit/e2e suites
+  now pin `Array.isArray(mSerializedBundle)` and the Java-serialization
+  stream magic.

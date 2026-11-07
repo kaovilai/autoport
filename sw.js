@@ -14,7 +14,7 @@
  * answers 405 (python3 -m http.server answers 501) — the user sees an error page, no app.
  */
 
-const VERSION = 'v8';
+const VERSION = 'v9';
 /* Base path derived from the SW scope, so the app works when hosted at a subpath
  * (e.g. GitHub Pages project site https://host/autoport/). Scope always ends in '/'. */
 const BASE = new URL(self.registration.scope).pathname;
@@ -269,14 +269,15 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     // Delete only this scope's old caches; other scopes' workers own theirs.
-    // NB: for the root scope (BASE === '/') a simple endsWith(BASE) would also
-    // match deeper scopes' names (e.g. 'autoport-shell-v3/autoport/' ends with
-    // '/'), so a root worker would delete a sibling /autoport/ deployment's
-    // caches. Require the scope to be the name's COMPLETE path suffix.
+    // Cache names are `autoport-(shell|runtime)-v<VERSION><scopePath>`, so
+    // ownership = the path AFTER the known prefix equals BASE EXACTLY. A
+    // plain endsWith(BASE) is wrong in both directions: for BASE === '/' every
+    // name ends with '/', and for BASE === '/autoport/' a deeper deployment
+    // like '/x/autoport/' (name '...-v9/x/autoport/') also ends with
+    // '/autoport/' — the worker would delete a sibling deployment's caches.
     const isOwnScopeCache = (n) => {
-      if (!n.startsWith('autoport-') || !n.endsWith(BASE)) return false;
-      if (BASE === '/') return !n.slice(0, -1).includes('/');
-      return true;
+      const m = /^autoport-(?:shell|runtime)-v\d+(.*)$/.exec(n);
+      return m !== null && m[1] === BASE;
     };
     const keep = new Set([CACHE_SHELL, CACHE_RUNTIME]);
     const names = await caches.keys();

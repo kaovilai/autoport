@@ -147,6 +147,11 @@ async function renderTasker(name, buffer) {
   try {
     lastEmission = emitMacros(ir);
     for (const { macro, report } of lastEmission.emissions || []) {
+      if (report.error) {
+        cards.push(`<article class="card"><h3>MacroDroid macro — plugin pass-through</h3>
+          <p class="muted">⚠️ Macro emission failed: ${escapeHtml(report.error)}</p></article>`);
+        continue;
+      }
       if (!macro) continue;
       const verdict = validateMacro(macro);
       const skipped = report.skipped.length
@@ -154,11 +159,15 @@ async function renderTasker(name, buffer) {
       const unresolved = report.unresolvedVariables.length
         ? `<p class="muted small">⚠️ Tasker variables left literal (no MacroDroid equivalent declared): ${report.unresolvedVariables.map(escapeHtml).join(', ')}</p>` : '';
       const unknownPlugins = report.unknownPlugins.length
-        ? `<p class="muted small">⚠️ Plugin not in the registry (receiver unknown): ${report.unknownPlugins.map(escapeHtml).join(', ')}</p>` : '';
+        ? `<p class="muted small">⚠️ Plugin not in the registry (receiver unknown — MacroDroid shows the action but cannot fire it until the plugin is picked there): ${report.unknownPlugins.map(escapeHtml).join(', ')}</p>` : '';
+      const globalsNeeded = report.globalVariablesRequired.length
+        ? `<p class="muted small">⚠️ Tasker global variable(s) referenced (${report.globalVariablesRequired.map(escapeHtml).join(', ')}) — declared in the macro, but their values must be set in MacroDroid.</p>` : '';
+      const rejectedLong = report.rejectedLongValues.length
+        ? `<p class="muted small">⚠️ Plugin value(s) dropped (java.lang.Long is not representable in the locale-SDK bundle): ${report.rejectedLongValues.map((r) => escapeHtml(r.key)).join(', ')}</p>` : '';
       cards.push(`<article class="card">
         <h3>MacroDroid macro — plugin pass-through</h3>
         <p class="muted">${report.emitted.length} plugin action(s) delegated to their plugin apps · structural check: ${verdict.ok ? '<strong>valid</strong>' : `<strong>${verdict.errors.length} issue(s)</strong>`}</p>
-        ${skipped}${unresolved}${unknownPlugins}
+        ${skipped}${unresolved}${unknownPlugins}${globalsNeeded}${rejectedLong}
         <details><summary>Macro JSON (share into MacroDroid)</summary>
           <pre class="preview" tabindex="0">${escapeHtml(JSON.stringify(macro, null, 1))}</pre>
           <button class="btn primary" type="button" data-copy-macro>Copy macro JSON</button>

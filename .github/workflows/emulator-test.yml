@@ -226,6 +226,8 @@ jobs:
             console.log('emitted actions:', macro.macro.m_actionList.length);
           "
           # Validate + mint a share link via the live MacroDroid MCP server.
+          # Gate on the STRUCTURED verdict (structuredContent.valid) — the
+          # verdict text of an INVALID macro contains the word "VALID" too.
           python3 - <<'EOF' > /tmp/passthrough-link.txt
           import json, re, sys, urllib.request
           macro = open('/tmp/passthrough.macro.json').read()
@@ -238,9 +240,9 @@ jobs:
               'clientInfo':{'name':'autoport-ci','version':'1.0'}}, 1)
           v = rpc('tools/call', {'name':'validate_macrodroid_macro',
               'arguments':{'macro_json': macro}}, 2)
-          verdict = json.dumps(v)
-          print(verdict[:300], file=sys.stderr)
-          if '"VALID' not in verdict and 'VALID' not in verdict:
+          sc = (v.get('result') or {}).get('structuredContent') or {}
+          print(json.dumps(sc)[:400], file=sys.stderr)
+          if sc.get('valid') is not True:
               print('VALIDATION FAILED', file=sys.stderr); sys.exit(1)
           s = rpc('tools/call', {'name':'share_macrodroid_macro',
               'arguments':{'macro_json': macro}}, 3)
@@ -253,6 +255,22 @@ jobs:
           "$ADB" shell am start -a android.intent.action.VIEW -d "$PLINK"
           sleep 20
           "$ADB" exec-out screencap -p > /tmp/macrodroid-passthrough-import.png
+          # Assert the import INSIDE MacroDroid, not just that it foregrounded:
+          # the macro editor must show the macro name and must NOT show
+          # "No Actions" (run 8 proved a base64 mSerializedBundle silently
+          # drops every LocalePluginAction on import — the editor opened with
+          # "Actions 0 — No Actions" and the old check passed vacuously).
+          "$ADB" shell uiautomator dump /sdcard/passthrough-ui.xml >/dev/null
+          "$ADB" pull /sdcard/passthrough-ui.xml /tmp/passthrough-ui.xml >/dev/null
+          if ! grep -q "Launch Instagram" /tmp/passthrough-ui.xml; then
+            echo "::error::imported macro name 'Launch Instagram' not visible in the MacroDroid editor"
+            cat /tmp/passthrough-ui.xml; exit 1
+          fi
+          if grep -q "No Actions" /tmp/passthrough-ui.xml; then
+            echo "::error::MacroDroid imported the macro with ZERO actions — the LocalePluginAction nodes were dropped (check mSerializedBundle encoding)"
+            exit 1
+          fi
+          echo "pass-through import verified: macro name + actions present in the MacroDroid editor"
           top=$("$ADB" shell dumpsys activity activities | grep -i 'topResumedActivity' | head -1)
           echo "top activity after pass-through link: $top"
           echo "$top" | grep -qi macrodroid || echo "::warning::MacroDroid not foreground; check screenshot"
@@ -269,6 +287,7 @@ jobs:
             /tmp/pwa-offline-reload.png
             /tmp/macrodroid-import.png
             /tmp/macrodroid-passthrough-import.png
+            /tmp/passthrough-ui.xml
             /tmp/emulator.log
             /tmp/share-link.txt
           if-no-files-found: ignore

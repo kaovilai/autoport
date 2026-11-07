@@ -286,24 +286,50 @@ Wire format (all verified against decompiled MacroDroid
   real AutoInput v1/v2 bundles, nested bundles, String[], nulls, UTF-8 edge
   cases and JVM identity dedup — Boolean singletons, the Integer.valueOf
   cache — because Android's `Bundle.putBoolean/putInt` hit exactly those).
+  In the macro JSON the blob is a **numeric byte array**, not base64:
+  MacroDroid imports macros with Gson
+  (`com.arlosoft.macrodroid.gson.GsonUtils.getMacroGson()`), which registers
+  **no base64 adapter for `byte[]`** — Gson's `ArrayTypeAdapter` only reads
+  number arrays, and `MacroDeserializer` swallows the resulting
+  `JsonSyntaxException`, silently dropping the whole action. Proven on device
+  (emulator run 8: a base64 blob imported as "Actions 0 — No Actions"; the
+  numeric array imports with both actions intact).
 - **`blockActions: true`** (preserve Tasker action order), `arrayHandlingOption: 0`,
   `m_variableMap: {}` (no output-variable mapping in M3.1).
-- **Variable translation**: Tasker `%var` references in bundle string values
-  become MacroDroid magic text (`{lv=}` local, `{v=}` global — MacroDroid
-  applies magic text to plugin text fields at runtime), the used variables are
-  declared in `localVariables`/`globalVariables`. Tasker built-ins (`%err`,
-  `%TIME`, …) stay literal and are reported in the conversion report.
+- **Variable translation**: Tasker `%var` references in TOP-LEVEL bundle
+  string values (and the blurb) become MacroDroid magic text (`{lv=}` local,
+  `{v=}` global — MacroDroid applies magic text to plugin text fields at
+  runtime), the used variables are declared in
+  `localVariables`/`globalVariables`. Tasker built-ins (`%err`, `%errmsg`,
+  `%TIME`, …) stay literal and are reported — their runtime values live in
+  Tasker and a MacroDroid local of the same name would be unrelated.
+  Nested bundles keep `%var`s literal (reported): MacroDroid only rewrites
+  the values it knows to expand, so rewriting nested text would lie about
+  what the plugin receives. `java.lang.Long`-typed Vals have no
+  representation in the locale-SDK bundle serializer and are dropped +
+  reported.
+- **Guards**: plugin actions carrying a Tasker If-guard are skipped and
+  reported (never emitted without their condition — that would silently
+  change behavior). Guard translation is M3.2.
+- **Failure isolation**: `emitMacros` wraps each macro in try/catch; a macro
+  that fails to emit produces `macro: null` + `report.error`, rendered as a
+  failure card, and never takes down the rest of the conversion.
 - **Triggers**: `EmptyTrigger` (manual run) until trigger mapping lands (M3.2).
 
 Emission contract code: `js/targets/macrodroid/emitter.js` (`emitMacro`/
 `emitMacros`); typed-bundle reconstruction from the IR's flattened Vals uses
 the `-type` companions (`java.lang.String/Boolean/Integer`), `<null>`
-sentinels → null, `$array` → String[], `$bundle` → nested bundle.
+sentinels → null, `$array` → String[] (normalizing the parser's
+`[{$array:[...]}]` single-element wrapper), `$bundle` → nested bundle.
 
-Known limitation: the exact Jackson field-name spelling inside
-`m_plugin`/`m_pluginInstanceData` follows MacroDroid's decompiled classes and
-default Jackson behavior (field names as-is, enum names, byte[] as base64);
-import into the real app (emulator CI step "M3.1") is the end-to-end proof.
+The field-name spelling inside `m_plugin`/`m_pluginInstanceData` follows the
+decompiled twofortyfouram locale SDK classes (`Plugin`,
+`PluginInstanceData`, `PluginConfiguration`), enum names serialize as their
+constants, and import into the real app (emulator CI step "M3.1", asserting
+macro name + non-zero actions via uiautomator) is the end-to-end proof.
+Unknown plugin packages (not in `pluginRegistry.js`) still emit a node, but
+with a null fire receiver — MacroDroid shows the action and the user re-picks
+the plugin there; the conversion report flags them.
 
 
 ## 8. AutoInput → MacroDroid touch mapping (proven classes)

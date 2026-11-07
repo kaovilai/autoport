@@ -402,7 +402,14 @@ async function runScope(scopeName, base, context) {
     assert.ok(macro.macro.m_actionList.every((a) => a.m_classType === 'LocalePluginAction'));
     assert.equal(macro.macro.m_actionList[0].m_plugin.mReceiverClassName,
       'com.joaomgcd.autoinput.broadcastreceiver.BroadcastReceiverFire');
-    assert.ok(macro.macro.m_actionList[0].m_pluginInstanceData.mSerializedBundle.length > 100);
+    // Gson importer contract: mSerializedBundle must be a numeric byte array
+    // (MacroDroid's importer has no base64 adapter for byte[]; a base64
+    // string silently drops the whole action on device import).
+    const sb = macro.macro.m_actionList[0].m_pluginInstanceData.mSerializedBundle;
+    assert.ok(Array.isArray(sb), 'mSerializedBundle must be a JSON array');
+    assert.ok(sb.length > 100, 'bundle blob missing');
+    assert.ok(sb.every((b) => Number.isInteger(b) && b >= 0 && b <= 255), 'bundle must be bytes');
+    assert.deepEqual(sb.slice(0, 4), [0xac, 0xed, 0x00, 0x05], 'Java serialization stream magic missing');
     // in-page structural validation of the same JSON
     const verdict = await page.evaluate((json) => window.autoport.validateMacro(JSON.parse(json)), macroJson);
     assert.ok(verdict.ok, `in-page validation failed: ${JSON.stringify(verdict.errors)}`);
@@ -557,10 +564,12 @@ async function runScope(scopeName, base, context) {
     assert.equal(await card.getByRole('link', { name: 'Open in converter' }).count(), 0, 'oversized card must not offer converter handoff');
     // The record must not carry the payload — only its metadata.
     const rec = await page.evaluate(async () => {
-      const all = await new Promise((res) => {
+      const all = await new Promise((res, rej) => {
         const req = indexedDB.open('autoport');
+        req.onerror = () => rej(req.error);
         req.onsuccess = () => {
           const rq = req.result.transaction('inbox', 'readonly').objectStore('inbox').getAll();
+          rq.onerror = () => rej(rq.error);
           rq.onsuccess = () => res(rq.result);
         };
       });
@@ -703,12 +712,18 @@ for (const entry of readdirSync(repoRoot)) {
   symlinkSync(path.join(repoRoot, entry), path.join(comboDir, entry));
 }
 symlinkSync(repoRoot, path.join(comboDir, 'autoport'), 'dir');
+// a DEEPER sibling whose scope path ends with the same segment sequence
+// ('/x/autoport/'): its cache names end with '/autoport/', so a buggy
+// endsWith(BASE) cleanup in the /autoport/ worker would delete them.
+mkdirSync(path.join(comboDir, 'x'), { recursive: true });
+symlinkSync(repoRoot, path.join(comboDir, 'x', 'autoport'), 'dir');
 const comboServer = await startServer(comboDir);
 
 const rootBase = `http://127.0.0.1:${rootServer.port}/`;
 const subBase = `http://127.0.0.1:${subServer.port}/autoport/`;
 const comboRoot = `http://127.0.0.1:${comboServer.port}/`;
 const comboSub = `http://127.0.0.1:${comboServer.port}/autoport/`;
+const comboDeep = `http://127.0.0.1:${comboServer.port}/x/autoport/`;
 await waitServer(rootBase);
 await waitServer(subBase);
 await waitServer(comboRoot);
@@ -773,6 +788,42 @@ try {
       const subCaches = names.filter((n) => n.endsWith('/autoport/'));
       assert.ok(subCaches.length >= 1, `root worker activation deleted the sibling /autoport/ caches: ${JSON.stringify(names)}`);
       await rootPage.close();
+      await ctx.close();
+    });
+
+    // Deeper-sibling variant: the /autoport/ worker's own cleanup must not
+    // delete a deeper deployment whose cache names merely END with
+    // '/autoport/' ('autoport-shell-v9/x/autoport/'). The old endsWith(BASE)
+    // check deleted exactly these.
+    await t('cross-scope: /autoport/ worker activation must not delete deeper sibling (/x/autoport/) caches', async () => {
+      const ctx = await browser.newContext();
+      // Register the deep worker first so its caches exist before the
+      // /autoport/ worker re-activates.
+      const deepPage = await ctx.newPage();
+      await deepPage.goto(comboDeep);
+      await deepPage.waitForFunction(() => navigator.serviceWorker.controller !== null);
+      await deepPage.evaluate(async () => {
+        const names = await caches.keys();
+        const shell = names.find((n) => n.startsWith('autoport-shell-') && n.endsWith('/x/autoport/'));
+        if (!shell) throw new Error(`no deep sibling shell cache: ${names}`);
+      });
+      await deepPage.close();
+
+      // Load + re-activate the /autoport/ worker with the deep caches present.
+      const subPage = await ctx.newPage();
+      await subPage.goto(comboSub);
+      await subPage.waitForFunction(() => navigator.serviceWorker.controller !== null);
+      await subPage.evaluate(async () => {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) await reg.unregister();
+      });
+      await subPage.reload();
+      await subPage.waitForFunction(() => navigator.serviceWorker.controller !== null);
+
+      const names = await subPage.evaluate(async () => await caches.keys());
+      const deepCaches = names.filter((n) => n.endsWith('/x/autoport/'));
+      assert.ok(deepCaches.length >= 1, `/autoport/ worker activation deleted the deeper sibling /x/autoport/ caches: ${JSON.stringify(names)}`);
+      await subPage.close();
       await ctx.close();
     });
   } finally {
