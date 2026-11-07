@@ -3,10 +3,13 @@
   "version": "0.1.0-spike",
   "private": true,
   "type": "module",
-  "description": "AutoPort PWA shell — share-target spike. Static site; this file only exists so Node treats js/*.js as ES modules for the test harness.",
+  "description": "AutoPort PWA — convert Android automations between apps. Static site, no build step; this file pins the Playwright version used by the e2e suite.",
   "scripts": {
-    "test": "node test/run-tests.mjs",
-    "serve": "python3 tools/devserver.py --port 8080",
-    "icons": "python3 tools/gen_icons.py icons"
+    "test": "node tests/js/run-all.mjs",
+    "test:e2e": "node tests/e2e/run-e2e.mjs",
+    "serve": "python3 -m http.server 8080"
+  },
+  "devDependencies": {
+    "playwright": "1.64.0"
   }
 }

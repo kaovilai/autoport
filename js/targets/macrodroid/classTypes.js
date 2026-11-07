@@ -123,6 +123,14 @@ export const ALL_CLASS_TYPES = Object.freeze([
   ...TRIGGER_CLASS_TYPES,
   ...ACTION_CLASS_TYPES,
   ...CONSTRAINT_CLASS_TYPES,
+  // Not in list_macrodroid_features (the catalog omits plugin plumbing), but
+  // real MacroDroid classes: the live get_macrodroid_schema names both as the
+  // CORRECT types to use ("use ... LocalePluginAction", "use
+  // LocalePluginTrigger (TouchTask is a Locale plugin)"), and the live
+  // validate_macrodroid_macro accepts them (verified 2026-11-07). See
+  // docs/DESIGN.md §7.7 and the emitter's plugin pass-through.
+  'LocalePluginAction',
+  'LocalePluginTrigger',
 ]);
 
 export const ALL_CLASS_TYPE_SET = new Set(ALL_CLASS_TYPES);

@@ -1,8 +1,10 @@
 name: ci
 
-# AutoPort CI: no dependency installation. GitHub-hosted ubuntu runners already
-# ship python3; every test is python3 stdlib only. Node is preinstalled too but
-# is only used for `node --check` syntax validation of the browser modules.
+# AutoPort CI. The `test` job installs nothing: GitHub-hosted ubuntu runners
+# already ship python3; every unit/fixture test is python3 stdlib or node
+# stdlib. The `e2e` job is the exception — it installs the one pinned npm
+# devDependency (Playwright) plus a pinned Chromium to drive the real PWA
+# (service worker, share-target POST, offline, subpath scope) in a browser.
 on:
   push:
     branches: [main]
@@ -71,6 +73,18 @@ jobs:
       - name: MacroDroid mapping table check
         run: python3 -I scripts/check_mapping_table.py --table data/macrodroid/mappingTable.json
 
+      # M3.1 plugin pass-through: the committed JVM reference for the plugin
+      # bundle byte format must stay reproducible. javac/java are preinstalled.
+      - name: JVM reference drift gate (plugin bundle byte format)
+        run: |
+          javac -encoding UTF-8 scripts/josref/GenRef.java -d /tmp/josref
+          java -cp /tmp/josref GenRef > /tmp/jos-reference.json
+          diff -u tests/fixtures/macrodroid/jos-reference.json /tmp/jos-reference.json || {
+            echo "::error::jos-reference.json drifted from scripts/josref/GenRef.java output."
+            echo "Regenerate: java -cp /tmp/josref GenRef > tests/fixtures/macrodroid/jos-reference.json"
+            exit 1
+          }
+
       - name: Regenerate Tasker code tables (upstream fetch)
         run: python3 -I scripts/gen_tasker_codes.py --fetch --out data/taskerCodes.json
 
@@ -89,3 +103,30 @@ jobs:
           name: fixture-tests-report
           path: fixture-tests-report.json
           if-no-files-found: ignore
+
+  # Full-PWA end-to-end tests in a real Chromium, on every push/PR:
+  # load + SW activation + precache, every ingest path (picker / drag-drop /
+  # paste / page-paste), every sniffer route, share-target POST -> inbox ->
+  # converter handoff, oversized/empty/text-only shares, IndexedDB
+  # persistence, offline reload + offline parse + offline deep-link fallback
+  # (V1-V5 browser half, V4 golden equality). Runs the whole matrix twice:
+  # once at the server root, once under /autoport/ (GitHub Pages layout).
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      - name: Install Playwright (pinned) + Chromium
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Browser e2e suite (root scope + /autoport/ subpath scope)
+        run: node tests/e2e/run-e2e.mjs

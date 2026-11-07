@@ -9,7 +9,7 @@ Everything in `tests/fixtures/` is indexed by `tests/fixtures/MANIFEST.json`
 | `tasker/screen-on-wifi.prf.xml`, `tasker/autoport-demo.prj.xml`, `tasker-edge/*` | synthesized | MIT (ours) |
 | `tasker/whsatapp_random_words_demo.tsk.xml` | [sanwebinfo/tasker](https://github.com/sanwebinfo/tasker) (GitHub) | third-party; replace with synthetic equivalent before any redistribution concern |
 | `tasker/plugins/*.xml` (AutoInput bundles) | public GitHub repos (see MANIFEST `origin` fields; discovered via code search) | third-party; same caveat |
-| `automate/*.flo` | LlamaLab community share API (`llamalab.com/automate/community/api/v1/flows/<id>/data/`) | user-shared flows; kept as test corpus, not for redistribution — regenerate via `scripts/fetch_fixtures.py` if needed |
+| `automate/*.flo` | LlamaLab community share API (`llamalab.com/automate/community/api/v1/flows/<id>/data/`) | user-shared flows; kept as test corpus, not for redistribution — regenerate via `scripts/fetch_fixtures.py` if needed. Five of them (22590, 36322, 40232, 50902, 52217) contain Tasker/Locale plug-in statements and drive the plug-in pass-through tests + golden |
 | `automate/negative/*` | synthesized (random bytes, truncated header) | MIT (ours) |
 | `macrodroid/validator-probes/*.json` | recorded from `remote.macrodroid.com/mcp` `validate_macrodroid_macro` responses | factual API behavior |
 

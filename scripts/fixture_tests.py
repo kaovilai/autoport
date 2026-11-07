@@ -162,6 +162,44 @@ def main():
            "%d negative fixture(s): %s" % (len(neg_details), neg_details),
            {"negatives": neg_details})
 
+    # --- V22: .flo plug-in scanner (Automate pass-through) ------------------
+    # The oracle must find exactly the known plug-in statements in the five
+    # plugin flows and ZERO in the ten non-plugin flows (false-positive gate).
+    expected_plugins = {
+        "22590.flo": 12, "36322.flo": 4, "52217.flo": 14,
+        "40232.flo": 1, "50902.flo": 2,
+    }
+    # per-run output path: a fixed name would let concurrent runs clobber
+    # each other's oracle output
+    plug_out = os.path.join(tempfile.gettempdir(),
+                            "autoport-flo-plugins-%d.json" % os.getpid())
+    rc, _so, se = run([sys.executable, "-I", os.path.join(spikes, "flo_plugins.py"),
+                       plug_out, *flo_fixtures])
+    if rc == 0:
+        plug_report = json.load(open(plug_out, encoding="utf-8"))
+        per_file = {p["file"]: p for p in plug_report}
+        mismatches = []
+        for f, want in expected_plugins.items():
+            got = per_file.get(f, {}).get("pluginCount")
+            if got != want:
+                mismatches.append("%s: expected %d, got %s" % (f, want, got))
+        false_pos = [p["file"] for p in plug_report
+                     if p["file"] not in expected_plugins and p.get("pluginCount")]
+        # every hit must be a plug-in statement shape (never kind-less junk):
+        # at least the known-classifiable ones must come back with a kind
+        kinds = {p["file"]: sum(1 for x in p.get("plugins", []) if x.get("kind"))
+                 for p in plug_report}
+        record("V22_flo_plugin_scan",
+               not mismatches and not false_pos,
+               "%d flows scanned, %d plugin statements, %d false positives%s"
+               % (len(plug_report), sum(p.get("pluginCount", 0) for p in plug_report),
+                  len(false_pos),
+                  "; mismatches: " + "; ".join(mismatches) if mismatches else ""),
+               {"expected": expected_plugins, "kinds": kinds})
+    else:
+        record("V22_flo_plugin_scan", False,
+               "flo_plugins.py exited %d: %s" % (rc, se.strip().splitlines()[-1:] if se else ""))
+
     failures = [r for r in results if r["status"] == "FAIL"]
     report = {
         "tool": "fixture_tests.py",

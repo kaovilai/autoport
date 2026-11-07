@@ -4,6 +4,8 @@
 import { classify, humanSize, hexHead } from './sniff.js';
 import * as idb from './idb.js';
 
+const $ = (sel) => document.querySelector(sel);
+
 const listEl = $('#cards');
 const bannerEl = $('#banner');
 const emptyEl = $('#empty');

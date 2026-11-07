@@ -255,6 +255,197 @@ GitHub Pages serves no response headers, and a `<meta>` CSP cannot inject a user
 
 `list_macrodroid_features` returns a 49 KB markdown catalog (126/211/88 = fingerprint); one `get_macrodroid_schema` call is ~52 KB text / ~220–232 KB JSON — **raw dumps stay out of git**. `scripts/trim_mcp_snapshot.py` produces `catalog.json` (class → description + counts) and per-class trimmed schemas under `data/macrodroid/schemas/` (m_classType, field names/types/required/enums), sharing the ~800-line protocol boilerplate once. A scheduled CI job (weekly) re-fetches and PRs on drift; counts change = schema refresh required before merging mapping-table edits.
 
+### 7.7 Plugin pass-through via LocalePluginAction (M3.1 — shipped)
+
+Instead of mapping every Tasker action (and every AutoInput verb) to native
+MacroDroid actions, plugin-shaped IR actions are emitted as MacroDroid's
+**Tasker/Locale Plugin action** (`m_classType: "LocalePluginAction"`), which
+delegates execution to the plugin app itself at runtime. This covers the full
+plugin vocabulary (AutoInput touch/swipe/drag/click/multi-click/…, AutoRemote,
+any Locale plugin) with one bridge; native mapping stays worthwhile for the
+exact-mapped builtins (M3.2).
+
+Wire format (all verified against decompiled MacroDroid
+(`Mohsenabn78/macro-reverse-engineering`) and the live MCP):
+
+- **classType** `LocalePluginAction` — named as the correct type by the live
+  `get_macrodroid_schema`; accepted by `validate_macrodroid_macro` (recorded
+  probe: `tests/fixtures/macrodroid/passthrough-probes/`). `LocalePluginTrigger`
+  is the condition/event counterpart (future: Tasker plugin conditions).
+- **`m_plugin`** — plugin identity: `mType: "SETTING"`, package (Tasker arg1),
+  config activity (arg2), FIRE receiver + versionCode from
+  `js/targets/macrodroid/pluginRegistry.js` (AutoInput entry measured from the
+  real APK manifest: `BroadcastReceiverFire`, versionCode 104),
+  `mRegistryName = "package:activity"`, capability flags all false.
+- **`m_pluginInstanceData`** — `mBlurb` (the BLURB extra) and
+  **`mSerializedBundle`**: the plugin's configuration Bundle, serialized by the
+  twofortyfouram locale SDK's `BundleSerializer` — a Java Object Serialization
+  stream (`scripts/josref/GenRef.java` mirrors the decompiled method;
+  `js/targets/macrodroid/javaObjectStream.js` + `bundleSerializer.js` port it
+  byte-for-byte, proven against the committed JVM reference vectors including
+  real AutoInput v1/v2 bundles, nested bundles, String[], nulls, UTF-8 edge
+  cases and JVM identity dedup — Boolean singletons, the Integer.valueOf
+  cache — because Android's `Bundle.putBoolean/putInt` hit exactly those).
+  In the macro JSON the blob is a **numeric byte array**, not base64:
+  MacroDroid imports macros with Gson
+  (`com.arlosoft.macrodroid.gson.GsonUtils.getMacroGson()`), which registers
+  **no base64 adapter for `byte[]`** — Gson's `ArrayTypeAdapter` only reads
+  number arrays, and `MacroDeserializer` swallows the resulting
+  `JsonSyntaxException`, silently dropping the whole action. Proven on device
+  (emulator run 8: a base64 blob imported as "Actions 0 — No Actions"; the
+  numeric array imports with both actions intact).
+- **`blockActions: true`** (preserve Tasker action order), `arrayHandlingOption: 0`,
+  `m_variableMap: {}` (no output-variable mapping in M3.1).
+- **Variable translation**: Tasker `%var` references in TOP-LEVEL bundle
+  string values (and the blurb) become MacroDroid magic text (`{lv=}` local,
+  `{v=}` global — MacroDroid applies magic text to plugin text fields at
+  runtime). Used LOCAL variables are declared in `localVariables`
+  (`Macro.java` field). Tasker GLOBALS are NOT nested in the emitted macro:
+  `Macro` has no `globalVariables` field (globals are device-level entities
+  created in MacroDroid's Variables screen, and Gson ignores unknown
+  fields) — they are reported as external prerequisites instead, and the UI
+  tells the user to create them. Tasker built-ins (`%err`, `%errmsg`,
+  `%TIME`, …) stay literal and are reported — their runtime values live in
+  Tasker and a MacroDroid local of the same name would be unrelated.
+  Nested bundles keep `%var`s literal (reported): MacroDroid only rewrites
+  the values it knows to expand, so rewriting nested text would lie about
+  what the plugin receives. `java.lang.Long`-typed Vals have no
+  representation in the locale-SDK bundle serializer and are dropped +
+  reported.
+- **Guards**: plugin actions carrying a Tasker If-guard are skipped and
+  reported (never emitted without their condition — that would silently
+  change behavior). Guard translation is M3.2.
+- **Control-flow nesting**: Tasker `IF`/`FOR` open a block and
+  `ENDIF`/`ENDFOR` close it; a plugin action inside a block is skipped and
+  reported until control-flow mapping lands (M3.2) — emitting it would run
+  it unconditionally. This requires TRUE task order: Tasker's XML writer
+  emits `<Action>` children sorted by `sr` as a STRING (`act10` before
+  `act2`), so both the JS parser and the reference oracle sort actions by
+  NUMERIC sr (the fixture itself proves it: Utils' "Unlock Screen" has
+  `IF(act2) … FOR(act7) … ENDFOR(act10) … ENDIF(act14)`, which is only a
+  valid structure in numeric order; document order puts ENDFOR before its
+  FOR).
+- **Disabled actions**: Tasker exports a disabled action as `<on>false</on>`
+  (IR: `args.on`) — such plugin actions are skipped and reported rather than
+  re-enabled.
+- **Type fidelity**: only `java.lang.String`, `java.lang.Boolean`,
+  `java.lang.Integer`, `[Ljava.lang.String;` and `android.os.Bundle` are
+  representable; `java.lang.Long` and any other type companion (Float,
+  Double, …) are dropped and reported — never silently re-typed.
+- **Built-ins** are matched EXACT-CASE against the documented Tasker variable
+  list (plus `%parN` by pattern): `%TIME` is a builtin, a user global named
+  `%Time` is a different variable and still translates.
+- **JSON-encoded values**: Tasker marks v2-style payload keys in
+  `net.dinglisch.android.tasker.JSON_ENCODED_KEYS` and JSON-escapes variable
+  substitution there at fire time; MacroDroid does plain runtime replacement.
+  Emission keeps the magic text but reports the key (UI warning) because a
+  runtime value containing quotes/backslashes/newlines can break the payload.
+- **Variable semantics**: used locals are declared as MacroDroid STRING
+  variables (`m_type: 2`); Tasker numeric/array variable types are not
+  preserved (MacroDroid coerces magic text at runtime), and Tasker array
+  references (`%arr()`) are left literal and reported in
+  `unresolvedVariables` rather than half-translated to `{lv=arr}()`.
+- **Failure isolation**: `emitMacros` wraps each macro in try/catch; a macro
+  that fails to emit produces `macro: null` + `report.error`, rendered as a
+  failure card, and a macro with nothing emittable renders a report-only card
+  listing the skip reasons.
+- **Triggers**: `EmptyTrigger` (manual run) until trigger mapping lands (M3.2).
+
+Emission contract code: `js/targets/macrodroid/emitter.js` (`emitMacro`/
+`emitMacros`); typed-bundle reconstruction from the IR's flattened Vals uses
+the `-type` companions (`java.lang.String/Boolean/Integer`), `<null>`
+sentinels → null, `$array` → String[] (normalizing the parser's
+`[{$array:[...]}]` single-element wrapper), `$bundle` → nested bundle.
+
+The field-name spelling inside `m_plugin`/`m_pluginInstanceData` follows the
+decompiled twofortyfouram locale SDK classes (`Plugin`,
+`PluginInstanceData`, `PluginConfiguration`), enum names serialize as their
+constants, and import into the real app (emulator CI step "M3.1", asserting
+macro name + non-zero actions via uiautomator) is the end-to-end proof.
+Unknown plugin packages (not in `pluginRegistry.js`) still emit a node, but
+with a null fire receiver — MacroDroid shows the action and the user re-picks
+the plugin there; the conversion report flags them.
+
+
+### 7.8 Automate `.flo` plug-in pass-through (M3.1 — shipped)
+
+Automate flows reach MacroDroid the same way Tasker flows do: every
+Tasker/Locale **plug-in statement** in the flow becomes a `LocalePluginAction`
+carrying the plugin's original configuration bundle. The flow's other
+statements (control flow, native Automate blocks) are NOT converted — that
+needs the T1 statement registry (~620 classes) — and the emitted macro's
+description and the conversion report both say so. This is a deliberately
+honest partial: "we support Automate users porting their *plugin* automations
+to MacroDroid", not "we convert Automate flows".
+
+**Where the plug-in statements live in a `.flo`** (decompiled
+`com.llamalab.automate.stmt`, build 267): three statement classes hold a
+shared `F0` config object —
+
+- `1104 PlugInCondition` (a decision)
+- `1105 PlugInEvent` (an action)
+- `1106 PlugInSetting` (an intermittent action)
+
+`F0.w0(Q3.c)` reads, in order: package (UTF), activity class (UTF), the
+configuration **Bundle as a marshalled Android Parcel** (`Q3.c.h`: varint byte
+count + raw parcel bytes), blurb (UTF), output variable names (String[]), M0
+output mappings, a boolean. The file-level layout (`D0.w0`) is
+`LAFl` + version u16 + nextStatementId + count, then `count` statements, each
+a zigzag-varint-typed object graph — so plug-in statements can sit at any
+nesting depth under control-flow statements.
+
+**The scanner** (`js/sources/automate/floPlugins.js`, port of the
+`scripts/flo_plugins.py` oracle) therefore does not parse the graph. It
+anchors on package-shaped byte runs and validates each candidate F0 body
+end-to-end: package regex → class-shaped activity → the parcel must parse
+**strictly** as an Android Bundle (`BNDL` magic, declared count, entries
+consuming exactly the declared length, AOSP string padding — a string is
+`[int32 charLen][UTF-16LE][2-byte NUL]` with the `(n+1)*2` payload rounded up
+to 4), then a decodable blurb and variable names. Four independent levels of
+round-trip validation make false positives on arbitrary flow bytes
+essentially impossible — verified: the ten non-plugin corpus flows yield zero
+hits. Some plugins' parcels carry trailing zero padding (observed: AutoCast,
+4 bytes); a small zero-only tail is accepted. Values the locale SDK cannot
+represent are decoded as tagged objects (`{$parcel: 'java.lang.Long', …}`,
+`byte[]`, `int[]`, map/parcelable/serializable via their declared lengths) so
+the emitter drops and reports them exactly like the Tasker path — an
+unrepresentable value never loses the plug-in statement itself. Only an
+unknown Parcel tag without a skippable layout still rejects the whole anchor.
+
+**Statement kind** is recovered only when the exact base chain
+(`[typeId][id][x][y][null/back-reference fields]`) ends at the package length
+varint — when an inline object sits in between (e.g. a nested `Delay` as
+`onComplete`) the kind is unprovable without T1. Unproven blocks are emitted
+as actions (the dominant case: AutoInput and friends are setting plugins) and
+counted in the report (`typeAssumedSetting`); classified `CONDITION`/`EVENT`
+blocks are skipped and reported, because constraint/trigger placement needs
+the flow graph.
+
+**Emission** (`emitAutomateMacro` in `emitter.js`): the decoded Parcel Bundle
+is re-serialized into the twofortyfouram locale-SDK format via
+`bundleSerializer.js` — MacroDroid cannot consume a marshalled Parcel
+directly — and carried as a JSON numeric byte array (`mSerializedBundle`,
+same Gson importer contract as §7.7). Actions are emitted in **file order**,
+which is statement-list order, not execution order; the flow's control flow
+is not translated, so order only matters as a faithful inventory of the
+plug-in invocations. Automate `%variables` in bundle strings are left
+**literal** (Automate's own runtime leaves undefined `%vars` literal, and the
+flow's variable definitions are not recoverable without T1); every `%name`
+found is reported for review in the MacroDroid editor, and the flow's
+output-variable names are reported as unmapped. AutoInput is in the plugin
+registry (real fire receiver); other plugins are best-effort nodes with a
+null receiver, flagged in the report — same policy as the Tasker path.
+
+Verified: oracle-parity suite over the 15-flow corpus (33 plug-in statements
+in 5 plugin flows, zero false positives), synthetic Parcel-decode tests
+(padding, VAL_NULL, nested bundles, tagged Long — one of which caught a real
+decoder bug), emission contract tests, browser e2e (macro card + copy button
+in both scopes), a recorded live-MCP probe (`VALID`,
+`tests/fixtures/macrodroid/passthrough-probes/validate-passthrough-automate-36322.json`,
+parity-tested), and the emulator CI device import gate (macro editor + 4
+rendered action rows via uiautomator).
+
+
 ## 8. AutoInput → MacroDroid touch mapping (proven classes)
 
 | AutoInput op | MacroDroid class / action |

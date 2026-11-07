@@ -154,6 +154,18 @@
    "sha256": "b9b28f17cb04cfeeb15f78e0bb766ef1e7df326acd02266166cd9089a4c7ddc8"
   },
   {
+   "bytes": 14870,
+   "category": "autoproof",
+   "exists": true,
+   "notes": "plug-in pass-through fixture (AutoInput/AutoCast statements)",
+   "origin": "LlamaLab community share API (llamalab.com/automate/community/api/v1/flows/22590/data/)",
+   "path": "autoproof/fixtures/automate/22590.flo",
+   "purpose": "Automate flow fixture with Tasker/Locale plug-in statements (M3.1 Automate pass-through)",
+   "repoDisposition": "commit",
+   "repoPath": "tests/fixtures/automate/22590.flo",
+   "sha256": "b698d35840fedad6fefb750f7ea7c8d07222be772362146a6b17349e5a011548"
+  },
+  {
    "bytes": 868,
    "category": "autoproof",
    "exists": true,
@@ -226,6 +238,18 @@
    "sha256": "3e8b7396c23c8f1203b51617d431ab8a40ba20d98341b8a7619c85671d7f1f45"
   },
   {
+   "bytes": 6034,
+   "category": "autoproof",
+   "exists": true,
+   "notes": "plug-in pass-through fixture (AutoInput/AutoCast statements)",
+   "origin": "LlamaLab community share API (llamalab.com/automate/community/api/v1/flows/36322/data/)",
+   "path": "autoproof/fixtures/automate/36322.flo",
+   "purpose": "Automate flow fixture with Tasker/Locale plug-in statements (M3.1 Automate pass-through)",
+   "repoDisposition": "commit",
+   "repoPath": "tests/fixtures/automate/36322.flo",
+   "sha256": "308a365be753e5de3e9e360b42d1a0a64e0e14b18e73f1d9d53307dff4293e83"
+  },
+  {
    "bytes": 315,
    "category": "autoproof",
    "exists": true,
@@ -236,6 +260,18 @@
    "repoDisposition": "commit",
    "repoPath": "tests/fixtures/automate/36754.flo",
    "sha256": "53690b21d2c7440a07d2ba2c0af9f905259273105fea970cdcd204a5ba4e264c"
+  },
+  {
+   "bytes": 7740,
+   "category": "autoproof",
+   "exists": true,
+   "notes": "plug-in pass-through fixture (AutoInput/AutoCast statements)",
+   "origin": "LlamaLab community share API (llamalab.com/automate/community/api/v1/flows/40232/data/)",
+   "path": "autoproof/fixtures/automate/40232.flo",
+   "purpose": "Automate flow fixture with Tasker/Locale plug-in statements (M3.1 Automate pass-through)",
+   "repoDisposition": "commit",
+   "repoPath": "tests/fixtures/automate/40232.flo",
+   "sha256": "4ab313cc6759ad51b3c45079bab499b0860f2d3cbdf8859d4533bc35e09da359"
   },
   {
    "bytes": 632,
@@ -250,6 +286,18 @@
    "sha256": "c78d9734e5fdf0bfd340b8f7761b5f9c51e038c0bbedb2aee6eda74dbd6bede7"
   },
   {
+   "bytes": 6467,
+   "category": "autoproof",
+   "exists": true,
+   "notes": "plug-in pass-through fixture (AutoInput/AutoCast statements)",
+   "origin": "LlamaLab community share API (llamalab.com/automate/community/api/v1/flows/50902/data/)",
+   "path": "autoproof/fixtures/automate/50902.flo",
+   "purpose": "Automate flow fixture with Tasker/Locale plug-in statements (M3.1 Automate pass-through)",
+   "repoDisposition": "commit",
+   "repoPath": "tests/fixtures/automate/50902.flo",
+   "sha256": "ce7c32fa75e0de4de497457e6cde493618fc9b94c30ce5e27e859df0c8c494ff"
+  },
+  {
    "bytes": 2032,
    "category": "autoproof",
    "exists": true,
@@ -260,6 +308,18 @@
    "repoDisposition": "commit",
    "repoPath": "tests/fixtures/automate/51455.flo",
    "sha256": "a8766b64cbdb48d3a16bb0298a91551ab61848ee7b2dcc99a42c2dbdf4ee450e"
+  },
+  {
+   "bytes": 19363,
+   "category": "autoproof",
+   "exists": true,
+   "notes": "plug-in pass-through fixture (AutoInput/AutoCast statements)",
+   "origin": "LlamaLab community share API (llamalab.com/automate/community/api/v1/flows/52217/data/)",
+   "path": "autoproof/fixtures/automate/52217.flo",
+   "purpose": "Automate flow fixture with Tasker/Locale plug-in statements (M3.1 Automate pass-through)",
+   "repoDisposition": "commit",
+   "repoPath": "tests/fixtures/automate/52217.flo",
+   "sha256": "2905fe87329271e447a3496dcddadc7050efca106570788d34846945089f1328"
   },
   {
    "bytes": 4509,
@@ -729,10 +789,10 @@
    "exists": true,
    "notes": null,
    "origin": "local workspace artifact",
-   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u555f\u52d5\u76f8\u6a5f\u5feb\u901f\u6293\u62cd__\u914d\u7f6e\u6a94_\u5074\u9375\u555f\u52d5\u76f8\u6a5f\u5feb\u901f\u6293\u62cd.prf.xml",
+   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__功能__啟動相機快速抓拍__配置檔_側鍵啟動相機快速抓拍.prf.xml",
    "purpose": "Tasker export fixture: parser golden corpus",
    "repoDisposition": "commit",
-   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u555f\u52d5\u76f8\u6a5f\u5feb\u901f\u6293\u62cd__\u914d\u7f6e\u6a94_\u5074\u9375\u555f\u52d5\u76f8\u6a5f\u5feb\u901f\u6293\u62cd.prf.xml",
+   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__功能__啟動相機快速抓拍__配置檔_側鍵啟動相機快速抓拍.prf.xml",
    "sha256": "ff4b8ade66f82053bb56de10619de310f1e44799cf06e73436b0d1f7ee4801ed"
   },
   {
@@ -741,10 +801,10 @@
    "exists": true,
    "notes": null,
    "origin": "local workspace artifact",
-   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u63a8\u7279\u9ede\u64ca\u611b\u5fc3\u81ea\u52d5\u4e0b\u8f09\u5716\u7247__\u914d\u7f6e\u6a94_Twitter_Auto_Download.prf.xml",
+   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__功能__推特點擊愛心自動下載圖片__配置檔_Twitter_Auto_Download.prf.xml",
    "purpose": "Tasker export fixture: parser golden corpus",
    "repoDisposition": "commit",
-   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u63a8\u7279\u9ede\u64ca\u611b\u5fc3\u81ea\u52d5\u4e0b\u8f09\u5716\u7247__\u914d\u7f6e\u6a94_Twitter_Auto_Download.prf.xml",
+   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__功能__推特點擊愛心自動下載圖片__配置檔_Twitter_Auto_Download.prf.xml",
    "sha256": "20696555b7cea176e6a758e65d9acafec144ce3b34c22a27ce35ae3482b493b1"
   },
   {
@@ -753,10 +813,10 @@
    "exists": true,
    "notes": null,
    "origin": "local workspace artifact",
-   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u81ea\u52d5\u958b\u555f\u87a2\u5e55__\u4efb\u52d9_\u81ea\u52d5\u958b\u555f\u87a2\u5e55.tsk.xml",
+   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__功能__自動開啟螢幕__任務_自動開啟螢幕.tsk.xml",
    "purpose": "Tasker export fixture: parser golden corpus",
    "repoDisposition": "commit",
-   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u81ea\u52d5\u958b\u555f\u87a2\u5e55__\u4efb\u52d9_\u81ea\u52d5\u958b\u555f\u87a2\u5e55.tsk.xml",
+   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__功能__自動開啟螢幕__任務_自動開啟螢幕.tsk.xml",
    "sha256": "29f02bc62db18bb1e44e2ba45acaaa028c4a05cb14d78bd1c3b36ed3d183a7f5"
   },
   {
@@ -765,10 +825,10 @@
    "exists": true,
    "notes": null,
    "origin": "local workspace artifact",
-   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u81ea\u52d5\u958b\u555f\u87a2\u5e55__\u6e2c\u8a66\u5ef6\u9072\u57f7\u884c\u81ea\u52d5\u958b\u555f\u87a2\u5e55.tsk.xml",
+   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__功能__自動開啟螢幕__測試延遲執行自動開啟螢幕.tsk.xml",
    "purpose": "Tasker export fixture: parser golden corpus",
    "repoDisposition": "commit",
-   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u81ea\u52d5\u958b\u555f\u87a2\u5e55__\u6e2c\u8a66\u5ef6\u9072\u57f7\u884c\u81ea\u52d5\u958b\u555f\u87a2\u5e55.tsk.xml",
+   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__功能__自動開啟螢幕__測試延遲執行自動開啟螢幕.tsk.xml",
    "sha256": "9243f44442f23290cd2a2aa57e420d0eb2bf8514fa0cfcaf8ae13b38b0b850ea"
   },
   {
@@ -777,10 +837,10 @@
    "exists": true,
    "notes": null,
    "origin": "local workspace artifact",
-   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u958b\u555fEasyWallet\u81ea\u52d5\u52a0\u503c\u6a5f__\u4efb\u52d9_\u958b\u555fEasyWallet\u81ea\u52d5\u52a0\u503c\u6a5f.tsk.xml",
+   "path": "autoproof/fixtures/raw-pool/Jwander0820__TaskerScript__功能__開啟EasyWallet自動加值機__任務_開啟EasyWallet自動加值機.tsk.xml",
    "purpose": "Tasker export fixture: parser golden corpus",
    "repoDisposition": "commit",
-   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__\u529f\u80fd__\u958b\u555fEasyWallet\u81ea\u52d5\u52a0\u503c\u6a5f__\u4efb\u52d9_\u958b\u555fEasyWallet\u81ea\u52d5\u52a0\u503c\u6a5f.tsk.xml",
+   "repoPath": "tests/fixtures/raw-pool/Jwander0820__TaskerScript__功能__開啟EasyWallet自動加值機__任務_開啟EasyWallet自動加值機.tsk.xml",
    "sha256": "37fd759d116941fa10ba8a0696bb9f46f14c2c18c53f79a5a5030c7d8eb7ab6f"
   },
   {
@@ -1293,10 +1353,10 @@
    "exists": true,
    "notes": null,
    "origin": "local workspace artifact",
-   "path": "autoproof/fixtures/raw-pool/vincent5753__HBFS__Android__\u6bcf\u65e5.tsk.xml",
+   "path": "autoproof/fixtures/raw-pool/vincent5753__HBFS__Android__每日.tsk.xml",
    "purpose": "Tasker export fixture: parser golden corpus",
    "repoDisposition": "commit",
-   "repoPath": "tests/fixtures/raw-pool/vincent5753__HBFS__Android__\u6bcf\u65e5.tsk.xml",
+   "repoPath": "tests/fixtures/raw-pool/vincent5753__HBFS__Android__每日.tsk.xml",
    "sha256": "2e2ca222f7cd5cee4dc4578328fd5adcdf51020736df76f48dbb5a20a938dd90"
   },
   {
@@ -3381,55 +3441,45 @@
   "byCategory": {
    "analysis": {
     "bytes": 222186608,
-    "planned": 0,
     "present": 4
-   },
-   "autoproof": {
-    "bytes": 11605718,
-    "planned": 0,
-    "present": 252
    },
    "docs": {
     "bytes": 50439,
-    "planned": 0,
     "present": 3
    },
-   "downloads": {
-    "bytes": 40657260,
-    "planned": 0,
-    "present": 5
+   "autoproof": {
+    "bytes": 11660192,
+    "present": 257
    },
    "fixtures": {
     "bytes": 0,
-    "planned": 17,
-    "present": 0
+    "present": 17
+   },
+   "downloads": {
+    "bytes": 40657260,
+    "present": 5
    },
    "samples": {
     "bytes": 974,
-    "planned": 0,
     "present": 1
    },
    "tools": {
     "bytes": 244952360,
-    "planned": 0,
     "present": 2
    }
   },
   "byRepoDisposition": {
-   "commit": {
-    "bytes": 6595305,
-    "planned": 17,
-    "present": 164
+   "local-only": {
+    "bytes": 509712608,
+    "present": 58
    },
    "generated": {
     "bytes": 3145446,
-    "planned": 0,
     "present": 45
    },
-   "local-only": {
-    "bytes": 509712608,
-    "planned": 0,
-    "present": 58
+   "commit": {
+    "bytes": 6649779,
+    "present": 186
    }
   },
   "copiedIntoFixtures": [],
@@ -3439,9 +3489,9 @@
    "autoproof/fixtures/negative/truncated-magic-only.flo",
    "autoproof/fixtures/negative/truncated-header.flo"
   ],
-  "present": 267,
-  "presentBytes": 519453359,
-  "totalEntries": 284
+  "present": 289,
+  "presentBytes": 519507833,
+  "totalEntries": 289
  },
  "workspace": "/home/tkaovila/.t3/scratch/2026-11-06-reverse-engineer-anything-android-automation-4ec280f4"
 }

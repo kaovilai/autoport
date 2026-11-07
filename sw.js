@@ -14,7 +14,7 @@
  * answers 405 (python3 -m http.server answers 501) — the user sees an error page, no app.
  */
 
-const VERSION = 'v3';
+const VERSION = 'v10';
 /* Base path derived from the SW scope, so the app works when hosted at a subpath
  * (e.g. GitHub Pages project site https://host/autoport/). Scope always ends in '/'. */
 const BASE = new URL(self.registration.scope).pathname;
@@ -38,8 +38,13 @@ const SHELL = [
   '/js/sources/tasker/actionCodes.js',
   '/js/sources/tasker/pluginAutoInput.js',
   '/js/sources/automate/floParser.js',
+  '/js/sources/automate/floPlugins.js',
   '/js/targets/macrodroid/structuralValidator.js',
   '/js/targets/macrodroid/classTypes.js',
+  '/js/targets/macrodroid/emitter.js',
+  '/js/targets/macrodroid/bundleSerializer.js',
+  '/js/targets/macrodroid/javaObjectStream.js',
+  '/js/targets/macrodroid/pluginRegistry.js',
   '/data/taskerCodes.json',
   '/data/macrodroid/mappingTable.json',
   '/manifest.webmanifest',
@@ -265,10 +270,20 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     // Delete only this scope's old caches; other scopes' workers own theirs.
+    // Cache names are `autoport-(shell|runtime)-v<VERSION><scopePath>`, so
+    // ownership = the path AFTER the known prefix equals BASE EXACTLY. A
+    // plain endsWith(BASE) is wrong in both directions: for BASE === '/' every
+    // name ends with '/', and for BASE === '/autoport/' a deeper deployment
+    // like '/x/autoport/' (name '...-v9/x/autoport/') also ends with
+    // '/autoport/' — the worker would delete a sibling deployment's caches.
+    const isOwnScopeCache = (n) => {
+      const m = /^autoport-(?:shell|runtime)-v\d+(.*)$/.exec(n);
+      return m !== null && m[1] === BASE;
+    };
     const keep = new Set([CACHE_SHELL, CACHE_RUNTIME]);
     const names = await caches.keys();
     await Promise.all(names.map((n) => (
-      (n.startsWith('autoport-') && n.endsWith(BASE) && !keep.has(n)) ? caches.delete(n) : null
+      (isOwnScopeCache(n) && !keep.has(n)) ? caches.delete(n) : null
     )));
     await self.clients.claim();
     await notifyClients({ type: 'autoport:sw-activated', version: VERSION });

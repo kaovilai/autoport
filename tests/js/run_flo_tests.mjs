@@ -51,15 +51,20 @@ function readFixture(rel) {
 // file -> [version, statementCount, nextStatementId, stringsCount]
 const POSITIVE_EXPECTED = {
   '1446.flo': [44, 48, 80, 30],
+  '22590.flo': [73, 30, 53, 163],   // AutoInput flow — plug-in pass-through fixture
   '23006.flo': [79, 19, 52, 25],
   '23050.flo': [74, 15, 41, 36],
   '23776.flo': [74, 8, 13, 6],
   '28537.flo': [100, 24, 90, 167],
   '32031.flo': [81, 30, 208, 95],
   '3298.flo': [53, 14, 22, 7],
+  '36322.flo': [84, 15, 38, 72],    // AutoInput flow — plug-in pass-through fixture
   '36754.flo': [84, 9, 17, 6],
+  '40232.flo': [91, 85, 136, 131],  // AutoCast flow — plug-in pass-through fixture
   '42490.flo': [94, 9, 22, 26],
+  '50902.flo': [112, 117, 211, 94], // AutoCast flow — plug-in pass-through fixture
   '51455.flo': [109, 12, 18, 66],
+  '52217.flo': [110, 35, 57, 215],  // AutoInput flow — plug-in pass-through fixture
 };
 
 const NEGATIVE_EXPECTED = {

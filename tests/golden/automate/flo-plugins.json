@@ -1,0 +1,1148 @@
+[
+ {
+  "file": "1446.flo",
+  "version": 44,
+  "statementCount": 48,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "22590.flo",
+  "version": 73,
+  "statementCount": 30,
+  "pluginCount": 12,
+  "plugins": [
+   {
+    "offset": 117,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 964,
+    "blurb": "Type: Id\nValue: com.appredeem.apptrailers:id/btnWatch\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "com.appredeem.apptrailers:id/btnWatch",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "efa620ac-8c29-487b-bd21-8db38e7965d6",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "1",
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 1349,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 904,
+    "blurb": "Type: Point\nValue: 240,279\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "240,279",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "26319ad0-8cf6-4b8a-b2e9-081b5ffef175",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "5",
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 2494,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 892,
+    "blurb": "Type: List\nValue: 3\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "3",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "0e2aea2b-a812-4928-86c2-72b67a45e118",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "3",
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 3620,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 976,
+    "blurb": "Type: Id\nValue: com.appredeem.apptrailers:id/btnWatchVideos\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "com.appredeem.apptrailers:id/btnWatchVideos",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "cf1b2a62-60b9-4230-8db2-bc7c2edeaff6",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "1",
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 4870,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 980,
+    "blurb": "Type: Id\nValue: com.appredeem.apptrailers:id/navigation_home\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "com.appredeem.apptrailers:id/navigation_home",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "a994fabc-acb4-4053-ac15-a3a9230be8c7",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "1",
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 6329,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 892,
+    "blurb": "Stored Action: AppTrailers - button2 - Click",
+    "varNames": [
+     "StoredAction",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": null,
+     "ActionType": null,
+     "TextToWrite": null,
+     "StoredAction": "3cdaf842-daca-4b8c-bffa-602cd1d9e26d",
+     "plugininstanceid": "1305034a-2a16-42cc-ad86-ee430012c652",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 7468,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 972,
+    "blurb": "Type: Id\nValue: com.appredeem.apptrailers:id/button_close\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "com.appredeem.apptrailers:id/button_close",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "4869014a-0fb1-4a71-be12-a86f91e34342",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "1",
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 8741,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 964,
+    "blurb": "Type: Id\nValue: com.appredeem.apptrailers:id/btnWatch\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "com.appredeem.apptrailers:id/btnWatch",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "efa620ac-8c29-487b-bd21-8db38e7965d6",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "1",
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 10104,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 904,
+    "blurb": "Type: Text\nValue: FINISH\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "FINISH",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "4869014a-0fb1-4a71-be12-a86f91e34342",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 11308,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 904,
+    "blurb": "Type: Text\nValue: FINISH\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "FINISH",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "4869014a-0fb1-4a71-be12-a86f91e34342",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 12491,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 892,
+    "blurb": "Stored Action: AppTrailers - hyprmx_submit_button - Click",
+    "varNames": [
+     "StoredAction",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": null,
+     "ActionType": null,
+     "TextToWrite": null,
+     "StoredAction": "43f20a0e-a569-433d-b1c7-18ea30e1b29f",
+     "plugininstanceid": "1305034a-2a16-42cc-ad86-ee430012c652",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 13654,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 892,
+    "blurb": "Stored Action: AppTrailers - 'I prefer not to answer' - Click",
+    "varNames": [
+     "StoredAction",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": null,
+     "ActionType": null,
+     "TextToWrite": null,
+     "StoredAction": "19055d3c-263a-4839-a50e-42b9ca11cd8a",
+     "plugininstanceid": "a47de97c-6f2e-4efa-a75f-2d2706e9bcd3",
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": null,
+     "IsFirstAction": false
+    }
+   }
+  ]
+ },
+ {
+  "file": "23006.flo",
+  "version": 79,
+  "statementCount": 19,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "23050.flo",
+  "version": 74,
+  "statementCount": 15,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "23776.flo",
+  "version": 74,
+  "statementCount": 8,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "28537.flo",
+  "version": 100,
+  "statementCount": 24,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "32031.flo",
+  "version": 81,
+  "statementCount": 30,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "3298.flo",
+  "version": 53,
+  "statementCount": 14,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "36322.flo",
+  "version": 84,
+  "statementCount": 15,
+  "pluginCount": 4,
+  "plugins": [
+   {
+    "offset": 56,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1124,
+    "blurb": "Type: Text\nValue: Ana birim sunucusunu başlat\nAction : Click\nTimes: 1",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "RepeatTimes",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType RepeatTimes plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "Ana birim sunucusunu başlat",
+     "RepeatTimes": "1",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "9930d403-3c56-4dee-9cf6-5ea47d2aace7",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 1461,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 1104,
+    "blurb": "Type: Text\nValue: Diğer seçenekler\nAction : Click\nTimes: 1",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "RepeatTimes",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType RepeatTimes plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "Diğer seçenekler",
+     "RepeatTimes": "1",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "9f630b08-73a6-4fec-a059-af45e18952b5",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 3098,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1124,
+    "blurb": "Type: Text\nValue: Ana birim sunucusunu durdur\nAction : Click\nTimes: 1",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "RepeatTimes",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType RepeatTimes plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "Ana birim sunucusunu durdur",
+     "RepeatTimes": "1",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "c9fd55ec-a119-4292-b05d-f0f50a257a7c",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 4502,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 1104,
+    "blurb": "Type: Text\nValue: Diğer seçenekler\nAction : Click\nTimes: 1",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "RepeatTimes",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType RepeatTimes plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "Diğer seçenekler",
+     "RepeatTimes": "1",
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "9f630b08-73a6-4fec-a059-af45e18952b5",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   }
+  ]
+ },
+ {
+  "file": "36754.flo",
+  "version": 84,
+  "statementCount": 9,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "40232.flo",
+  "version": 91,
+  "statementCount": 85,
+  "pluginCount": 1,
+  "plugins": [
+   {
+    "offset": 666,
+    "package": "com.joaomgcd.autocast",
+    "activity": "com.joaomgcd.autocast.activity.ActivityConfigCastScreen",
+    "kind": null,
+    "parcelBytes": 2408,
+    "blurb": "\nStarting Casting Screen\nPersistent Notification: true\nCast Device: Rik's sleeplace TV\nScreen: Full Screen Media\nSay: Just do it\nVideo: /storage/emulated/0/Just do it/Shia LaBeouf 'Just Do It' Motivational Speech.mp4\nVideo Volume: 60\nVideo AutoPlay: true",
+    "varNames": [
+     "CastDevice",
+     "SayText",
+     "ScreenId",
+     "receiverVideoElement",
+     "receiverVideoElementv",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "slideShowSeparator": null,
+     "songArt": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "CastDevice SayText ScreenId receiverVideoElement receiverVideoElementv plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autocast.intent.IntentCastScreen",
+     "receiverAudioElement": null,
+     "FreeFormCommand": null,
+     "slideShow": null,
+     "SayText": "Just do it",
+     "slideShowPlayNext": false,
+     "receiverAudioElementa": false,
+     "receiverAudioElementk": null,
+     "receiverAudioElementv": null,
+     "ScreenId": "media",
+     "receiverImageElementst": null,
+     "receiverImageElementtt": null,
+     "receiverVideoElement": "/storage/emulated/0/Just do it/Shia LaBeouf 'Just Do It' Motivational Speech.mp4",
+     "slideShowVideoIdentifier": null,
+     "songAlbum": null,
+     "songArtst": null,
+     "songArttt": null,
+     "songTitle": null,
+     "plugininstanceid": "7855d061-5fe3-4fa5-b3af-8bd200f0e6c0",
+     "ScreenNotificationTimeout": null,
+     "ScreenNotificationIcon": null,
+     "ScreenNotificationText": null,
+     "receiverImageElement": null,
+     "CastDevice": "com.google.android.gms/.cast.media.CastMediaRouteProviderService:b632f34388ad65b279568175dc2c10b9",
+     "ScreenNotificationTitle": null,
+     "slideShowAddToQueue": false,
+     "receiverVideoElementa": true,
+     "receiverVideoElementk": null,
+     "receiverVideoElementv": "60",
+     "songArtist": null,
+     "WaitForResult": false
+    }
+   }
+  ]
+ },
+ {
+  "file": "42490.flo",
+  "version": 94,
+  "statementCount": 9,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "50902.flo",
+  "version": 112,
+  "statementCount": 117,
+  "pluginCount": 2,
+  "plugins": [
+   {
+    "offset": 77,
+    "package": "com.joaomgcd.autocast",
+    "activity": "com.joaomgcd.autocast.activity.ActivityConfigControlMedia",
+    "kind": "SETTING",
+    "parcelBytes": 820,
+    "blurb": "\nStarting AutoCast\nPersistent Notification: true\nCast Device: First Available\nDisconnect: true\nCommand: Stop\nSeek: 0",
+    "varNames": [
+     "CastDevice",
+     "CommandId",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "Volume": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "CastDevice CommandId plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autocast.intent.IntentControlMediaAutoCast",
+     "WaitForMediaEnd": false,
+     "Seek": null,
+     "CommandId": "stop",
+     "plugininstanceid": "9f4187b9-0cb3-401e-b245-6239fcbd4747",
+     "CastDevice": "HAASUDHASDHH",
+     "WaitForResult": false,
+     "DisconnectFromReceiver": true
+    }
+   },
+   {
+    "offset": 1826,
+    "package": "com.joaomgcd.autocast",
+    "activity": "com.joaomgcd.autocast.activity.ActivityConfigCastBestGuess",
+    "kind": "SETTING",
+    "parcelBytes": 960,
+    "blurb": "Cast Device: ____________\nValue to Cast: %உள்ளடக்கம்\nContent Type: Audio",
+    "varNames": [
+     "CastDevice",
+     "BestGuessType",
+     "BestGuessValue",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "CastDevice BestGuessType BestGuessValue plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autocast.intent.IntentCastBestGuess",
+     "plugininstanceid": "67e9a448-d7bc-48d3-b931-57ebe7c9ff29",
+     "CastDevice": "com.google.android.gms/.cast.media.CastMediaRouteProviderService_Persistent:b115c13a18fb8fa11de2243f3bb20147",
+     "BestGuessValue": "%உள்ளடக்கம்",
+     "BestGuessType": "receiverAudioElement"
+    }
+   }
+  ]
+ },
+ {
+  "file": "51455.flo",
+  "version": 109,
+  "statementCount": 12,
+  "pluginCount": 0,
+  "plugins": []
+ },
+ {
+  "file": "52217.flo",
+  "version": 110,
+  "statementCount": 35,
+  "pluginCount": 14,
+  "plugins": [
+   {
+    "offset": 107,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 1088,
+    "blurb": "Type: Text\nValue: ok\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "ok",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 1547,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 1064,
+    "blurb": "Type: Text\nValue: Watch Video(\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "Watch Video(",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "5e261b9d-329d-4c01-b8bd-8ad46e0e0e3f",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 2895,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 1100,
+    "blurb": "Type: Text\nValue: Load Snap\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "Load Snap",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 4249,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 1096,
+    "blurb": "Type: Text\nValue: 1\nID: 1\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "1\nID: 1",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 5608,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1096,
+    "blurb": "Type: Text\nValue: 2\nID: 2\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "2\nID: 2",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 6967,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1096,
+    "blurb": "Type: Text\nValue: 3\nID: 3\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "3\nID: 3",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 8326,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1096,
+    "blurb": "Type: Text\nValue: 4\nID: 4\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "4\nID: 4",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 9685,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1096,
+    "blurb": "Type: Text\nValue: 5\nID: 5\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "5\nID: 5",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 11044,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1096,
+    "blurb": "Type: Text\nValue: 6\nID: 6\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "6\nID: 6",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 12403,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1096,
+    "blurb": "Type: Text\nValue: 7\nID: 7\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "7\nID: 7",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 13764,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1096,
+    "blurb": "Type: Text\nValue: 8\nID: 8\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "8\nID: 8",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 15125,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1096,
+    "blurb": "Type: Text\nValue: 9\nID: 9\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "9\nID: 9",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 16486,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": "SETTING",
+    "parcelBytes": 1100,
+    "blurb": "Type: Text\nValue: 10\nID: 10\nAction : Click",
+    "varNames": [
+     "StoredAction",
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "StoredAction ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "10\nID: 10",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": "None",
+     "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   },
+   {
+    "offset": 17879,
+    "package": "com.joaomgcd.autoinput",
+    "activity": "com.joaomgcd.autoinput.activity.ActivityConfigPerformAction",
+    "kind": null,
+    "parcelBytes": 1072,
+    "blurb": "Type: Text\nValue: Snaps\nTab 2 of 3\nAction : Click",
+    "varNames": [
+     "ActionId",
+     "FieldSelectionType",
+     "ActionType",
+     "plugininstanceid",
+     "plugintypeid"
+    ],
+    "bundle": {
+     "NearbyText": null,
+     "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "ActionId FieldSelectionType ActionType plugininstanceid plugintypeid ",
+     "plugintypeid": "com.joaomgcd.autoinput.intent.IntentPerformAction",
+     "ActionId": "Snaps\nTab 2 of 3",
+     "RepeatTimes": null,
+     "ActionType": "16",
+     "TextToWrite": null,
+     "StoredAction": null,
+     "plugininstanceid": "5e261b9d-329d-4c01-b8bd-8ad46e0e0e3f",
+     "EnableDisableAccessibilityService": null,
+     "IsTaskerAction": false,
+     "Password": null,
+     "FieldSelectionType": "0",
+     "RepeatInterval": null,
+     "IsFirstAction": false
+    }
+   }
+  ]
+ }
+]
