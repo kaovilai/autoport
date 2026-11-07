@@ -14,7 +14,7 @@ permissions:
 jobs:
   device:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -32,15 +32,32 @@ jobs:
       - name: Create and boot AVD
         run: |
           export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          export ANDROID_AVD_HOME="$HOME/.android/avd"
+          mkdir -p "$ANDROID_AVD_HOME"
           echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd \
-            -n autoport -k "system-images;android-34;google_apis;x86_64" -d pixel_5
+            -n autoport -k "system-images;android-34;google_apis;x86_64" -d pixel_5 \
+            || { echo "::error::avdmanager create failed"; exit 1; }
+          "$ANDROID_HOME/emulator/emulator" -list-avds
+          "$ANDROID_HOME/emulator/emulator" -list-avds | grep -qx autoport \
+            || { echo "::error::AVD 'autoport' not registered"; \
+                 ls -la "$ANDROID_AVD_HOME"; exit 1; }
           nohup "$ANDROID_HOME/emulator/emulator" -avd autoport \
             -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect \
             -memory 2048 -no-snapshot > /tmp/emulator.log 2>&1 &
-          "$ANDROID_HOME/platform-tools/adb" wait-for-device shell \
-            'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 2; done'
-          echo "booted"
-          "$ANDROID_HOME/platform-tools/adb" devices
+          EMU_PID=$!
+          ADB="$ANDROID_HOME/platform-tools/adb"
+          for i in $(seq 1 150); do
+            if ! kill -0 $EMU_PID 2>/dev/null; then
+              echo "::error::emulator process died"; tail -30 /tmp/emulator.log; exit 1
+            fi
+            boot=$("$ADB" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
+            if [ "$boot" = "1" ]; then echo "booted after ${i}0s-ish"; break; fi
+            if [ $i -eq 150 ]; then
+              echo "::error::boot timeout (25 min)"; tail -30 /tmp/emulator.log; exit 1
+            fi
+            sleep 10
+          done
+          "$ADB" devices
 
       - name: Fetch APKs (Chrome, MacroDroid) via Play
         env:
