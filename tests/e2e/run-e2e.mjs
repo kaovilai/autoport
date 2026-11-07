@@ -213,16 +213,19 @@ async function runScope(scopeName, base, context) {
     }
     return v;
   };
-  // V4 normalization rule (DESIGN.md §11): source.file is basename-only and
-  // legitimately differs per ingest path (picker has a filename, paste does
-  // not) — exclude it; everything else must match the golden exactly.
-  const normalizeIr = (ir) => {
-    const c = canonicalize(ir);
-    if (c && c.source) delete c.source.file;
+  // V4 (DESIGN.md §11): source.file is basename-only. File-based ingest paths
+  // carry the real filename (must match the golden EXACTLY, field included);
+  // the paste box reports 'pasted.xml' (own expected value). Cross-path IR
+  // equality is asserted with just that field normalized away.
+  const irOf = (page) => page.evaluate(() => JSON.stringify(window.autoport?.lastIr ?? null));
+  const goldenIr = canonicalize(JSON.parse(readFileSync(path.join(repoRoot, 'tests/golden/tasker/tasker-LaunchInstagram.tsk.ir.json'), 'utf8')));
+  const expectedPasteIr = structuredClone(goldenIr);
+  expectedPasteIr.source.file = 'pasted.xml';
+  const withoutSourceFile = (ir) => {
+    const c = structuredClone(ir);
+    delete c.source.file;
     return c;
   };
-  const irOf = (page) => page.evaluate(() => JSON.stringify(window.autoport?.lastIr ?? null));
-  const goldenIr = normalizeIr(JSON.parse(readFileSync(path.join(repoRoot, 'tests/golden/tasker/tasker-LaunchInstagram.tsk.ir.json'), 'utf8')));
 
   await t(`${scopeName}: file picker -> Tasker task parsed (V1 browser half)`, async () => {
     const page = await newPage();
@@ -246,7 +249,8 @@ async function runScope(scopeName, base, context) {
     const pickerStatus = await statusText(page);
     const pickerCards = await cardsHtml(page);
     const pickerResults = await normalizedResults(page);
-    const pickerIr = normalizeIr(JSON.parse(await irOf(page)));
+    const pickerIr = canonicalize(JSON.parse(await irOf(page)));
+    assert.equal(pickerIr.source.file, 'LaunchInstagram.tsk.xml', 'picker IR lost the source basename');
     assert.deepEqual(pickerIr, goldenIr, 'picker IR does not match the python-oracle golden');
     await page.close();
 
@@ -263,7 +267,9 @@ async function runScope(scopeName, base, context) {
     assert.equal(await statusText(page2), pickerStatus, 'picker and drop must produce identical status (V4)');
     assert.equal(await cardsHtml(page2), pickerCards, 'picker and drop must render identical cards (V4)');
     assert.equal(await normalizedResults(page2), pickerResults, 'picker and drop must log identical normalized results (V4)');
-    assert.deepEqual(normalizeIr(JSON.parse(await irOf(page2))), pickerIr, 'picker and drop must produce identical IRs (V4)');
+    const dropIr = canonicalize(JSON.parse(await irOf(page2)));
+    assert.equal(dropIr.source.file, 'LaunchInstagram.tsk.xml', 'drop IR lost the source basename');
+    assert.deepEqual(dropIr, pickerIr, 'picker and drop must produce identical IRs (V4)');
     await page2.close();
   });
 
@@ -277,9 +283,10 @@ async function runScope(scopeName, base, context) {
     const pasteStatus = await statusText(page);
     const pasteCards = await cardsHtml(page);
     const pasteResults = await normalizedResults(page);
-    const pasteIr = normalizeIr(JSON.parse(await irOf(page)));
+    const pasteIr = canonicalize(JSON.parse(await irOf(page)));
     assert.equal(pasteStatus, EXPECT_TASKER_STATUS);
-    assert.deepEqual(pasteIr, goldenIr, 'paste IR does not match the python-oracle golden');
+    assert.equal(pasteIr.source.file, 'pasted.xml', 'paste IR has an unexpected source basename');
+    assert.deepEqual(pasteIr, expectedPasteIr, 'paste IR does not match the golden (pasted.xml basename)');
     await page.close();
     // Re-run the same fixture through the picker on a clean page and compare.
     const page2 = await newPage();
@@ -289,7 +296,9 @@ async function runScope(scopeName, base, context) {
     assert.equal(await statusText(page2), pasteStatus, 'paste and picker must produce identical status (V4)');
     assert.equal(await cardsHtml(page2), pasteCards, 'paste and picker must render identical cards (V4)');
     assert.equal(await normalizedResults(page2), pasteResults, 'paste and picker must log identical normalized results (V4)');
-    assert.deepEqual(normalizeIr(JSON.parse(await irOf(page2))), pasteIr, 'paste and picker must produce identical IRs (V4)');
+    const pickerIr2 = canonicalize(JSON.parse(await irOf(page2)));
+    assert.deepEqual(pickerIr2, goldenIr, 'picker IR does not match the python-oracle golden');
+    assert.deepEqual(withoutSourceFile(pickerIr2), withoutSourceFile(pasteIr), 'paste and picker must produce identical IRs modulo the source basename (V4)');
     await page2.close();
   });
 

@@ -83,7 +83,9 @@ async function renderTasker(name, buffer) {
   // without this the status line reports "0 identified" and the
   // not-representable card never renders.
   const parseStats = {};
-  const ir = await parseTaskerXml(text, { stats: parseStats }); // never throws; errors come back in IR
+  // Pass the ingest name so the IR records the source basename (picker/drop/
+  // share carry the real filename; the paste box reports 'pasted.xml').
+  const ir = await parseTaskerXml(text, { stats: parseStats, file: name }); // never throws; errors come back in IR
   lastTaskerIr = ir;
 
   if (ir.error) {

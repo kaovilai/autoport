@@ -14,7 +14,7 @@
  * answers 405 (python3 -m http.server answers 501) — the user sees an error page, no app.
  */
 
-const VERSION = 'v6';
+const VERSION = 'v7';
 /* Base path derived from the SW scope, so the app works when hosted at a subpath
  * (e.g. GitHub Pages project site https://host/autoport/). Scope always ends in '/'. */
 const BASE = new URL(self.registration.scope).pathname;
