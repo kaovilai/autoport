@@ -99,17 +99,27 @@ class Cdp:
         return result.get("result", {}).get("value")
 
     def reload(self):
+        """Page.reload, then wait for the NEW document's load event.
+
+        Page.reload acknowledges before the navigation commits, so polling
+        document.readyState right after can read `complete` from the OLD
+        document (e.g. a reload that never happened). Waiting for the
+        Page.loadEventFired event guarantees the new document loaded; a
+        small settle delay lets module scripts run before returning.
+        """
         self.send("Page.enable")
         self.send("Page.reload", {"ignoreCache": False})
-        deadline = time.time() + 60
+        deadline = time.time() + 90
         while time.time() < deadline:
             try:
-                if self.eval('document.readyState') == "complete":
-                    return
-            except CdpError:
-                pass  # page may be mid-navigation; keep polling
-            time.sleep(1)
-        raise CdpError("page did not reach readyState=complete after reload")
+                msg = json.loads(self._conn().recv())
+            except websocket.WebSocketTimeoutException:
+                continue  # no event yet; keep waiting until the deadline
+            if msg.get("method") == "Page.loadEventFired":
+                time.sleep(1.0)
+                return
+            # other events (Page.frameNavigated etc.) are ignored
+        raise CdpError("no Page.loadEventFired within 90s of reload")
 
 
 def main():

@@ -75,13 +75,17 @@ def parse_fixture(cdp, fixture_path, expect="Tasker parsed"):
         "(async () => {"
         " const box = document.querySelector('#paste');"
         " if (!box) throw new Error('no #paste on this page');"
+        # Clear any previous run's output first: the status wait below must
+        # observe THIS parse, not a stale 'Tasker parsed' from an earlier one.
+        " document.querySelector('#status').textContent = '';"
+        " document.querySelector('#results').textContent = '';"
         " box.closest('details').open = true;"
         " box.value = %s;"
         " document.querySelector('#analyze').click();"
         " const deadline = Date.now() + 30000;"
         " while (Date.now() < deadline) {"
         "  const t = document.querySelector('#status').textContent;"
-        "  if (/parsed|rejected|detected|adapter|Empty file/.test(t)) return t;"
+        "  if (t && /parsed|rejected|detected|adapter|Empty file/.test(t)) return t;"
         "  await new Promise(r => setTimeout(r, 250));"
         " }"
         " return 'TIMEOUT: ' + document.querySelector('#status').textContent;"

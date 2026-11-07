@@ -81,8 +81,11 @@ Unit + fixture tests (python3 / node stdlib only — no install needed):
     #              for t in tests/js/run_*.mjs; do node "$t"; done
 
 Browser e2e (the only place with a dependency: one pinned npm devDependency,
-Playwright, plus its pinned Chromium — `npm ci` once, first run downloads it):
+Playwright, plus its pinned Chromium — the browser binary is a separate,
+explicit download, it is never fetched implicitly):
 
+    npm ci
+    npx playwright install chromium
     npm run test:e2e
 
 Regenerate the Tasker code snapshot:

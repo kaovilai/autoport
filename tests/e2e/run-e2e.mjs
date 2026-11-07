@@ -330,6 +330,12 @@ async function runScope(scopeName, base, context) {
     await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     const row = page.locator('#inbox .inbox-row').filter({ hasText: 'LaunchInstagram' }).first();
     await row.waitFor();
+    // Clear the picker run's output first: the wait below must observe the
+    // row's OWN re-parse, not the identical status text left over above.
+    await page.evaluate(() => {
+      document.querySelector('#status').textContent = '';
+      document.querySelector('#results').textContent = '';
+    });
     await row.click();
     await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     await page.close();
