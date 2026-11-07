@@ -118,12 +118,16 @@ jobs:
 
       - name: Serve AutoPort PWA + adb reverse
         run: |
-          python3 -m http.server 8090 --bind 127.0.0.1 --directory "$GITHUB_WORKSPACE" &
+          python3 -m http.server 8090 --bind 127.0.0.1 --directory "$GITHUB_WORKSPACE" \
+            & echo $! > /tmp/autoport-server.pid
           sleep 2
           export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
           "$ANDROID_HOME/platform-tools/adb" reverse tcp:8090 tcp:8090
+          # Chrome remote debugging over adb, for CDP page-content assertions
+          "$ANDROID_HOME/platform-tools/adb" forward tcp:9222 localabstract:chrome_devtools_remote
+          python3 -m pip install --quiet --user websocket-client
 
-      - name: "V-PWA: load page in Chrome (localhost = secure context)"
+      - name: "V-PWA: load page in Chrome (localhost = secure context) + assert content via CDP"
         run: |
           export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
           ADB="$ANDROID_HOME/platform-tools/adb"
@@ -133,6 +137,32 @@ jobs:
           top=$("$ADB" shell dumpsys activity activities | grep -i 'topResumedActivity' | head -1)
           echo "top activity: $top"
           echo "$top" | grep -qi chrome || { echo "::warning::Chrome may not be the top activity"; }
+          # Hard assertions on live page state (not just screenshots):
+          # title, service worker controlling + activated, precache populated.
+          python3 scripts/device_pwa_check.py assert-loaded --url "http://localhost:8090/"
+          # On-device functional check: paste a Tasker XML, parse it, read #status.
+          python3 scripts/device_pwa_check.py parse \
+            --fixture tests/fixtures/tasker/LaunchInstagram.tsk.xml
+
+      - name: "V5: offline after first load (kill server, reload from SW cache, parse offline)"
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          ADB="$ANDROID_HOME/platform-tools/adb"
+          # Cut the only network path to the app: the adb-reversed dev server.
+          kill "$(cat /tmp/autoport-server.pid)"
+          sleep 1
+          # Reload the page in Chrome — the service worker must serve the
+          # shell from cache (the server is dead; a cache miss = network error).
+          python3 scripts/device_cdp.py reload
+          "$ADB" exec-out screencap -p > /tmp/pwa-offline-reload.png
+          python3 scripts/device_pwa_check.py assert-loaded --url "http://localhost:8090/"
+          # Offline parse proof (V5): data files must come from the precache.
+          python3 scripts/device_pwa_check.py parse \
+            --fixture tests/fixtures/tasker/LaunchInstagram.tsk.xml
+          # Restart the server for any later steps that want the network back.
+          python3 -m http.server 8090 --bind 127.0.0.1 --directory "$GITHUB_WORKSPACE" \
+            & echo $! > /tmp/autoport-server.pid
+          sleep 2
 
       - name: "V15: MacroDroid MCP share-link import"
         run: |
@@ -178,6 +208,7 @@ jobs:
             /tmp/device-matrix.txt
             /tmp/three-apps-smoke.png
             /tmp/pwa-load.png
+            /tmp/pwa-offline-reload.png
             /tmp/macrodroid-import.png
             /tmp/emulator.log
             /tmp/share-link.txt

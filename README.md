@@ -1,5 +1,6 @@
 # AutoPort
 
+[![ci](https://github.com/kaovilai/autoport/actions/workflows/ci.yml/badge.svg)](https://github.com/kaovilai/autoport/actions/workflows/ci.yml)
 [![emulator-test](https://github.com/kaovilai/autoport/actions/workflows/emulator-test.yml/badge.svg)](https://github.com/kaovilai/autoport/actions/workflows/emulator-test.yml)
 
 Convert Android automations between apps. Runs entirely in your browser; no
@@ -59,8 +60,11 @@ Legend: ☑ done · ◐ partial · ☐ not started
 - [x] Python fixture tests: Tasker corpus, `.flo` corpus + negatives, code tables
 - [x] Golden IR regression vs the Python reference oracle
 - [x] JS suites: Tasker parser **golden parity with the Python oracle**, AutoInput decoder, `.flo` T0, MacroDroid validator
+- [x] Content-sniffer unit suite (every `classify()` route pinned)
+- [x] PWA site-integrity suite (manifest contract, real PNG icons, SW precache list exists **and** covers every module/data file — the offline gate)
+- [x] **Browser e2e** ([ci.yml](.github/workflows/ci.yml) `e2e` job, Playwright + pinned Chromium): SW registration + precache, every ingest path (picker / drag-drop / paste box / page paste), V4 golden equality across paths, share-target POST → 303 → inbox card → "Open in converter" handoff, text-only / empty / >25 MiB shares, IndexedDB persistence + clear, offline reload + **offline parse** + offline deep-link fallback — run twice: at the server root **and** under `/autoport/` (GitHub Pages layout)
 - [x] Upstream drift gate on `tasker.joaoapps.com` code tables
-- [x] Emulator device test on KVM runners (manual dispatch): Chrome + MacroDroid from Play, PWA load, V15 share-link import
+- [x] Emulator device test on KVM runners (manual dispatch): Chrome + MacroDroid from Play, PWA load + **CDP content assertions + on-device parse (online and offline)**, V15 share-link import
 
 See `docs/DESIGN.md` (§11) for the V1–V21 verification matrix and
 `docs/VERIFICATION.md` for current status.
@@ -70,10 +74,16 @@ No build step. Serve the repo root over HTTP and open it:
 
     python3 -m http.server 8080
 
-Tests (stdlib only):
+Unit + fixture tests (python3 / node stdlib only — no install needed):
 
-    python3 -I scripts/fixture_tests.py --out /tmp/report.json
-    for t in tests/js/run_*.mjs; do node "$t"; done
+    npm test
+    # equivalent: python3 -I scripts/fixture_tests.py --out /tmp/report.json
+    #              for t in tests/js/run_*.mjs; do node "$t"; done
+
+Browser e2e (the only place with a dependency: one pinned npm devDependency,
+Playwright, plus its pinned Chromium — `npm ci` once, first run downloads it):
+
+    npm run test:e2e
 
 Regenerate the Tasker code snapshot:
 

@@ -4,24 +4,64 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
 
 | # | Criterion | Status | Evidence |
 |---|---|---|---|
+| V1 | Tasker XML shared in → parsed task | ✅ browser e2e (every push) · 🔬 device (emulator CI) | `tests/e2e/run-e2e.mjs` share POST → inbox → converter handoff; emulator asserts on-device parse via CDP |
+| V2 | Automate `.flo` shared in → T0 inventory | ✅ browser e2e · 🔬 device (emulator CI, launch smoke) | e2e: `.flo` via picker, drop and share POST; emulator: Automate installs + launches |
+| V3 | TaskerNet link → graceful card, never blank | ✅ browser e2e | paste + text-only share both covered (`taskernet-link` card + CORS warning) |
+| V4 | Golden equality across drag-drop / picker / paste | ✅ browser e2e | identical `#status` string asserted across all three paths, same fixture |
+| V5 | Offline after first load: parse + review works | ✅ browser e2e · 🔬 device (emulator CI) | e2e: offline reload + offline parse + offline deep-link fallback; emulator: server killed on runner, page reloaded + parsed on device from SW cache |
 | V6 | Tasker corpus parses, 100% builtin code decode | ✅ CI (`fixture-tests-report.json`) | 10 fixtures, 124 actions, 93 builtin all named |
 | V7 | Code tables present, counts sane | ✅ CI | `data/taskerCodes.json` (438/91/56 + sentinels) |
 | V8 | Variables collected (%par local, %UPPER global) | ✅ CI spot-check | EnMaaS fixture: `%EnMaasKey` global, `%prompt` local |
+| V9/V10 | AutoInput decode round-trip | ✅ corpus decoded (70 exports); unit tests in CI fixture run | `data/autoInputCorpus.json` |
 | V11 | `.flo` magic/version detected; negatives rejected gracefully | ✅ CI | 13 real flows + 3 negative fixtures |
 | V13 | Generated macro JSON passes MCP validate | ✅ proven offline (recorded probes) | `tests/fixtures/macrodroid/validator-probes/validate-ok.json` |
 | V14 | Structural validator rejects adversarial shapes | ✅ probe evidence recorded | `validate-probe-*.json` (bad classtype, unbalanced If rejected) |
-| V1–V5 | PWA share-target on-device | 🔬 emulator CI pending (local WSL2 lacks KVM) | plan: GHA ubuntu runner w/ KVM |
-| V15 | End-to-end macro import into MacroDroid on device | 🔬 emulator CI pending | needs MacroDroid APK + MCP share link |
-| V9/V10 | AutoInput decode round-trip | ✅ corpus decoded (70 exports); unit tests in CI fixture run | `data/autoInputCorpus.json` |
+| V15 | End-to-end macro import into MacroDroid on device | ✅ emulator CI (manual dispatch) | MCP share link → MacroDroid macro editor (run 42341971557) |
 | V12 | PDF/PNG block count vs T0 | ❌ unproven (path demoted) | design §5.4 |
 
-## Emulator test plan (V1–V5, V15)
+## Test layers (what runs where)
+
+1. **Unit / fixture (every push, `ci.yml` `test` job — python3 + node stdlib,
+   zero installs):** Tasker XML→IR goldens (python oracle + JS parity),
+   AutoInput decoder, `.flo` T0 + negatives, MacroDroid structural validator,
+   mapping-table check, content sniffer (`run_sniff_tests.mjs` — every
+   `classify()` route), PWA site integrity (`run_manifest_tests.mjs` —
+   manifest contract, PNG icons, SW precache exists **and** covers every
+   imported module + runtime data file), upstream code-table drift gate.
+2. **Browser e2e (every push, `ci.yml` `e2e` job — Playwright + pinned
+   Chromium):** the full user surface of the PWA in a real browser, run at
+   both the server root and a `/autoport/` subpath (GitHub Pages layout):
+   SW registration/activation/precache, picker + drag-drop + paste-box +
+   page-paste ingest, V4 status equality across paths, sniffer routes
+   (Tasker / `.flo` / PNG / unknown / empty / TaskerNet), share-target POST
+   (navigational multipart form, exactly what Chrome's Android share sheet
+   sends) → 303 → `share.html` inbox card → "Open in converter" `?from=`
+   handoff, text-only / empty / >25 MiB share handling, `GET /share`
+   redirect, IndexedDB inbox persistence + clear, offline reload / offline
+   parse / offline deep-link `<base>` fallback.
+3. **Emulator device test (manual dispatch, `emulator-test.yml`, KVM
+   runner):** real Chrome + MacroDroid + Automate + Tasker APKs from their
+   original sources, version matrix + launch smoke, PWA load with **CDP
+   content assertions and on-device parse (online + offline via killed
+   server)**, V15 MCP share-link import into the MacroDroid editor.
+
+## Bugs found by the e2e suite (kept here as regression notes)
+
+- `js/share.js` referenced an undefined `$` helper (only `app.js` defined
+  one), so the entire share landing page threw `ReferenceError: $ is not
+  defined` on load — no inbox cards, no banner, no empty state. The share
+  sheet itself (SW side) worked, which is why the inbox data was intact but
+  invisible. Fixed + SW cache version bumped (`v4`); the e2e share tests
+  now fail loudly if the landing page ever breaks again.
+
+## Emulator test plan history
 
 Local blockers (measured 2026-11-07): this WSL2 box exposes no `/dev/kvm`
 (no nested virt), the modern emulator (37.x) refuses ARM images on x86_64
 hosts, and the WSL2 kernel has `CONFIG_ANDROID_BINDER_IPC` unset (no redroid).
-Plan: GitHub Actions `ubuntu-latest` runners provide KVM — boot headless
-x86_64 API 34 google_apis image, serve the repo, `adb reverse` to the runner,
-drive Chrome via adb/UI automation, install MacroDroid via APK, and exercise
-the MCP share-link import. Workflow: `.github/workflows/emulator.yml`
-(to be added).
+Plan (shipped): GitHub Actions `ubuntu-latest` runners provide KVM —
+`.github/workflows/emulator-test.yml` boots a headless x86_64 API 34
+google_apis image, serves the repo over `adb reverse`, drives Chrome via
+`am start` + CDP (`scripts/device_cdp.py`, `scripts/device_pwa_check.py`),
+installs the apps via the gplay-apk-downloader (original signatures), and
+exercises the MCP share-link import.
