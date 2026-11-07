@@ -1,0 +1,129 @@
+name: emulator-test
+
+# Device-level verification (V1-V5 partial, V15) on a GitHub Actions ubuntu
+# runner with KVM. Manual dispatch only for now.
+# Requires repo secret GPLAY_AUTH (contents of ~/.gplay-auth.json from the
+# gplay-apk-downloader tool) to fetch Chrome + MacroDroid APKs with original
+# signatures from Google Play.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  device:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: KVM available?
+        run: |
+          ls -la /dev/kvm || { echo "::error::no KVM on runner"; exit 1; }
+
+      - name: Install SDK pieces
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "emulator" "system-images;android-34;google_apis;x86_64" "platforms;android-34" > /dev/null
+
+      - name: Create and boot AVD
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd \
+            -n autoport -k "system-images;android-34;google_apis;x86_64" -d pixel_5
+          nohup "$ANDROID_HOME/emulator/emulator" -avd autoport \
+            -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect \
+            -memory 2048 -no-snapshot > /tmp/emulator.log 2>&1 &
+          "$ANDROID_HOME/platform-tools/adb" wait-for-device shell \
+            'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 2; done'
+          echo "booted"
+          "$ANDROID_HOME/platform-tools/adb" devices
+
+      - name: Fetch APKs (Chrome, MacroDroid) via Play
+        env:
+          GPLAY_AUTH: ${{ secrets.GPLAY_AUTH }}
+        run: |
+          git clone --depth 1 https://github.com/alltechdev/gplay-apk-downloader /tmp/gplay
+          python3 -m venv /tmp/gplay/.venv
+          /tmp/gplay/.venv/bin/pip install -q gpapi requests 'protobuf<4' cloudscraper pysocks
+          printf '%s' "$GPLAY_AUTH" > ~/.gplay-auth.json
+          cd /tmp/gplay
+          .venv/bin/python gplay-downloader.py download com.android.chrome -o /tmp/apks || true
+          .venv/bin/python gplay-downloader.py download com.arlosoft.macrodroid -o /tmp/apks
+          ls -la /tmp/apks
+
+      - name: Install APKs
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          for apk in /tmp/apks/*.apk; do
+            "$ANDROID_HOME/platform-tools/adb" install -r "$apk" || echo "install failed: $apk"
+          done
+          "$ANDROID_HOME/platform-tools/adb" shell pm list packages | grep -E 'macrodroid|chrome'
+
+      - name: Serve AutoPort PWA + adb reverse
+        run: |
+          python3 -m http.server 8090 --bind 127.0.0.1 --directory "$GITHUB_WORKSPACE" &
+          sleep 2
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          "$ANDROID_HOME/platform-tools/adb" reverse tcp:8090 tcp:8090
+
+      - name: V-PWA: load page in Chrome (localhost = secure context)
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          ADB="$ANDROID_HOME/platform-tools/adb"
+          "$ADB" shell am start -a android.intent.action.VIEW -d "http://localhost:8090/"
+          sleep 12
+          "$ADB" exec-out screencap -p > /tmp/pwa-load.png
+          top=$("$ADB" shell dumpsys activity activities | grep -i 'topResumedActivity' | head -1)
+          echo "top activity: $top"
+          echo "$top" | grep -qi chrome || { echo "::warning::Chrome may not be the top activity"; }
+
+      - name: V15: MacroDroid MCP share-link import
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          ADB="$ANDROID_HOME/platform-tools/adb"
+          # mint a share link for the proven minimal macro
+          python3 - <<'EOF' > /tmp/share-link.txt
+          import json, urllib.request
+          macro = json.load(open('data/macrodroid/minimal-macro.json'))
+          def rpc(method, params, mid):
+              data = json.dumps({'jsonrpc':'2.0','id':mid,'method':method,'params':params}).encode()
+              req = urllib.request.Request('https://remote.macrodroid.com/mcp', data=data,
+                  headers={'Content-Type':'application/json','Accept':'application/json, text/event-stream'})
+              return json.loads(urllib.request.urlopen(req, timeout=60).read())
+          rpc('initialize', {'protocolVersion':'2025-03-26','capabilities':{},
+              'clientInfo':{'name':'autoport-ci','version':'1.0'}}, 1)
+          v = rpc('tools/call', {'name':'validate_macrodroid_macro',
+              'arguments':{'macro_json': json.dumps(macro)}}, 2)
+          print(json.dumps(v)[:300], file=__import__('sys').stderr)
+          s = rpc('tools/call', {'name':'share_macrodroid_macro',
+              'arguments':{'macro_json': json.dumps(macro)}}, 3)
+          txt = json.dumps(s)
+          import re
+          m = re.search(r'https?://[^"\\\\ ]+', txt)
+          print(m.group(0) if m else '')
+          EOF
+          LINK=$(tail -1 /tmp/share-link.txt)
+          echo "share link: $LINK"
+          if [ -z "$LINK" ]; then echo "::error::no share link minted"; cat /tmp/share-link.txt; exit 1; fi
+          "$ADB" shell am start -a android.intent.action.VIEW -d "$LINK"
+          sleep 20
+          "$ADB" exec-out screencap -p > /tmp/macrodroid-import.png
+          top=$("$ADB" shell dumpsys activity activities | grep -i 'topResumedActivity' | head -1)
+          echo "top activity after link: $top"
+          echo "$top" | grep -qi macrodroid || echo "::warning::MacroDroid not foreground; check screenshot"
+
+      - name: Upload screenshots + logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-evidence
+          path: |
+            /tmp/pwa-load.png
+            /tmp/macrodroid-import.png
+            /tmp/emulator.log
+            /tmp/share-link.txt
+          if-no-files-found: ignore
