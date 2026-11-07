@@ -7,7 +7,7 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
 | V1 | Tasker XML shared in → parsed task | ✅ browser e2e (every push) · 🔬 device (emulator CI) | `tests/e2e/run-e2e.mjs` share POST → inbox → converter handoff; emulator asserts on-device parse via CDP |
 | V2 | Automate `.flo` shared in → T0 inventory | ✅ browser e2e · 🔬 device (emulator CI, launch smoke) | e2e: `.flo` via picker, drop and share POST; emulator: Automate installs + launches |
 | V3 | TaskerNet link → graceful card, never blank | ✅ browser e2e | paste + text-only share both covered (`taskernet-link` card + CORS warning) |
-| V4 | Golden equality across drag-drop / picker / paste | ✅ browser e2e + unit goldens | e2e: identical `#status` string AND identical rendered cards across all three paths, same fixture; the parser behind all three is golden-tested against the python oracle (full IR deep-compare) in the unit suite |
+| V4 | Golden equality across drag-drop / picker / paste | ✅ browser e2e + unit goldens | e2e: identical normalized results log (byte-derived sniff fields incl. magic bytes), rendered cards AND status string across all three paths, same fixture; the parser behind all three is golden-tested against the python oracle (full IR deep-compare) in the unit suite |
 | V5 | Offline after first load: parse + review works | ✅ browser e2e · 🔬 device (emulator CI) | e2e: offline reload + offline parse + offline deep-link fallback; emulator: server killed on runner, page reloaded + parsed on device from SW cache |
 | V6 | Tasker corpus parses, 100% builtin code decode | ✅ CI (`fixture-tests-report.json`) | 10 fixtures, 124 actions, 93 builtin all named |
 | V7 | Code tables present, counts sane | ✅ CI | `data/taskerCodes.json` (438/91/56 + sentinels) |

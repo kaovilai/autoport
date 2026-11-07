@@ -193,9 +193,19 @@ async function runScope(scopeName, base, context) {
   // + 2 plugin, 0 unknown. Pinning the full status string catches stats-plumbing
   // regressions (e.g. "0 identified" when the IR stats never reach the UI).
   const EXPECT_TASKER_STATUS = 'Tasker parsed: 1 macro(s), 5 action(s), 5 identified';
-  // V4 equality compares the rendered CARDS across paths, not just the status
-  // counts — a shared miscount would otherwise pass all three tests.
+  // V4 equality compares the rendered CARDS and the FULL results log across
+  // paths, not just the status counts — a shared miscount would otherwise
+  // pass all three tests. The log normalization only hides the two values
+  // that legitimately differ per path (file name/size header, reported MIME);
+  // everything byte-derived (sniffed kind, implied MIME, magic bytes,
+  // printable ratio) and every rendered card must be identical, which pins
+  // the delivered bytes and therefore — the parser being deterministic and
+  // oracle-golden-tested in the unit suite — the parsed IR.
   const cardsHtml = (page) => page.evaluate(() => [...document.querySelectorAll('#results .card')].map((c) => c.outerHTML).join('\n'));
+  const normalizedResults = (page) => page.evaluate(() =>
+    document.querySelector('#results').textContent.split('\n')
+      .map((l) => l.replace(/^── .*/, '── <file>').replace(/^(   reported MIME :).*$/, '$1 <mime>'))
+      .join('\n'));
 
   await t(`${scopeName}: file picker -> Tasker task parsed (V1 browser half)`, async () => {
     const page = await newPage();
@@ -218,6 +228,7 @@ async function runScope(scopeName, base, context) {
     await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     const pickerStatus = await statusText(page);
     const pickerCards = await cardsHtml(page);
+    const pickerResults = await normalizedResults(page);
     await page.close();
 
     const page2 = await newPage();
@@ -232,6 +243,7 @@ async function runScope(scopeName, base, context) {
     await page2.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     assert.equal(await statusText(page2), pickerStatus, 'picker and drop must produce identical status (V4)');
     assert.equal(await cardsHtml(page2), pickerCards, 'picker and drop must render identical cards (V4)');
+    assert.equal(await normalizedResults(page2), pickerResults, 'picker and drop must log identical normalized results (V4)');
     await page2.close();
   });
 
@@ -244,6 +256,7 @@ async function runScope(scopeName, base, context) {
     await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     const pasteStatus = await statusText(page);
     const pasteCards = await cardsHtml(page);
+    const pasteResults = await normalizedResults(page);
     assert.equal(pasteStatus, EXPECT_TASKER_STATUS);
     await page.close();
     // Re-run the same fixture through the picker on a clean page and compare.
@@ -253,6 +266,7 @@ async function runScope(scopeName, base, context) {
     await page2.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
     assert.equal(await statusText(page2), pasteStatus, 'paste and picker must produce identical status (V4)');
     assert.equal(await cardsHtml(page2), pasteCards, 'paste and picker must render identical cards (V4)');
+    assert.equal(await normalizedResults(page2), pasteResults, 'paste and picker must log identical normalized results (V4)');
     await page2.close();
   });
 
