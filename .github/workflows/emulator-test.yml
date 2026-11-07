@@ -18,9 +18,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: KVM available?
+      - name: Grant KVM access (udev rule, from android-emulator-runner docs)
         run: |
           ls -la /dev/kvm || { echo "::error::no KVM on runner"; exit 1; }
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -la /dev/kvm
 
       - name: Install SDK pieces
         run: |
