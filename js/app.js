@@ -74,7 +74,11 @@ function mappingChip(code) {
 async function renderTasker(name, buffer) {
   const text = new TextDecoder().decode(buffer);
   await loadMappingTable();
-  const ir = await parseTaskerXml(text); // never throws; errors come back in IR
+  // parseTaskerXml fills options.stats (it is never attached to the IR itself);
+  // without this the status line reports "0 identified" and the
+  // not-representable card never renders.
+  const parseStats = {};
+  const ir = await parseTaskerXml(text, { stats: parseStats }); // never throws; errors come back in IR
 
   if (ir.error) {
     log(`   ✗ ${ir.error.kind}: ${ir.error.message}`);
@@ -82,7 +86,7 @@ async function renderTasker(name, buffer) {
     return;
   }
 
-  const stats = ir.stats || {};
+  const stats = parseStats;
   const cards = [];
   for (const macro of ir.macros || []) {
     const rows = [];

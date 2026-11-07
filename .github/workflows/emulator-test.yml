@@ -154,7 +154,7 @@ jobs:
           python3 scripts/device_pwa_check.py assert-loaded --url "http://localhost:8090/"
           # On-device functional check: paste a Tasker XML, parse it, read #status.
           python3 scripts/device_pwa_check.py parse \
-            --fixture tests/fixtures/tasker/LaunchInstagram.tsk.xml
+            --fixture tests/fixtures/tasker/LaunchInstagram.tsk.xml --expect "5 identified"
 
       - name: "V5: offline after first load (kill server, reload from SW cache, parse offline)"
         run: |
@@ -170,7 +170,7 @@ jobs:
           python3 scripts/device_pwa_check.py assert-loaded --url "http://localhost:8090/"
           # Offline parse proof (V5): data files must come from the precache.
           python3 scripts/device_pwa_check.py parse \
-            --fixture tests/fixtures/tasker/LaunchInstagram.tsk.xml
+            --fixture tests/fixtures/tasker/LaunchInstagram.tsk.xml --expect "5 identified"
           # Restart the server for any later steps that want the network back.
           python3 -m http.server 8090 --bind 127.0.0.1 --directory "$GITHUB_WORKSPACE" \
             & echo $! > /tmp/autoport-server.pid

@@ -183,12 +183,17 @@ async function runScope(scopeName, base, context) {
     await page.evaluate(() => { document.querySelector('details.paste-wrap').open = true; });
   };
 
+  // The python-oracle golden for LaunchInstagram.tsk.xml: 5 actions = 3 decoded
+  // + 2 plugin, 0 unknown. Pinning the full status string catches stats-plumbing
+  // regressions (e.g. "0 identified" when the IR stats never reach the UI).
+  const EXPECT_TASKER_STATUS = 'Tasker parsed: 1 macro(s), 5 action(s), 5 identified';
+
   await t(`${scopeName}: file picker -> Tasker task parsed (V1 browser half)`, async () => {
     const page = await newPage();
     await page.goto(base);
     await page.setInputFiles('#file-input', path.join(repoRoot, 'tests/fixtures/tasker/LaunchInstagram.tsk.xml'));
     await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
-    assert.match(await statusText(page), /Tasker parsed: \d+ macro\(s\)/);
+    assert.equal(await statusText(page), EXPECT_TASKER_STATUS);
     assert.ok((await page.locator('.card').count()) >= 1, 'no result card rendered');
     await page.close();
   });
@@ -504,7 +509,9 @@ async function runScope(scopeName, base, context) {
       await page.fill('#paste', taskerXmlText);
       await page.click('#analyze');
       await page.locator('#status').filter({ hasText: 'Tasker parsed' }).waitFor();
-      assert.match(await statusText(page), /Tasker parsed: \d+ macro\(s\)/, 'offline parse failed — data files not precached?');
+      // "5 identified" requires the code tables to come from the precache —
+      // a plain parse without them would decode nothing (offline V5 gate).
+      assert.equal(await statusText(page), EXPECT_TASKER_STATUS, 'offline parse failed or degraded — data files not precached?');
     } finally {
       await context.setOffline(false);
     }

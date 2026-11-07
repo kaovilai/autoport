@@ -16,7 +16,7 @@ Device tests run on KVM emulator runners ([emulator-test.yml](.github/workflows/
 | Automate | 1.54.0-play | Google Play (latest) | installs + launches |
 | MacroDroid | 6.1.5 | Google Play (latest) | installs, launches, **imports AutoPort macro via MCP share link** |
 
-_Last verified: [run 42341971557](https://github.com/kaovilai/autoport/actions/runs/42341971557) (versions are re-measured by every run; `device-matrix.txt` in the run artifacts is the source of truth). Note: the `.flo` format reference and fixtures come from Automate build 267 (v1.43) via decompilation; the CI-tested Play build is 1.54.0 — the T1 registry work targets the decompiled build and must be spot-checked against newer builds._
+_Last verified: [run 42349526267](https://github.com/kaovilai/autoport/actions/runs/42349526267) (versions are re-measured by every run; `device-matrix.txt` in the run artifacts is the source of truth). That run also asserts live page content via CDP — title, service-worker state, precache, an on-device Tasker parse (online **and** offline with the dev server killed), in addition to the V15 MacroDroid import. Note: the `.flo` format reference and fixtures come from Automate build 267 (v1.43) via decompilation; the CI-tested Play build is 1.54.0 — the T1 registry work targets the decompiled build and must be spot-checked against newer builds._
 
 ## Conversion directions
 

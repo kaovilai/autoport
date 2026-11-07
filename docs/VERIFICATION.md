@@ -53,6 +53,15 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
   sheet itself (SW side) worked, which is why the inbox data was intact but
   invisible. Fixed + SW cache version bumped (`v4`); the e2e share tests
   now fail loudly if the landing page ever breaks again.
+- The Tasker status line always read "0 identified" and the
+  not-representable card never rendered: `parseTaskerXml()` fills
+  `options.stats` (test injection) but never attaches stats to the returned
+  IR, while `app.js` read `ir.stats || {}`. Surfaced by the emulator run's
+  on-device parse ("5 action(s), 0 identified" vs the python oracle's
+  3 decoded + 2 plugin). Fixed by passing `{ stats }` from `app.js`; the
+  browser e2e and the device check now pin the exact status string
+  ("5 identified"), which also makes the offline test prove the code tables
+  came from the precache. SW cache version bumped (`v5`).
 
 ## Emulator test plan history
 
