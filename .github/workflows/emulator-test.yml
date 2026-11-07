@@ -131,8 +131,18 @@ jobs:
         run: |
           export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
           ADB="$ANDROID_HOME/platform-tools/adb"
+          # Best effort: make Chrome skip its first-run flow. Public Chrome only
+          # honors the command-line file while marked as the debug app.
+          "$ADB" shell am set-debug-app --persistent com.android.chrome >/dev/null 2>&1 || true
+          "$ADB" shell 'echo "chrome --no-first-run --disable-fre --no-default-browser-check" > /data/local/tmp/chrome-command-line' || true
           "$ADB" shell am start -a android.intent.action.VIEW -d "http://localhost:8090/"
-          sleep 12
+          sleep 8
+          # Fresh Chrome opens FirstRunActivity over the VIEW intent, so the
+          # page never loads. Walk the FRE screens (uiautomator taps) and
+          # confirm the AutoPort page target exists via CDP.
+          python3 scripts/device_chrome_fre.py
+          "$ADB" shell am start -a android.intent.action.VIEW -d "http://localhost:8090/"
+          sleep 6
           "$ADB" exec-out screencap -p > /tmp/pwa-load.png
           top=$("$ADB" shell dumpsys activity activities | grep -i 'topResumedActivity' | head -1)
           echo "top activity: $top"
