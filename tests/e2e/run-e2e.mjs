@@ -344,7 +344,9 @@ async function runScope(scopeName, base, context) {
     await page.goto(base);
     await page.setInputFiles('#file-input', path.join(repoRoot, 'tests/fixtures/automate/1446.flo'));
     await page.locator('#status').filter({ hasText: 'Automate flow' }).waitFor();
-    assert.match(await statusText(page), /Automate flow: v\d+, \d+ statements \(T0 inventory\)/);
+    // 1446.flo has no plug-in statements: plain inventory, no macro card
+    assert.match(await statusText(page), /Automate flow: v\d+, \d+ statements$/);
+    assert.equal(await page.locator('#results .card', { hasText: 'Automate plug-in pass-through' }).count(), 0);
     await page.close();
   });
 
@@ -437,6 +439,39 @@ async function runScope(scopeName, base, context) {
     await reportCard.waitFor();
     assert.match(await reportCard.textContent(), /Not converted yet \(12\)/);
     assert.equal(await reportCard.locator('pre.preview').count(), 0, 'no macro JSON to copy when nothing is emitted');
+    await page.close();
+  });
+
+  await t(`${scopeName}: Automate plug-in flow -> MacroDroid pass-through macro card (M3.1 Automate)`, async () => {
+    const page = await newPage();
+    await page.goto(base);
+    await page.setInputFiles('#file-input', path.join(repoRoot, 'tests/fixtures/automate/36322.flo'));
+    await page.locator('#status').filter({ hasText: 'Automate flow' }).waitFor();
+    assert.match(await statusText(page), /Automate flow: v84, 15 statements, 4 plug-in block\(s\)/);
+    const card = page.locator('#results .card', { hasText: 'MacroDroid macro — Automate plug-in pass-through' });
+    await card.waitFor();
+    assert.match(await card.textContent(), /4 plug-in block\(s\) delegated to their plugin apps/);
+    assert.match(await card.textContent(), /4 of 15 statement\(s\) delegated/);
+    assert.match(await card.textContent(), /structural check: valid/);
+    // honest coverage note: the rest of the flow is not converted
+    assert.match(await card.textContent(), /not converted/);
+    const macroJson = await card.locator('pre.preview').textContent();
+    const macro = JSON.parse(macroJson);
+    assert.equal(macro.macro.m_actionList.length, 4);
+    assert.ok(macro.macro.m_actionList.every((a) => a.m_classType === 'LocalePluginAction'));
+    assert.equal(macro.macro.m_actionList[0].m_plugin.mPackageName, 'com.joaomgcd.autoinput');
+    assert.equal(macro.macro.m_actionList[0].m_plugin.mReceiverClassName,
+      'com.joaomgcd.autoinput.broadcastreceiver.BroadcastReceiverFire');
+    const sb = macro.macro.m_actionList[0].m_pluginInstanceData.mSerializedBundle;
+    assert.ok(Array.isArray(sb), 'mSerializedBundle must be a JSON numeric byte array (Gson contract)');
+    assert.deepEqual(sb.slice(0, 4), [0xac, 0xed, 0x00, 0x05], 'Java serialization stream magic missing');
+    // the AutoInput blurb from the Automate flow must survive into the action
+    assert.match(macro.macro.m_actionList[0].m_pluginInstanceData.mBlurb, /Ana birim sunucusunu/);
+    const verdict = await page.evaluate((json) => window.autoport.validateMacro(JSON.parse(json)), macroJson);
+    assert.ok(verdict.ok, `in-page validation failed: ${JSON.stringify(verdict.errors)}`);
+    await card.locator('summary').click();
+    await card.getByRole('button', { name: 'Copy macro JSON' }).click();
+    await page.locator('#status').filter({ hasText: 'Macro JSON copied' }).waitFor();
     await page.close();
   });
 

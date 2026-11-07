@@ -367,6 +367,82 @@ with a null fire receiver — MacroDroid shows the action and the user re-picks
 the plugin there; the conversion report flags them.
 
 
+### 7.8 Automate `.flo` plug-in pass-through (M3.1 — shipped)
+
+Automate flows reach MacroDroid the same way Tasker flows do: every
+Tasker/Locale **plug-in statement** in the flow becomes a `LocalePluginAction`
+carrying the plugin's original configuration bundle. The flow's other
+statements (control flow, native Automate blocks) are NOT converted — that
+needs the T1 statement registry (~620 classes) — and the emitted macro's
+description and the conversion report both say so. This is a deliberately
+honest partial: "we support Automate users porting their *plugin* automations
+to MacroDroid", not "we convert Automate flows".
+
+**Where the plug-in statements live in a `.flo`** (decompiled
+`com.llamalab.automate.stmt`, build 267): three statement classes hold a
+shared `F0` config object —
+
+- `1104 PlugInCondition` (a decision)
+- `1105 PlugInEvent` (an action)
+- `1106 PlugInSetting` (an intermittent action)
+
+`F0.w0(Q3.c)` reads, in order: package (UTF), activity class (UTF), the
+configuration **Bundle as a marshalled Android Parcel** (`Q3.c.h`: varint byte
+count + raw parcel bytes), blurb (UTF), output variable names (String[]), M0
+output mappings, a boolean. The file-level layout (`D0.w0`) is
+`LAFl` + version u16 + nextStatementId + count, then `count` statements, each
+a zigzag-varint-typed object graph — so plug-in statements can sit at any
+nesting depth under control-flow statements.
+
+**The scanner** (`js/sources/automate/floPlugins.js`, port of the
+`scripts/flo_plugins.py` oracle) therefore does not parse the graph. It
+anchors on package-shaped byte runs and validates each candidate F0 body
+end-to-end: package regex → class-shaped activity → the parcel must parse
+**strictly** as an Android Bundle (`BNDL` magic, declared count, entries
+consuming exactly the declared length, AOSP string padding — a string is
+`[int32 charLen][UTF-16LE][2-byte NUL]` with the `(n+1)*2` payload rounded up
+to 4), then a decodable blurb and variable names. Four independent levels of
+round-trip validation make false positives on arbitrary flow bytes
+essentially impossible — verified: the ten non-plugin corpus flows yield zero
+hits. Some plugins' parcels carry trailing zero padding (observed: AutoCast,
+4 bytes); a small zero-only tail is accepted. Values the locale SDK cannot
+represent are decoded as tagged objects (`{$parcel: 'java.lang.Long', …}`) so
+the emitter rejects and reports them exactly like the Tasker path.
+
+**Statement kind** is recovered only when the exact base chain
+(`[typeId][id][x][y][null/back-reference fields]`) ends at the package length
+varint — when an inline object sits in between (e.g. a nested `Delay` as
+`onComplete`) the kind is unprovable without T1. Unproven blocks are emitted
+as actions (the dominant case: AutoInput and friends are setting plugins) and
+counted in the report (`typeAssumedSetting`); classified `CONDITION`/`EVENT`
+blocks are skipped and reported, because constraint/trigger placement needs
+the flow graph.
+
+**Emission** (`emitAutomateMacro` in `emitter.js`): the decoded Parcel Bundle
+is re-serialized into the twofortyfouram locale-SDK format via
+`bundleSerializer.js` — MacroDroid cannot consume a marshalled Parcel
+directly — and carried as a JSON numeric byte array (`mSerializedBundle`,
+same Gson importer contract as §7.7). Actions are emitted in **file order**,
+which is statement-list order, not execution order; the flow's control flow
+is not translated, so order only matters as a faithful inventory of the
+plug-in invocations. Automate `%variables` in bundle strings are left
+**literal** (Automate's own runtime leaves undefined `%vars` literal, and the
+flow's variable definitions are not recoverable without T1); every `%name`
+found is reported for review in the MacroDroid editor, and the flow's
+output-variable names are reported as unmapped. AutoInput is in the plugin
+registry (real fire receiver); other plugins are best-effort nodes with a
+null receiver, flagged in the report — same policy as the Tasker path.
+
+Verified: oracle-parity suite over the 15-flow corpus (33 plug-in statements
+in 5 plugin flows, zero false positives), synthetic Parcel-decode tests
+(padding, VAL_NULL, nested bundles, tagged Long — one of which caught a real
+decoder bug), emission contract tests, browser e2e (macro card + copy button
+in both scopes), a recorded live-MCP probe (`VALID`,
+`tests/fixtures/macrodroid/passthrough-probes/validate-passthrough-automate-36322.json`,
+parity-tested), and the emulator CI device import gate (macro editor + 4
+rendered action rows via uiautomator).
+
+
 ## 8. AutoInput → MacroDroid touch mapping (proven classes)
 
 | AutoInput op | MacroDroid class / action |

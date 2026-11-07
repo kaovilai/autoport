@@ -35,8 +35,9 @@ Legend: ☑ done · ◐ partial · ☐ not started
 ### Automate → MacroDroid
 - [x] `.flo` T0 inventory: magic / version / statement count / strings
 - [x] Graceful rejection of truncated / malformed flows
+- [x] **Plug-in pass-through (M3.1)**: Tasker/Locale plug-in statements in the flow (Automate's PlugInSetting/Condition/Event blocks — AutoInput, AutoCast, …) become MacroDroid Tasker/Locale Plugin actions carrying the plugin's configuration bundle, decoded from the flow's marshalled Android Parcel and re-serialized in the byte-exact locale-SDK format (oracle-parity tested on 33 plug-in statements across 5 community flows, zero false positives on the rest of the corpus). AutoInput emits fully (receiver from the real APK); other plugins are best-effort (node emitted, plugin re-picked in MacroDroid). Validated against the live MacroDroid MCP server and imported on device. Honest limits — listed in the conversion report on every run: the flow's **other** statements (control flow, native Automate blocks) are not converted (that needs the T1 statement registry), plug-in blocks whose statement kind can't be proven are emitted as actions, Automate `%vars` stay literal and are reported, and the flow's output variables are reported as unmapped
 - [ ] `.flo` T1 full parse — format is fully structured (typed object graph; probe walks FlowBeginning → blocks until unregistered type ids); needs the ~620-entry block-type registry generated from the decompiled statement classes (spike: `scripts/t1probe.py`)
-- [ ] Conversion to MacroDroid (via T1; PNG/PDF export path dropped — unnecessary given the structured format)
+- [ ] Conversion of the flow's native blocks to MacroDroid (via T1; PNG/PDF export path dropped — unnecessary given the structured format)
 
 ### Other directions (roadmap — drop-in adapters)
 - [ ] MacroDroid → Tasker (reverse)
@@ -60,13 +61,13 @@ Legend: ☑ done · ◐ partial · ☐ not started
 ## Quality gates (CI on every push)
 - [x] Python fixture tests: Tasker corpus, `.flo` corpus + negatives, code tables
 - [x] Golden IR regression vs the Python reference oracle
-- [x] JS suites: Tasker parser **golden parity with the Python oracle**, AutoInput decoder, `.flo` T0, MacroDroid validator
+- [x] JS suites: Tasker parser **golden parity with the Python oracle**, AutoInput decoder, `.flo` T0, **`.flo` plug-in scanner (oracle parity + Parcel decode + Automate emission)**, MacroDroid validator
 - [x] Content-sniffer unit suite (every `classify()` route pinned)
 - [x] **Plugin pass-through emission suite (40 tests)**: Java-ObjectSerialization writer byte-for-byte against a committed JVM reference (incl. real AutoInput v1/v2 bundles), typed-bundle reconstruction, `%var` translation, emitter contract, MCP-probe parity — plus a CI drift gate that regenerates the JVM reference
 - [x] PWA site-integrity suite (manifest contract, real PNG icons, SW precache list exists **and** covers every module/data file — the offline gate)
 - [x] **Browser e2e** ([ci.yml](.github/workflows/ci.yml) `e2e` job, Playwright + pinned Chromium): SW registration + precache, every ingest path (picker / drag-drop / paste box / page paste), V4 equality across paths (status + rendered cards; parser oracle-golden-tested), share-target POST → 303 → inbox card → "Open in converter" handoff, text-only / empty / >25 MiB shares, IndexedDB persistence + clear, offline reload + **offline parse** + offline deep-link fallback — run twice: at the server root **and** under `/autoport/` (GitHub Pages layout)
 - [x] Upstream drift gate on `tasker.joaoapps.com` code tables
-- [x] Emulator device test on KVM runners (**automatic on device-relevant paths**, nightly, and on demand; system image + APKs cached): Chrome + MacroDroid from Play, PWA load + **CDP content assertions + on-device parse (online and offline)**, V15 share-link import, M3.1 pass-through import asserted in the MacroDroid editor
+- [x] Emulator device test on KVM runners (**automatic on device-relevant paths**, nightly, and on demand; system image + APKs cached): Chrome + MacroDroid from Play, PWA load + **CDP content assertions + on-device parse (online and offline)**, V15 share-link import, M3.1 pass-through import asserted in the MacroDroid editor (Tasker **and** Automate flows)
 
 See `docs/DESIGN.md` (§11) for the V1–V21 verification matrix and
 `docs/VERIFICATION.md` for current status.

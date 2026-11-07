@@ -442,3 +442,174 @@ export function emitMacros(ir, options = {}) {
   }
   return { emissions };
 }
+
+/* ------------------------------------------------------------------ */
+/* Automate .flo → MacroDroid plug-in pass-through                    */
+/* ------------------------------------------------------------------ */
+
+// Automate interpolates flow variables into plugin configuration strings at
+// fire time (F0.d, pattern "%name"); undefined variables stay literal. The
+// flow's variable definitions are NOT recoverable without T1, so bundle
+// strings are kept byte-literal (Automate's own semantics for undefined
+// variables) and every %name found is reported for the user to review in the
+// MacroDroid editor — never silently rewritten to magic text.
+const AUTOMATE_VAR_RE = /%[A-Za-z_][A-Za-z0-9_]*/g;
+
+/** Decoded Android-Parcel bundle value -> locale-SDK representable value.
+ *  Tagged {$parcel: type} values (Long/Float/Double/Short/…) are rejected
+ *  and reported exactly like the Tasker path's type companions. */
+function automateValue(v, keyPath, report) {
+  if (v === null || v === undefined) return null;
+  if (typeof v === 'string' || typeof v === 'boolean') return v;
+  if (typeof v === 'number') {
+    if (Number.isInteger(v) && Math.abs(v) <= 0x7fffffff) return v;
+    return undefined; // non-integer or out-of-int-range: unreachable (tagged below)
+  }
+  if (Array.isArray(v)) return v.map((x) => (typeof x === 'string' ? x : String(x)));
+  if (typeof v === 'object') {
+    if (typeof v.$parcel === 'string') {
+      if (v.$parcel === 'java.lang.Long') {
+        report.rejectedLongValues.push({ key: keyPath, value: String(v.value) });
+      } else {
+        report.rejectedUnsupportedValues.push({ key: keyPath, type: v.$parcel });
+      }
+      return undefined; // drop
+    }
+    const out = {};
+    for (const [k, val] of Object.entries(v)) {
+      const conv = automateValue(val, keyPath ? `${keyPath}.${k}` : k, report);
+      if (conv !== undefined) out[k] = conv;
+    }
+    return out;
+  }
+  report.rejectedUnsupportedValues.push({ key: keyPath, type: typeof v });
+  return undefined;
+}
+
+function collectAutomateVars(v, report) {
+  if (typeof v === 'string') {
+    for (const m of v.matchAll(AUTOMATE_VAR_RE)) report.automateVariables.add(m[0]);
+  } else if (Array.isArray(v)) {
+    for (const x of v) collectAutomateVars(x, report);
+  } else if (v && typeof v === 'object' && typeof v.$parcel !== 'string') {
+    for (const val of Object.values(v)) collectAutomateVars(val, report);
+  }
+}
+
+/** Emit one MacroDroid macro from an Automate .flo plug-in scan
+ *  (js/sources/automate/floPlugins.js scanFloPlugins). Every plug-in
+ *  statement found becomes a LocalePluginAction carrying the plugin's
+ *  configuration bundle, re-serialized from the decoded Android Parcel into
+ *  the locale-SDK format MacroDroid expects. The flow's OTHER statements
+ *  (control flow, native blocks) are not converted — that needs the T1
+ *  statement registry — and the macro says so in its description.
+ *  @returns {{macro: object|null, report: object}} */
+export function emitAutomateMacro(scan, options = {}) {
+  const report = {
+    emitted: [],
+    skipped: [],
+    rejectedLongValues: [],
+    rejectedUnsupportedValues: [],
+    unknownPlugins: new Set(),
+    automateVariables: new Set(),
+    automateOutputVariables: new Set(),
+    typeAssumedSetting: 0,
+    statementsTotal: scan && scan.statementCount != null ? scan.statementCount : null,
+    pluginCount: scan ? scan.pluginCount || 0 : 0,
+  };
+  const actionList = [];
+  for (const [idx, p] of ((scan && scan.plugins) || []).entries()) {
+    if (p.kind === 'CONDITION' || p.kind === 'EVENT') {
+      report.skipped.push({
+        index: idx + 1, package: p.package, kind: p.kind,
+        reason: `Automate plug-in ${p.kind.toLowerCase()} block — MacroDroid constraint/trigger mapping needs the flow graph (T1 statement registry); reported, not emitted`,
+      });
+      continue;
+    }
+    if (p.kind === null) report.typeAssumedSetting += 1;
+    if (!p.package) {
+      report.skipped.push({ index: idx + 1, reason: 'plug-in block without a package' });
+      continue;
+    }
+    const plugin = lookupPlugin(p.package);
+    const bundle = automateValue(p.bundle, '', report) || {};
+    const bytes = serializeBundle(bundle);
+    if (bytes.length > 25000) { // twofortyfouram locale SDK MAXIMUM_BUNDLE_SIZE_BYTES
+      report.skipped.push({
+        index: idx + 1, package: p.package,
+        reason: `plugin bundle is ${bytes.length} bytes, over the locale SDK 25000-byte limit`,
+      });
+      continue;
+    }
+    collectAutomateVars(p.bundle, report);
+    if (p.blurb) collectAutomateVars(p.blurb, report);
+    for (const n of p.varNames || []) report.automateOutputVariables.add(n);
+
+    const registryName = `${p.package}:${p.activity || ''}`;
+    actionList.push({
+      m_classType: 'LocalePluginAction',
+      m_SIGUID: 0,
+      blockActions: true, // plugin blocks until complete — preserves flow order
+      arrayHandlingOption: 0, // Use first element
+      m_variableMap: {}, // Automate output-variable mappings are reported, not mapped (T1)
+      m_plugin: {
+        mType: 'SETTING',
+        mPackageName: p.package,
+        mActivityClassName: p.activity,
+        mReceiverClassName: plugin.settingReceiver,
+        mRegistryName: registryName,
+        mVersionCode: plugin.versionCode,
+        mConfiguration: {
+          mIsBackwardsCompatibilityEnabled: false,
+          mIsRequiresConnectivity: false,
+          mIsDisruptsConnectivity: false,
+          mIsDrainsBattery: false,
+          mIsBuggy: false,
+          mIsBlacklisted: false,
+          mAlternatives: [],
+        },
+      },
+      m_pluginInstanceData: {
+        mType: 'SETTING',
+        mRegistryName: registryName,
+        // JSON numeric byte array — MacroDroid's Gson importer has no base64
+        // adapter for byte[] (com.arlosoft.macrodroid.gson.GsonUtils).
+        mSerializedBundle: Array.from(bytes),
+        mBlurb: p.blurb || '',
+      },
+    });
+    if (!plugin.known) report.unknownPlugins.add(p.package);
+    report.emitted.push({ index: idx + 1, package: p.package, activity: p.activity, known: plugin.known, blurb: p.blurb || '', bundleBytes: bytes.length });
+  }
+
+  report.unknownPlugins = [...report.unknownPlugins];
+  report.automateVariables = [...report.automateVariables].sort();
+  report.automateOutputVariables = [...report.automateOutputVariables].sort();
+
+  if (!actionList.length) {
+    return { macro: null, report };
+  }
+  const notConverted = report.statementsTotal != null
+    ? Math.max(0, report.statementsTotal - report.emitted.length) : null;
+  const macro = {
+    macroExportVersion: 1,
+    macro: {
+      m_name: options.name || 'AutoPort Automate pass-through',
+      m_description: `AutoPort Automate plug-in pass-through. `
+        + `${report.emitted.length} plug-in block(s) delegated to their plugin apps`
+        + `${notConverted != null ? `; the flow's remaining ${notConverted} statement(s) (control flow, native blocks) are not converted yet (T1)` : ''}.`,
+      m_enabled: true,
+      m_completed: true,
+      m_GUID: 0,
+      m_category: 'AutoPort',
+      aiGenerated: 1,
+      m_triggerList: [
+        { m_classType: 'EmptyTrigger', m_SIGUID: 0 }, // manual run — Automate triggers need T1
+      ],
+      m_actionList: actionList,
+      m_constraintList: [],
+      localVariables: [],
+    },
+  };
+  return { macro, report };
+}

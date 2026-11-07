@@ -24,10 +24,13 @@ on:
       # the code whose device behavior only a real MacroDroid import proves
       - 'js/targets/macrodroid/**'
       - 'js/sources/tasker/**'
+      - 'js/sources/automate/**'
       - 'data/macrodroid/**'
       - 'data/taskerCodes.json'
       - 'tests/golden/tasker/**'
       - 'tests/fixtures/tasker/**'
+      - 'tests/golden/automate/**'
+      - 'tests/fixtures/automate/**'
       # PWA shell exercised by the device CDP assertions / offline flow
       - 'sw.js'
       - 'index.html'
@@ -43,10 +46,13 @@ on:
       # the code whose device behavior only a real MacroDroid import proves
       - 'js/targets/macrodroid/**'
       - 'js/sources/tasker/**'
+      - 'js/sources/automate/**'
       - 'data/macrodroid/**'
       - 'data/taskerCodes.json'
       - 'tests/golden/tasker/**'
       - 'tests/fixtures/tasker/**'
+      - 'tests/golden/automate/**'
+      - 'tests/fixtures/automate/**'
       # PWA shell exercised by the device CDP assertions / offline flow
       - 'sw.js'
       - 'index.html'
@@ -380,6 +386,85 @@ jobs:
           fi
           echo "pass-through import verified: EditMacroActivity + macro name + 2 action rows on device"
 
+      - name: "M3.1 Automate: import Automate-flow pass-through macro (LocalePluginAction)"
+        run: |
+          export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+          ADB="$ANDROID_HOME/platform-tools/adb"
+          # Emit the macro on the runner: scan the Automate flow for plug-in
+          # statements (F0 anchors) and delegate each to a LocalePluginAction.
+          # Pure JS, no browser needed.
+          node --input-type=module -e "
+            import { readFileSync, writeFileSync } from 'node:fs';
+            const { scanFloPlugins } = await import('$GITHUB_WORKSPACE/js/sources/automate/floPlugins.js');
+            const { emitAutomateMacro } = await import('$GITHUB_WORKSPACE/js/targets/macrodroid/emitter.js');
+            const u8 = new Uint8Array(readFileSync('$GITHUB_WORKSPACE/tests/fixtures/automate/36322.flo'));
+            const scan = scanFloPlugins(u8);
+            const { macro, report } = emitAutomateMacro(scan, { name: 'AutoPort Automate 36322' });
+            if (!macro || macro.macro.m_actionList.length !== 4) {
+              console.error('expected 4 emitted actions, got', macro && macro.macro.m_actionList.length);
+              process.exit(1);
+            }
+            if (report.unknownPlugins.length) {
+              console.error('unexpected unknown plugins:', report.unknownPlugins);
+              process.exit(1);
+            }
+            writeFileSync('/tmp/automate-passthrough.macro.json', JSON.stringify(macro));
+            console.log('emitted actions:', macro.macro.m_actionList.length);
+          "
+          # Validate via the live MacroDroid MCP server (hard gate on the
+          # structured verdict), then mint a share link and import on device.
+          # The same emission is pinned offline by the recorded probe
+          # tests/fixtures/macrodroid/passthrough-probes/validate-passthrough-automate-36322.json.
+          python3 - <<'EOF' > /tmp/automate-passthrough-link.txt
+          import json, re, sys, urllib.request
+          macro = open('/tmp/automate-passthrough.macro.json').read()
+          def rpc(method, params, mid):
+              data = json.dumps({'jsonrpc':'2.0','id':mid,'method':method,'params':params}).encode()
+              req = urllib.request.Request('https://remote.macrodroid.com/mcp', data=data,
+                  headers={'Content-Type':'application/json','Accept':'application/json, text/event-stream'})
+              return json.loads(urllib.request.urlopen(req, timeout=60).read())
+          rpc('initialize', {'protocolVersion':'2025-03-26','capabilities':{},
+              'clientInfo':{'name':'autoport-ci','version':'1.0'}}, 1)
+          v = rpc('tools/call', {'name':'validate_macrodroid_macro',
+              'arguments':{'macro_json': macro}}, 2)
+          sc = (v.get('result') or {}).get('structuredContent') or {}
+          print(json.dumps(sc)[:400], file=sys.stderr)
+          if sc.get('valid') is not True:
+              print('VALIDATION FAILED', file=sys.stderr); sys.exit(1)
+          s = rpc('tools/call', {'name':'share_macrodroid_macro',
+              'arguments':{'macro_json': macro}}, 3)
+          m = re.search(r'https?://[^"\\\\ ]+', json.dumps(s))
+          print(m.group(0) if m else '')
+          EOF
+          ALINK=$(tail -1 /tmp/automate-passthrough-link.txt)
+          echo "automate pass-through share link: $ALINK"
+          if [ -z "$ALINK" ]; then echo "::error::no automate pass-through share link minted"; cat /tmp/automate-passthrough-link.txt; exit 1; fi
+          "$ADB" shell am start -a android.intent.action.VIEW -d "$ALINK"
+          sleep 20
+          "$ADB" exec-out screencap -p > /tmp/macrodroid-automate-import.png
+          top=$("$ADB" shell dumpsys activity activities | grep -i 'topResumedActivity' | head -1)
+          echo "top activity after automate link: $top"
+          if ! echo "$top" | grep -q 'com.arlosoft.macrodroid/.editscreen.EditMacroActivity'; then
+            echo "::error::share link did not land in the MacroDroid macro editor (EditMacroActivity); got: $top"
+            exit 1
+          fi
+          "$ADB" shell uiautomator dump /sdcard/automate-passthrough-ui.xml >/dev/null
+          "$ADB" pull /sdcard/automate-passthrough-ui.xml /tmp/automate-passthrough-ui.xml >/dev/null
+          if ! grep -q "AutoPort Automate 36322" /tmp/automate-passthrough-ui.xml; then
+            echo "::error::imported macro name 'AutoPort Automate 36322' not visible in the MacroDroid editor"
+            cat /tmp/automate-passthrough-ui.xml; exit 1
+          fi
+          rows=$(grep -o 'text="com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"' /tmp/automate-passthrough-ui.xml | wc -l)
+          if [ "$rows" -lt 4 ]; then
+            echo "::error::expected 4 rendered LocalePluginAction rows in the editor, found $rows (the Automate flow's plug-in nodes were dropped or not rendered)"
+            cat /tmp/automate-passthrough-ui.xml; exit 1
+          fi
+          if grep -q "No Actions" /tmp/automate-passthrough-ui.xml; then
+            echo "::error::MacroDroid imported the Automate macro with ZERO actions — the LocalePluginAction nodes were dropped"
+            exit 1
+          fi
+          echo "automate pass-through import verified: EditMacroActivity + macro name + 4 action rows on device"
+
       - name: Upload screenshots + logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -392,7 +477,9 @@ jobs:
             /tmp/pwa-offline-reload.png
             /tmp/macrodroid-import.png
             /tmp/macrodroid-passthrough-import.png
+            /tmp/macrodroid-automate-import.png
             /tmp/passthrough-ui.xml
+            /tmp/automate-passthrough-ui.xml
             /tmp/emulator.log
             /tmp/share-link.txt
           if-no-files-found: ignore
