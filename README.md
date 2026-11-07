@@ -9,11 +9,13 @@ server, no account, no telemetry.
 
 Device tests run on KVM emulator runners ([emulator-test.yml](.github/workflows/emulator-test.yml), manual dispatch) with the real apps installed from their original sources; versions below are what the last run verified.
 
-| App | Version | Install source | Verified |
+| App | Version (last run) | Install source | Verified |
 |---|---|---|---|
-| Tasker | 6.6.3-beta (2025-10-02) | official trial server (pinned) | installs + launches |
-| Automate | b267 (v1.43) | Google Play (latest) | installs + launches |
-| MacroDroid | from Play (latest) | Google Play | installs, launches, **imports AutoPort macro via MCP share link** |
+| Tasker | 6.6.3-beta | official trial server (pinned build) | installs + launches |
+| Automate | 1.54.0-play | Google Play (latest) | installs + launches |
+| MacroDroid | 6.1.5 | Google Play (latest) | installs, launches, **imports AutoPort macro via MCP share link** |
+
+_Last verified: [run 42341971557](https://github.com/kaovilai/autoport/actions/runs/42341971557) (versions are re-measured by every run; `device-matrix.txt` in the run artifacts is the source of truth). Note: the `.flo` format reference and fixtures come from Automate build 267 (v1.43) via decompilation; the CI-tested Play build is 1.54.0 — the T1 registry work targets the decompiled build and must be spot-checked against newer builds._
 
 ## Conversion directions
 
