@@ -45,7 +45,7 @@ let mappingTable = null;
 async function loadMappingTable() {
   if (mappingTable) return mappingTable;
   try {
-    const r = await fetch(new URL('../../data/macrodroid/mappingTable.json', import.meta.url), { cache: 'force-cache' });
+    const r = await fetch(new URL('../data/macrodroid/mappingTable.json', import.meta.url), { cache: 'force-cache' });
     mappingTable = await r.json();
   } catch (e) {
     console.warn('[autoport] mapping table unavailable', e);
@@ -293,7 +293,7 @@ async function refreshInbox() {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      const reg = await navigator.serviceWorker.register(new URL('../sw.js', import.meta.url));
       console.log('[autoport] SW registered', reg.scope);
       if (reg.waiting) setStatus('New version ready — reopen the app to update', '');
     } catch (e) {
