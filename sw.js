@@ -18,8 +18,10 @@ const VERSION = 'v3';
 /* Base path derived from the SW scope, so the app works when hosted at a subpath
  * (e.g. GitHub Pages project site https://host/autoport/). Scope always ends in '/'. */
 const BASE = new URL(self.registration.scope).pathname;
-const CACHE_SHELL = `autoport-shell-${VERSION}`;
-const CACHE_RUNTIME = `autoport-runtime-${VERSION}`;
+/* Cache names include the scope so workers at different scopes on the same origin
+ * (root dev server vs /autoport/ deploy) never delete each other's caches. */
+const CACHE_SHELL = `autoport-shell-${VERSION}${BASE}`;
+const CACHE_RUNTIME = `autoport-runtime-${VERSION}${BASE}`;
 
 /* Shell entries are written relative to the scope and resolved to absolute URLs below. */
 const SHELL = [
@@ -262,9 +264,12 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
+    // Delete only this scope's old caches; other scopes' workers own theirs.
     const keep = new Set([CACHE_SHELL, CACHE_RUNTIME]);
     const names = await caches.keys();
-    await Promise.all(names.map((n) => (keep.has(n) ? null : caches.delete(n))));
+    await Promise.all(names.map((n) => (
+      (n.startsWith('autoport-') && n.endsWith(BASE) && !keep.has(n)) ? caches.delete(n) : null
+    )));
     await self.clients.claim();
     await notifyClients({ type: 'autoport:sw-activated', version: VERSION });
   })());
