@@ -328,11 +328,9 @@ self.addEventListener('fetch', (event) => {
       try {
         return await cacheFirst(req, CACHE_SHELL);
       } catch (e) {
-        const cache = await caches.open(CACHE_SHELL);
-        // Unknown deep link offline → app shell, so the SPA can route it.
-        return (await cache.match(new URL('index.html', self.registration.scope).href)) ||
-               (await cache.match(new URL('404.html', self.registration.scope).href)) ||
-               new Response('offline', { status: 503 });
+        // Unknown deep link offline → redirect to the app root (scope), so the relative
+        // refs in index.html resolve correctly instead of against the missing deep path.
+        return Response.redirect(new URL('index.html', self.registration.scope).href, 302);
       }
     })());
     return;

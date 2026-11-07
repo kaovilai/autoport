@@ -45,7 +45,7 @@ let mappingTable = null;
 async function loadMappingTable() {
   if (mappingTable) return mappingTable;
   try {
-    const r = await fetch(new URL('../../data/macrodroid/mappingTable.json', import.meta.url), { cache: 'force-cache' });
+    const r = await fetch(new URL('../data/macrodroid/mappingTable.json', import.meta.url), { cache: 'force-cache' });
     mappingTable = await r.json();
   } catch (e) {
     console.warn('[autoport] mapping table unavailable', e);
