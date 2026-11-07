@@ -17,7 +17,7 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
 | V13 | Generated macro JSON passes MCP validate | ✅ proven offline (recorded probes) | `tests/fixtures/macrodroid/validator-probes/validate-ok.json` |
 | V14 | Structural validator rejects adversarial shapes | ✅ probe evidence recorded | `validate-probe-*.json` (bad classtype, unbalanced If rejected) |
 | V15 | End-to-end macro import into MacroDroid on device | ✅ emulator CI (manual dispatch) | MCP share link → MacroDroid macro editor (run 42341971557) |
-| M3.1 | Emit MacroDroid macro JSON from IR (plugin pass-through) | ✅ unit + e2e (every push) · MCP-validated live · 🔬 device import (emulator CI) | emitter suite (40 tests): Java-ObjectSerialization writer **byte-for-byte vs a JVM reference** (real AutoInput v1/v2 bundles included) + CI drift gate regenerating the reference; emitted LaunchInstagram macro `VALID` on the live MacroDroid MCP (recorded probe, parity-tested); browser e2e renders the macro card + copy button in both scopes and pins the Gson importer contract (numeric byte array); emulator CI imports the emitted pass-through macro via share link and hard-asserts **EditMacroActivity + macro name + 2 rendered action rows** via uiautomator (run 42371018400) |
+| M3.1 | Emit MacroDroid macro JSON from IR (plugin pass-through) | ✅ unit + e2e (every push) · MCP-validated live · 🔬 device import (emulator CI) | emitter suite (40 tests): Java-ObjectSerialization writer **byte-for-byte vs a JVM reference** (real AutoInput v1/v2 bundles included) + CI drift gate regenerating the reference; emitted LaunchInstagram macro `VALID` on the live MacroDroid MCP (recorded probe, parity-tested); browser e2e renders the macro card + copy button in both scopes and pins the Gson importer contract (numeric byte array); emulator CI imports the emitted pass-through macro via share link and hard-asserts **EditMacroActivity + macro name + 2 rendered action rows** via uiautomator (run 42372632804) |
 | V12 | PDF/PNG block count vs T0 | ❌ unproven (path demoted) | design §5.4 |
 
 ## Test layers (what runs where)
@@ -123,10 +123,17 @@ exercises the MCP share-link import.
   `ArrayTypeAdapter` format), proven against the Gson source, and the device
   step now gates on the MCP's structured `valid` flag and hard-asserts
   `EditMacroActivity` + the macro name + the two rendered action rows via
-  uiautomator (run 42371018400: "Actions 2", both AutoInput rows with their
+  uiautomator (run 42372632804: "Actions 2", both AutoInput rows with their
   decoded `Type: Id / Value: …` blurbs). Found by CodeRabbit review + the
   on-device screenshot; the unit/e2e suites now pin
   `Array.isArray(mSerializedBundle)` and the Java-serialization stream magic.
+
+- Emitted macros carried a `globalVariables` array, but MacroDroid's
+  `Macro.java` has no such field (globals are device-level, created in the
+  Variables screen) — the importer silently ignores it while the UI claimed
+  the globals were "declared in the macro". Found by Copilot's re-review on
+  87474db. Fixed: the field is gone from the export, `globalVariablesRequired`
+  is reported, and the UI now says to create the globals in MacroDroid.
 
 - A macro whose plugin actions were all skipped (Tasker If-guards, oversized
   bundle) produced no emission, and `app.js` `continue`d past the report —

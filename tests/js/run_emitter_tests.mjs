@@ -324,7 +324,7 @@ await test('emitMacro: over-25000-byte plugin bundle is skipped and reported', (
   assert.equal(macro.macro.m_actionList.length, 0);
 });
 
-await test('emitMacro: Tasker globals used by the macro are reported as external prerequisites', () => {
+await test('emitMacro: Tasker globals are reported as external prerequisites, not declared', () => {
   const irMacro = {
     name: 'globals',
     variables: { local: [], global: ['%EnMaasKey'] },
@@ -341,8 +341,13 @@ await test('emitMacro: Tasker globals used by the macro are reported as external
   const { macro, report } = emitMacro(irMacro);
   assert.equal(report.emitted.length, 1);
   assert.deepEqual(report.globalVariablesRequired, ['EnMaasKey']);
-  assert.deepEqual(macro.macro.globalVariables.map((v) => v.m_name), ['EnMaasKey']);
+  // MacroDroid's Macro.java has no globalVariables field (globals are
+  // device-level, created in the Variables screen) — declaring them in the
+  // export would be ignored by the importer while pretending otherwise.
+  assert.equal(macro.macro.globalVariables, undefined, 'globals must not be nested in the emitted macro');
   assert.deepEqual(macro.macro.localVariables, [], 'global must not be declared local');
+  const text = Buffer.from(macro.macro.m_actionList[0].m_pluginInstanceData.mSerializedBundle).toString('latin1');
+  assert.ok(text.includes('{v=EnMaasKey}'), 'magic text still references the global');
 });
 
 await test('emitMacros: one broken macro does not take down the rest (per-macro try/catch)', () => {

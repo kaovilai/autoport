@@ -299,8 +299,12 @@ Wire format (all verified against decompiled MacroDroid
 - **Variable translation**: Tasker `%var` references in TOP-LEVEL bundle
   string values (and the blurb) become MacroDroid magic text (`{lv=}` local,
   `{v=}` global — MacroDroid applies magic text to plugin text fields at
-  runtime), the used variables are declared in
-  `localVariables`/`globalVariables`. Tasker built-ins (`%err`, `%errmsg`,
+  runtime). Used LOCAL variables are declared in `localVariables`
+  (`Macro.java` field). Tasker GLOBALS are NOT nested in the emitted macro:
+  `Macro` has no `globalVariables` field (globals are device-level entities
+  created in MacroDroid's Variables screen, and Gson ignores unknown
+  fields) — they are reported as external prerequisites instead, and the UI
+  tells the user to create them. Tasker built-ins (`%err`, `%errmsg`,
   `%TIME`, …) stay literal and are reported — their runtime values live in
   Tasker and a MacroDroid local of the same name would be unrelated.
   Nested bundles keep `%var`s literal (reported): MacroDroid only rewrites

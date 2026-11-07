@@ -173,7 +173,7 @@ async function renderTasker(name, buffer) {
       const unknownPlugins = report.unknownPlugins.length
         ? `<p class="muted small">⚠️ Plugin not in the registry (receiver unknown — MacroDroid shows the action but cannot fire it until the plugin is picked there): ${report.unknownPlugins.map(escapeHtml).join(', ')}</p>` : '';
       const globalsNeeded = report.globalVariablesRequired.length
-        ? `<p class="muted small">⚠️ Tasker global variable(s) referenced (${report.globalVariablesRequired.map(escapeHtml).join(', ')}) — declared in the macro, but their values must be set in MacroDroid.</p>` : '';
+        ? `<p class="muted small">⚠️ Tasker global variable(s) referenced (${report.globalVariablesRequired.map(escapeHtml).join(', ')}) — MacroDroid does not create globals on import; create them in MacroDroid → Variables, otherwise the magic-text references stay unexpanded.</p>` : '';
       const rejectedLong = report.rejectedLongValues.length
         ? `<p class="muted small">⚠️ Plugin value(s) dropped (java.lang.Long is not representable in the locale-SDK bundle): ${report.rejectedLongValues.map((r) => escapeHtml(r.key)).join(', ')}</p>` : '';
       const rejectedUnsupported = report.rejectedUnsupportedValues.length

@@ -1,11 +1,11 @@
 {
- "description": "MCP validate_macrodroid_macro verdict for the AutoPort-emitted plugin pass-through macro (Tasker LaunchInstagram.tsk.xml -> 2 LocalePluginAction nodes carrying the original AutoInput v1 bundles). Emitted by js/targets/macrodroid/emitter.js; bundle via bundleSerializer.js (JVM-verified byte format), carried as a JSON NUMERIC BYTE ARRAY in mSerializedBundle — MacroDroid's Gson importer (GsonUtils.getMacroGson, no byte[] adapter) only accepts number arrays; a base64 string makes the action fail to deserialize and get dropped (proven on device, emulator run 8).",
- "recorded": "2026-11-07T12:03:14.801361+00:00",
+ "description": "MCP validate_macrodroid_macro verdict for the AutoPort-emitted plugin pass-through macro (Tasker LaunchInstagram.tsk.xml -> 2 LocalePluginAction nodes carrying the original AutoInput v1 bundles). Emitted by js/targets/macrodroid/emitter.js; bundle via bundleSerializer.js (JVM-verified byte format), carried as a JSON NUMERIC BYTE ARRAY in mSerializedBundle — MacroDroid's Gson importer (GsonUtils.getMacroGson, no byte[] adapter) only accepts number arrays; a base64 string makes the action fail to deserialize and get dropped (proven on device, emulator run 8). Globals are NOT nested in the macro: Macro.java has no globalVariables field (they are device-level, created in the Variables screen) — the emitter reports them as external prerequisites instead.",
+ "recorded": "2026-11-07T12:40:21.800796+00:00",
  "fixture": "tests/fixtures/tasker/LaunchInstagram.tsk.xml",
  "mcp": "https://remote.macrodroid.com/mcp validate_macrodroid_macro",
  "verdict": "VALID. Macro \"Launch Instagram\": 1 trigger(s), 2 action(s), 0 macro-level constraint(s).",
  "valid": true,
- "shareLink": "https://macrodroidlink.com/m/N_FQ8vfO_wjG",
+ "shareLink": "https://macrodroidlink.com/m/tmRAJLdQvMeW",
  "macro": {
   "macroExportVersion": 1,
   "macro": {
@@ -2559,8 +2559,7 @@
     }
    ],
    "m_constraintList": [],
-   "localVariables": [],
-   "globalVariables": []
+   "localVariables": []
   }
  }
 }

@@ -366,9 +366,14 @@ export function emitMacro(irMacro, options = {}) {
   const localVars = [...report.variablesUsed]
     .filter((n) => (variables.local || []).includes(n))
     .map((n) => ({ m_name: n.replace(/^%+/, ''), m_type: 2, m_stringValue: '', isLocalVar: true }));
-  const globalVars = [...report.variablesUsed]
+  // Tasker globals are NOT declarable here: MacroDroid's Macro.java has
+  // `localVariables` but no globalVariables field (globals are device-level
+  // entities created in the Variables screen), so importing a macro cannot
+  // create them — Gson ignores the field. Reported as an external
+  // prerequisite instead of pretending they were declared.
+  const globalsUsed = [...report.variablesUsed]
     .filter((n) => (variables.global || []).includes(n))
-    .map((n) => ({ m_name: n.replace(/^%+/, ''), m_type: 2, m_stringValue: '', isLocalVar: false }));
+    .map((n) => n.replace(/^%+/, ''));
 
   const macro = {
     macroExportVersion: 1,
@@ -388,7 +393,6 @@ export function emitMacro(irMacro, options = {}) {
       m_actionList: actionList,
       m_constraintList: [],
       localVariables: localVars,
-      globalVariables: globalVars,
     },
   };
 
@@ -400,7 +404,7 @@ export function emitMacro(irMacro, options = {}) {
   // Tasker global variables the macro references: declared in the exported
   // macro, but their VALUES live in Tasker — the user must set them in
   // MacroDroid. Surfaced so the UI can warn about the external prerequisite.
-  report.globalVariablesRequired = globalVars.map((v) => v.m_name);
+  report.globalVariablesRequired = globalsUsed;
   return { macro, report };
 }
 
