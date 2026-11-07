@@ -39,29 +39,40 @@ import { lookupPlugin } from './pluginRegistry.js';
 
 const BLURB_KEY = 'com.twofortyfouram.locale.intent.extra.BLURB';
 
-/** Tasker built-in variables (user guide "Variables" section). They carry
- *  runtime values inside Tasker and have no MacroDroid equivalent, so they
- *  must stay literal and be reported — never translated to magic text and
- *  never declared as MacroDroid variables. */
+/** Tasker built-in variables (user guide "Variables" section), EXACT-CASE as
+ *  documented — Tasker distinguishes e.g. built-in %TIME from a user global
+ *  %Time, so a case-insensitive set would swallow real user variables. They
+ *  carry runtime values inside Tasker and have no MacroDroid equivalent, so
+ *  they must stay literal and be reported — never translated to magic text
+ *  and never declared as MacroDroid variables. %parN (perform-task parameters)
+ *  is matched by pattern in translateVars. */
 const TASKER_BUILTINS = new Set([
+  // error / HTTP
   '%err', '%errmsg', '%http_response_code', '%http_response_data',
-  '%http_response_headers', '%http_files', '%http_local_response_code',
-  '%http_local_response_data', '%http_local_response_headers',
-  '%time', '%timems', '%times', '%date', '%day', '%daym', '%dayofmonth',
-  '%dayofweek', '%dayofyear', '%month', '%year', '%minute', '%hour',
-  '%hour12', '%minuteofhour', '%secondofminute', '%dayofweekn', '%monthn',
-  '%location', '%locationspeed', '%locationaccuracy', '%locationfix',
-  '%locationalt', '%bearing', '%speed', '%netlat', '%netlong',
-  '%wifi', '%cellid', '%cellsig', '%cellnet', '%network', '%netsig',
-  '%air', '%airr', '%batt', '%battp', '%temp', '%nfc', '%flash',
-  '%bright', '%screen', '%silent', '%volume', '%vols', '%volc', '%volm',
-  '%volr', '%volb', '%voic', '%keyg', '%locks', '%phone', '%data',
-  '%sdvolfree', '%sdcard', '%ups', '%uprev', '%uptime', '%mtimes',
-  '%qtime', '%mon', '%mtrack', '%ntitle', '%ntext', '%lights',
-  '%memavail', '%memfree', '%diskfree', '%diskavail', '%notification',
-  '%enabledairplanemode', '%enablenotification', '%enabletethering',
-  '%icons', '%activeapps', '%fields', '%context', '%par1', '%par2',
-  '%taskname', '%tasktype', '%taskstatus', '%taskdevice', '%tasktime',
+  '%http_response_headers', '%http_files', '%http_status',
+  '%http_local_response_code', '%http_local_response_data',
+  '%http_local_response_headers',
+  // time / date
+  '%TIME', '%TIMES', '%TIMEMS', '%DATE', '%DAY', '%DAYW', '%DAYM',
+  '%MONTH', '%YEAR', '%HOUR', '%MINUTE', '%SUNRISE', '%SUNSET',
+  // device / sensors
+  '%BATT', '%BATTHEALTH', '%TEMP', '%LIGHT', '%PRESSURE', '%HUMIDITY',
+  '%PROX', '%SCREEN', '%BRIGHT', '%VOLS', '%VOLC', '%VOLM', '%VOLA',
+  '%VOLB', '%VOLR', '%SILENT', '%AIR', '%AIRR', '%NFC', '%FLASH', '%UPS',
+  '%UPTIME', '%UPREV', '%KEYG', '%QSC', '%MEMF', '%MEMAV', '%DISKFREE',
+  '%SDVOLFREE', '%SDCARD', '%LIGHTS',
+  // network / location
+  '%WIFI', '%WIFII', '%NETWORK', '%NETSIG', '%CELLID', '%CELLSIG',
+  '%CELLNET', '%CELLASU', '%CELLLAC', '%CELLROAM', '%ROAM', '%IP', '%SSID',
+  '%BSSID', '%MAC', '%BTNAME', '%LOC', '%LOCN', '%LOCACC', '%LOCNACC',
+  '%LOCSPD', '%LOCALT', '%LOCATION', '%LOCATIONS', '%BEARING', '%SPEED',
+  '%NETLAT', '%NETLONG',
+  // phone / identity
+  '%PHONE', '%SIM', '%SIM_SERIAL', '%IMSI', '%MEID', '%DEVID',
+  '%DEVIDHASH', '%CALLER', '%CALLNAME', '%CALLNUM', '%CALLTYPE', '%CALLVOL',
+  // task / notification / profiles
+  '%MTRACK', '%MTIME', '%QTIME', '%NTITLE', '%NTEXT', '%PACTIVE',
+  '%PENABLED', '%PENABLING', '%ACTIVEAPPS', '%ICONS', '%FIELDS', '%CONTEXT',
 ]);
 
 /* ------------------------------------------------------------------ */
@@ -75,8 +86,9 @@ const TASKER_BUILTINS = new Set([
  *  {$bundle:{...}} sub-bundles.
  *  `report` (optional) collects unrepresentable values: java.lang.Long has
  *  no slot in the twofortyfouram BundleSerializer (String/Boolean/Integer/
- *  byte[]/String[]/Bundle only), so Long-typed keys are dropped and reported
- *  rather than silently mangled. */
+ *  byte[]/String[]/Bundle only), and any OTHER type companion (Float,
+ *  Double, …) is rejected + reported too — silently String()-ing it would
+ *  hand the plugin a different type than the source task configured. */
 export function typedBundle(rawVals, report = null) {
   const out = {};
   if (!rawVals || typeof rawVals !== 'object') return out;
@@ -85,6 +97,13 @@ export function typedBundle(rawVals, report = null) {
     const t = rawVals[`${k}-type`] || 'java.lang.String';
     if (t === 'java.lang.Long') {
       if (report) report.rejectedLongValues.push({ key: k, value: String(v) });
+      continue;
+    }
+    if (t !== 'java.lang.String' && t !== 'java.lang.Boolean' && t !== 'java.lang.Integer'
+        && t !== '[Ljava.lang.String;' && t !== 'android.os.Bundle') {
+      // shape below decides $array/$bundle; a scalar here with an unknown
+      // companion cannot be represented faithfully
+      if (report) report.rejectedUnsupportedValues.push({ key: k, type: t });
       continue;
     }
     if (v === '<null>') { out[k] = null; continue; }
@@ -133,7 +152,7 @@ export function translateVars(text, variables, report) {
   for (const { name, magic } of names) {
     const bare = name.replace(/^%+/, '');
     if (!bare) continue;
-    if (TASKER_BUILTINS.has(name.toLowerCase())) {
+    if (TASKER_BUILTINS.has(name) || /^%par\d+$/.test(name)) {
       report.builtinVariables.add(name); // runtime value lives in Tasker only
       continue;
     }
@@ -173,14 +192,25 @@ function reportNestedBundleVars(bundle, report) {
   }
 }
 
+const JSON_ENCODED_KEYS = 'net.dinglisch.android.tasker.JSON_ENCODED_KEYS';
+
 /** Translate ONLY top-level string values (and string[] elements) of the
  *  bundle; nested bundles are passed through untouched (their %vars are
- *  reported literal by reportNestedBundleVars). */
-function translateStringValues(bundle, variables, report) {
+ *  reported literal by reportNestedBundleVars).
+ *  `jsonEncoded` (optional) is the Tasker JSON_ENCODED_KEYS set: Tasker
+ *  JSON-escapes variable substitution into those values at fire time, but
+ *  MacroDroid does plain runtime string replacement — a value containing a
+ *  quote, backslash or newline would break the JSON the plugin receives.
+ *  We cannot escape at emission time (the runtime value is unknown), so a
+ *  translated JSON-encoded value is reported for the UI to warn about. */
+function translateStringValues(bundle, variables, report, jsonEncoded = new Set()) {
   const out = {};
   for (const [k, v] of Object.entries(bundle)) {
-    if (typeof v === 'string') out[k] = translateVars(v, variables, report);
-    else if (Array.isArray(v)) out[k] = v.map((el) => translateVars(el, variables, report));
+    if (typeof v === 'string') {
+      const translated = translateVars(v, variables, report);
+      if (jsonEncoded.has(k) && translated !== v) report.jsonEncodedTranslations.add(k);
+      out[k] = translated;
+    } else if (Array.isArray(v)) out[k] = v.map((el) => translateVars(el, variables, report));
     else if (v && typeof v === 'object') {
       out[k] = v;
       reportNestedBundleVars(v, report);
@@ -201,6 +231,16 @@ function emitPluginAction(act, variables, report) {
     });
     return null;
   }
+  const onRaw = act.args ? act.args.on : undefined;
+  if (onRaw === 'false' || onRaw === false) {
+    // Tasker exports a disabled action as <on>false</on>; emitting it would
+    // re-enable an action the source task deliberately turned off.
+    report.skipped.push({
+      sr: act.sr, kind: act.kind, codeName: act.codeName,
+      reason: 'action is disabled in the source task (<on>false</on>)',
+    });
+    return null;
+  }
   const packageName = act.package || (act.args && act.args.arg1) || null;
   const activity = act.pluginClass || (act.args && act.args.arg2) || null;
   if (!packageName) {
@@ -211,7 +251,9 @@ function emitPluginAction(act, variables, report) {
   const rawVals = act.args && act.args.arg0 && act.args.arg0.$bundle
     ? act.args.arg0.$bundle : {};
   const bundle = typedBundle(rawVals, report);
-  const translated = translateStringValues(bundle, variables, report);
+  const jsonEncoded = typeof rawVals[JSON_ENCODED_KEYS] === 'string'
+    ? new Set(rawVals[JSON_ENCODED_KEYS].split(/\s+/).filter(Boolean)) : new Set();
+  const translated = translateStringValues(bundle, variables, report, jsonEncoded);
   const blurbRaw = typeof rawVals[BLURB_KEY] === 'string' ? rawVals[BLURB_KEY] : '';
   const blurb = translateVars(blurbRaw, variables, report);
 
@@ -277,14 +319,35 @@ export function emitMacro(irMacro, options = {}) {
     emitted: [],
     skipped: [],
     rejectedLongValues: [],
+    rejectedUnsupportedValues: [],
     variablesUsed: new Set(),
     unresolvedVariables: new Set(),
     builtinVariables: new Set(),
     unknownPlugins: new Set(),
+    jsonEncodedTranslations: new Set(),
   };
   const actionList = [];
+  // Tasker control-flow nesting: IF/FOR open a block, ENDIF/ENDFOR close it.
+  // Emitting a plugin action that lives inside a block would run it
+  // unconditionally in MacroDroid (block markers are builtins, skipped in
+  // M3.1), so enclosed plugin actions are skipped + reported until
+  // control-flow mapping is implemented (M3.2). Actions are in numeric-sr
+  // (real task) order, which the block structure requires.
+  const OPENERS = new Set(['IF', 'FOR']);
+  const CLOSERS = new Set(['ENDIF', 'ENDFOR']);
+  let blockDepth = 0;
   for (const act of irMacro.actions || []) {
+    if (act.kind === 'builtin' && OPENERS.has(act.codeName)) blockDepth += 1;
+    else if (act.kind === 'builtin' && CLOSERS.has(act.codeName)) blockDepth = Math.max(0, blockDepth - 1);
+    const inBlock = blockDepth > 0;
     if (act.kind === 'plugin') {
+      if (inBlock) {
+        report.skipped.push({
+          sr: act.sr, kind: act.kind, codeName: act.codeName,
+          reason: 'plugin action is inside a Tasker If/For block; control-flow mapping is not implemented yet (M3.2) — the action is skipped rather than running unconditionally',
+        });
+        continue;
+      }
       const node = emitPluginAction(act, variables, report);
       if (node) actionList.push(node);
     } else {
@@ -333,6 +396,7 @@ export function emitMacro(irMacro, options = {}) {
   report.unresolvedVariables = [...report.unresolvedVariables];
   report.builtinVariables = [...report.builtinVariables];
   report.unknownPlugins = [...report.unknownPlugins];
+  report.jsonEncodedTranslations = [...report.jsonEncodedTranslations];
   // Tasker global variables the macro references: declared in the exported
   // macro, but their VALUES live in Tasker — the user must set them in
   // MacroDroid. Surfaced so the UI can warn about the external prerequisite.
@@ -356,8 +420,9 @@ export function emitMacros(ir, options = {}) {
         macro: null,
         report: {
           emitted: [], skipped: [], rejectedLongValues: [],
+          rejectedUnsupportedValues: [],
           variablesUsed: [], unresolvedVariables: [], builtinVariables: [],
-          unknownPlugins: [], globalVariablesRequired: [],
+          unknownPlugins: [], globalVariablesRequired: [], jsonEncodedTranslations: [],
           error: `emission failed: ${e && e.message ? e.message : String(e)}`,
         },
       };

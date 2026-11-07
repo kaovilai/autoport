@@ -62,7 +62,7 @@ Legend: ☑ done · ◐ partial · ☐ not started
 - [x] Golden IR regression vs the Python reference oracle
 - [x] JS suites: Tasker parser **golden parity with the Python oracle**, AutoInput decoder, `.flo` T0, MacroDroid validator
 - [x] Content-sniffer unit suite (every `classify()` route pinned)
-- [x] **Plugin pass-through emission suite**: Java-ObjectSerialization writer byte-for-byte against a committed JVM reference (incl. real AutoInput v1/v2 bundles), typed-bundle reconstruction, `%var` translation, emitter contract, MCP-probe parity — plus a CI drift gate that regenerates the JVM reference
+- [x] **Plugin pass-through emission suite (40 tests)**: Java-ObjectSerialization writer byte-for-byte against a committed JVM reference (incl. real AutoInput v1/v2 bundles), typed-bundle reconstruction, `%var` translation, emitter contract, MCP-probe parity — plus a CI drift gate that regenerates the JVM reference
 - [x] PWA site-integrity suite (manifest contract, real PNG icons, SW precache list exists **and** covers every module/data file — the offline gate)
 - [x] **Browser e2e** ([ci.yml](.github/workflows/ci.yml) `e2e` job, Playwright + pinned Chromium): SW registration + precache, every ingest path (picker / drag-drop / paste box / page paste), V4 equality across paths (status + rendered cards; parser oracle-golden-tested), share-target POST → 303 → inbox card → "Open in converter" handoff, text-only / empty / >25 MiB shares, IndexedDB persistence + clear, offline reload + **offline parse** + offline deep-link fallback — run twice: at the server root **and** under `/autoport/` (GitHub Pages layout)
 - [x] Upstream drift gate on `tasker.joaoapps.com` code tables

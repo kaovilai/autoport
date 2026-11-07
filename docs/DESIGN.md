@@ -311,9 +311,35 @@ Wire format (all verified against decompiled MacroDroid
 - **Guards**: plugin actions carrying a Tasker If-guard are skipped and
   reported (never emitted without their condition — that would silently
   change behavior). Guard translation is M3.2.
+- **Control-flow nesting**: Tasker `IF`/`FOR` open a block and
+  `ENDIF`/`ENDFOR` close it; a plugin action inside a block is skipped and
+  reported until control-flow mapping lands (M3.2) — emitting it would run
+  it unconditionally. This requires TRUE task order: Tasker's XML writer
+  emits `<Action>` children sorted by `sr` as a STRING (`act10` before
+  `act2`), so both the JS parser and the reference oracle sort actions by
+  NUMERIC sr (the fixture itself proves it: Utils' "Unlock Screen" has
+  `IF(act2) … FOR(act7) … ENDFOR(act10) … ENDIF(act14)`, which is only a
+  valid structure in numeric order; document order puts ENDFOR before its
+  FOR).
+- **Disabled actions**: Tasker exports a disabled action as `<on>false</on>`
+  (IR: `args.on`) — such plugin actions are skipped and reported rather than
+  re-enabled.
+- **Type fidelity**: only `java.lang.String`, `java.lang.Boolean`,
+  `java.lang.Integer`, `[Ljava.lang.String;` and `android.os.Bundle` are
+  representable; `java.lang.Long` and any other type companion (Float,
+  Double, …) are dropped and reported — never silently re-typed.
+- **Built-ins** are matched EXACT-CASE against the documented Tasker variable
+  list (plus `%parN` by pattern): `%TIME` is a builtin, a user global named
+  `%Time` is a different variable and still translates.
+- **JSON-encoded values**: Tasker marks v2-style payload keys in
+  `net.dinglisch.android.tasker.JSON_ENCODED_KEYS` and JSON-escapes variable
+  substitution there at fire time; MacroDroid does plain runtime replacement.
+  Emission keeps the magic text but reports the key (UI warning) because a
+  runtime value containing quotes/backslashes/newlines can break the payload.
 - **Failure isolation**: `emitMacros` wraps each macro in try/catch; a macro
   that fails to emit produces `macro: null` + `report.error`, rendered as a
-  failure card, and never takes down the rest of the conversion.
+  failure card, and a macro with nothing emittable renders a report-only card
+  listing the skip reasons.
 - **Triggers**: `EmptyTrigger` (manual run) until trigger mapping lands (M3.2).
 
 Emission contract code: `js/targets/macrodroid/emitter.js` (`emitMacro`/

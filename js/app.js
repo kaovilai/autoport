@@ -176,10 +176,14 @@ async function renderTasker(name, buffer) {
         ? `<p class="muted small">⚠️ Tasker global variable(s) referenced (${report.globalVariablesRequired.map(escapeHtml).join(', ')}) — declared in the macro, but their values must be set in MacroDroid.</p>` : '';
       const rejectedLong = report.rejectedLongValues.length
         ? `<p class="muted small">⚠️ Plugin value(s) dropped (java.lang.Long is not representable in the locale-SDK bundle): ${report.rejectedLongValues.map((r) => escapeHtml(r.key)).join(', ')}</p>` : '';
+      const rejectedUnsupported = report.rejectedUnsupportedValues.length
+        ? `<p class="muted small">⚠️ Plugin value(s) dropped (type not representable in the locale-SDK bundle): ${report.rejectedUnsupportedValues.map((r) => `${escapeHtml(r.key)} (${escapeHtml(r.type)})`).join(', ')}</p>` : '';
+      const jsonRisk = report.jsonEncodedTranslations.length
+        ? `<p class="muted small">⚠️ JSON-encoded plugin value(s) contain translated variables (${report.jsonEncodedTranslations.map((k) => escapeHtml(k)).join(', ')}): Tasker JSON-escapes values here at runtime, MacroDroid does not — a value containing quotes, backslashes or newlines can break the plugin's JSON.</p>` : '';
       cards.push(`<article class="card">
         <h3>MacroDroid macro — plugin pass-through</h3>
         <p class="muted">${report.emitted.length} plugin action(s) delegated to their plugin apps · structural check: ${verdict.ok ? '<strong>valid</strong>' : `<strong>${verdict.errors.length} issue(s)</strong>`}</p>
-        ${skipped}${unresolved}${unknownPlugins}${globalsNeeded}${rejectedLong}
+        ${skipped}${unresolved}${unknownPlugins}${globalsNeeded}${rejectedLong}${rejectedUnsupported}${jsonRisk}
         <details><summary>Macro JSON (share into MacroDroid)</summary>
           <pre class="preview" tabindex="0">${escapeHtml(JSON.stringify(macro, null, 1))}</pre>
           <button class="btn primary" type="button" data-copy-macro>Copy macro JSON</button>

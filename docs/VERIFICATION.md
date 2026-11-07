@@ -17,7 +17,7 @@ Live status of the V-criteria in `docs/DESIGN.md` §11. Updated as tests land.
 | V13 | Generated macro JSON passes MCP validate | ✅ proven offline (recorded probes) | `tests/fixtures/macrodroid/validator-probes/validate-ok.json` |
 | V14 | Structural validator rejects adversarial shapes | ✅ probe evidence recorded | `validate-probe-*.json` (bad classtype, unbalanced If rejected) |
 | V15 | End-to-end macro import into MacroDroid on device | ✅ emulator CI (manual dispatch) | MCP share link → MacroDroid macro editor (run 42341971557) |
-| M3.1 | Emit MacroDroid macro JSON from IR (plugin pass-through) | ✅ unit + e2e (every push) · MCP-validated live · 🔬 device import (emulator CI) | emitter suite (34 tests): Java-ObjectSerialization writer **byte-for-byte vs a JVM reference** (real AutoInput v1/v2 bundles included) + CI drift gate regenerating the reference; emitted LaunchInstagram macro `VALID` on the live MacroDroid MCP (recorded probe, parity-tested); browser e2e renders the macro card + copy button in both scopes and pins the Gson importer contract (numeric byte array); emulator CI imports the emitted pass-through macro via share link and hard-asserts **EditMacroActivity + macro name + 2 rendered action rows** via uiautomator (run 42371018400) |
+| M3.1 | Emit MacroDroid macro JSON from IR (plugin pass-through) | ✅ unit + e2e (every push) · MCP-validated live · 🔬 device import (emulator CI) | emitter suite (40 tests): Java-ObjectSerialization writer **byte-for-byte vs a JVM reference** (real AutoInput v1/v2 bundles included) + CI drift gate regenerating the reference; emitted LaunchInstagram macro `VALID` on the live MacroDroid MCP (recorded probe, parity-tested); browser e2e renders the macro card + copy button in both scopes and pins the Gson importer contract (numeric byte array); emulator CI imports the emitted pass-through macro via share link and hard-asserts **EditMacroActivity + macro name + 2 rendered action rows** via uiautomator (run 42371018400) |
 | V12 | PDF/PNG block count vs T0 | ❌ unproven (path demoted) | design §5.4 |
 
 ## Test layers (what runs where)
@@ -82,6 +82,26 @@ exercises the MCP share-link import.
   Found by CodeRabbit review (the e2e scopes ran on separate origins/ports,
   so it never triggered in CI). Fixed with a complete-scope-suffix match and
   a same-origin cross-scope regression test in the e2e suite.
+
+- **Action order**: Tasker's XML writer emits `<Action>` children sorted by
+  `sr` as a STRING (`act10` before `act2`), and both the reference oracle and
+  the JS parser preserved document order — so every task with ≥10 actions
+  was parsed in the wrong order. The fixture itself proves the correct order:
+  Utils' "Unlock Screen" has `IF(act2) … FOR(act7) … ENDFOR(act10) …
+  ENDIF(act14)`, which is only a valid structure in NUMERIC sr order. Found
+  while implementing control-flow nesting (Copilot review); fixed in both the
+  oracle and the parser, goldens regenerated (`tasker-Rho.prj`,
+  `tasker-Utils.prj` changed; the rest were already numeric-ordered or
+  <10 actions).
+
+- **Control-flow / disabled actions**: plugin actions inside Tasker
+  `IF`/`FOR` blocks, and actions disabled with `<on>false</on>`, were emitted
+  as unconditional enabled actions (Copilot review: the committed Utils and
+  v2 fixtures exercise both). Now skipped and reported (block nesting is
+  tracked over the numeric-sr action list; M3.2 maps the blocks). The v2
+  ChatGPT fixture's only plugin action turned out to sit inside three nested
+  IFs — the emitter test now pins that it is skipped, with a synthetic
+  fixture covering the translation path instead.
 
 - The converter's AutoInput branch read `act.plugin?.package` /
   `act.plugin?.pluginTypeId` / `act.plugin?.configClass`, but the IR carries

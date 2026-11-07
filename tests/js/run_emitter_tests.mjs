@@ -245,27 +245,47 @@ await test('emitMacro: parity with the recorded MCP probe (live-validated macro)
   assert.deepEqual(macro, probe.macro, 'emission drifted from the macro the live MacroDroid MCP validated');
 });
 
-await test('emitMacros: v2 DSL fixture translates %variables and declares them', async () => {
+await test('emitMacros: v2 fixture plugin nested inside If blocks is skipped, not run unconditionally', async () => {
   const xml = readFileSync(path.join(repoRoot, 'tests/fixtures/tasker/plugins/CyanBridge_ChatGPT.xml'), 'utf8');
   const stats = {};
   const ir = await parseTaskerXml(xml, { codes: tables, parseXml, stats, file: 'CyanBridge_ChatGPT.xml' });
   const { emissions } = emitMacros(ir);
   assert.equal(emissions.length, 1);
   const { macro, report } = emissions[0];
+  // act7 (the AutoInput v2 action) sits inside IF(act0) > IF(act5) > IF(act6):
+  // emitting it without the enclosing control flow would run it unconditionally.
+  assert.equal(macro, null, 'block-enclosed plugin action must not be emitted');
+  const blockSkips = report.skipped.filter((s) => /If\/For block/.test(s.reason));
+  assert.equal(blockSkips.length, 1, 'the block-enclosed plugin must be reported');
+  assert.equal(blockSkips[0].sr, 'act7');
+});
+
+await test('emitMacro: v2 bundle translates %vars; JSON-encoded parameters are flagged', () => {
+  const irMacro = {
+    name: 'v2',
+    variables: { local: ['%question'], global: [] },
+    actions: [{
+      kind: 'plugin', code: 2000, codeName: 'PLUGIN(com.joaomgcd.autoinput)', sr: 'act0',
+      package: 'com.joaomgcd.autoinput', pluginClass: 'com.joaomgcd.autoinput.activity.ActivityConfigActionv2',
+      args: { arg0: { $bundle: {
+        'com.twofortyfouram.locale.intent.extra.BLURB': 'Ask %question',
+        'com.twofortyfouram.locale.intent.extra.BLURB-type': 'java.lang.String',
+        'parameters': '{"text":"%question"}', 'parameters-type': 'java.lang.String',
+        'net.dinglisch.android.tasker.JSON_ENCODED_KEYS': 'parameters',
+        'net.dinglisch.android.tasker.JSON_ENCODED_KEYS-type': 'java.lang.String',
+      } } },
+    }],
+  };
+  const { macro, report } = emitMacro(irMacro);
   assert.ok(macro, 'macro must be emitted');
-  assert.ok(report.emitted.length >= 1);
-  assert.ok(report.variablesUsed.includes('%question'), '%question must be translated');
-  assert.deepEqual([...report.unresolvedVariables], [], 'no unresolved vars expected in this fixture');
-  const declared = macro.macro.localVariables.map((v) => v.m_name);
-  for (const used of report.variablesUsed) {
-    assert.ok(declared.includes(used.replace(/^%+/, '')), `variable ${used} used but not declared`);
-  }
-  assert.ok(validateMacro(macro).ok);
-  // the translated bundle must mention the magic text, not the Tasker var
-  const action = macro.macro.m_actionList[0];
-  const decoded = Buffer.from(action.m_pluginInstanceData.mSerializedBundle).toString('latin1');
-  assert.ok(decoded.includes('{lv=question}'), 'bundle must carry {lv=question} magic text');
-  assert.ok(!decoded.includes('%question'), 'raw %question must not remain in the bundle');
+  assert.deepEqual(report.variablesUsed, ['%question']);
+  assert.ok(macro.macro.localVariables.some((v) => v.m_name === 'question'), 'variable must be declared');
+  const text = Buffer.from(macro.macro.m_actionList[0].m_pluginInstanceData.mSerializedBundle).toString('latin1');
+  assert.ok(text.includes('{lv=question}'), 'bundle must carry magic text');
+  assert.ok(!text.includes('%question'), 'raw %question must not remain');
+  // Tasker JSON-escapes values in JSON_ENCODED_KEYS at runtime; MacroDroid
+  // does plain replacement — surface the risk instead of hiding it.
+  assert.deepEqual(report.jsonEncodedTranslations, ['parameters']);
 });
 
 await test('emitMacro: plugin action with a Tasker If-guard is skipped and reported', () => {
@@ -339,6 +359,90 @@ await test('emitMacros: one broken macro does not take down the rest (per-macro 
   assert.equal(emissions[1].macro, null);
   assert.equal(emissions[1].report.note, 'no plugin actions — macro not emitted');
 });
+
+await test('emitMacro: plugin action disabled in the source task (<on>false</on>) is skipped', () => {
+  const irMacro = {
+    name: 'disabled',
+    variables: { local: [], global: [] },
+    actions: [{
+      kind: 'plugin', code: 2000, codeName: 'PLUGIN(com.joaomgcd.autoinput)', sr: 'act0',
+      package: 'com.joaomgcd.autoinput', pluginClass: 'com.joaomgcd.autoinput.activity.ActivityConfigPerformAction',
+      args: { on: 'false', arg0: { $bundle: { 'k': 'v', 'k-type': 'java.lang.String' } } },
+    }],
+  };
+  const { macro, report } = emitMacro(irMacro);
+  assert.equal(report.emitted.length, 0, 'disabled action must not be emitted');
+  assert.equal(report.skipped.length, 1);
+  assert.match(report.skipped[0].reason, /disabled in the source task/);
+  assert.equal(macro.macro.m_actionList.length, 0);
+});
+
+await test('emitMacro: plugin actions inside Tasker If/For blocks are skipped, outside ones emitted', () => {
+  const plugin = (sr) => ({
+    kind: 'plugin', code: 2000, codeName: 'PLUGIN(com.joaomgcd.autoinput)', sr,
+    package: 'com.joaomgcd.autoinput', pluginClass: 'com.joaomgcd.autoinput.activity.ActivityConfigPerformAction',
+    args: { arg0: { $bundle: { 'k': 'v', 'k-type': 'java.lang.String' } } },
+  });
+  const irMacro = {
+    name: 'blocks',
+    variables: { local: [], global: [] },
+    actions: [
+      { kind: 'builtin', code: 37, codeName: 'IF', sr: 'act0' },
+      plugin('act1'),                                   // inside IF -> skip
+      { kind: 'builtin', code: 40, codeName: 'FOR', sr: 'act2' },
+      plugin('act3'),                                   // inside IF+FOR -> skip
+      { kind: 'builtin', code: 41, codeName: 'ENDFOR', sr: 'act4' },
+      { kind: 'builtin', code: 39, codeName: 'ENDIF', sr: 'act5' },
+      plugin('act6'),                                   // outside -> emit
+    ],
+  };
+  const { macro, report } = emitMacro(irMacro);
+  assert.equal(report.emitted.length, 1, 'only the action outside the block is emitted');
+  assert.equal(report.emitted[0].sr, 'act6');
+  const blockSkips = report.skipped.filter((s) => /If\/For block/.test(s.reason));
+  assert.deepEqual(blockSkips.map((s) => s.sr), ['act1', 'act3']);
+});
+
+await test('emitMacro: block tracking follows numeric sr order, not document order', () => {
+  // Utils' "Unlock Screen": document order is act0,act1,act10..act14,act2..
+  // which would put ENDFOR(act10) before IF(act2). The parser now sorts by
+  // numeric sr, so every AutoInput action in that macro is inside IF(act2)
+  // and must be skipped (running them unconditionally would unlock the
+  // screen / tap without its guard).
+  const utilsIr = JSON.parse(readFileSync(path.join(repoRoot, 'tests/golden/tasker/tasker-Utils.prj.ir.json'), 'utf8'));
+  const m = utilsIr.macros.find((x) => x.name === 'Unlock Screen');
+  assert.ok(m, 'Unlock Screen macro missing from the golden');
+  const { macro, report } = emitMacro(m);
+  assert.equal(macro.macro.m_actionList.length, 0, 'all Unlock Screen plugin actions are inside the IF block');
+  assert.equal(report.skipped.filter((s) => /If\/For block/.test(s.reason)).length, 6);
+});
+
+await test('typedBundle: unsupported type companions are rejected and reported', () => {
+  const report = { rejectedLongValues: [], rejectedUnsupportedValues: [] };
+  const raw = {
+    'keep': 'x', 'keep-type': 'java.lang.String',
+    'f': '1.5', 'f-type': 'java.lang.Float',
+    'd': '2.5', 'd-type': 'java.lang.Double',
+  };
+  assert.deepEqual(typedBundle(raw, report), { keep: 'x' });
+  assert.deepEqual(report.rejectedUnsupportedValues, [
+    { key: 'f', type: 'java.lang.Float' },
+    { key: 'd', type: 'java.lang.Double' },
+  ]);
+});
+
+await test('translateVars: builtins match EXACT case; user %Time still translates', () => {
+  const report = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
+  const out = translateVars('now %TIME user %Time', { local: [], global: ['%TIME', '%Time'] }, report);
+  assert.equal(out, 'now %TIME user {v=Time}', 'builtin %TIME literal, user %Time translated');
+  assert.deepEqual([...report.variablesUsed], ['%Time']);
+  assert.deepEqual([...report.builtinVariables], ['%TIME']);
+  const r2 = { variablesUsed: new Set(), unresolvedVariables: new Set(), builtinVariables: new Set() };
+  assert.equal(translateVars('loc %LOC wifi %WIFII', { local: [], global: ['%LOC', '%WIFII'] }, r2),
+    'loc %LOC wifi %WIFII', '%LOC and %WIFII are documented builtins');
+  assert.deepEqual([...r2.builtinVariables].sort(), ['%LOC', '%WIFII']);
+});
+
 
 await test('emitMacro: unknown plugin package is reported, node still emitted', () => {
   const irMacro = {

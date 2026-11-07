@@ -177,6 +177,13 @@ def walk_strings(value, found):
             walk_strings(v, found)
 
 
+def _action_order_key(action):
+    """Task order = numeric sr ("act12" after "act2"), not document order.
+    Tasker's XML writer emits <Action> children sorted by sr as a string."""
+    m = re.search(r"(\d+)$", action.get("sr") or "")
+    return (0, int(m.group(1)), "") if m else (1, 0, action.get("sr") or "")
+
+
 def classify_vars(names):
     local = sorted(n for n in names if n[:1].islower() or n.startswith("par"))
     glob = sorted(n for n in names if not (n[:1].islower() or n.startswith("par")))
@@ -284,6 +291,12 @@ class Parser:
             if strip_ns(child.tag) == "Action":
                 task["actions"].append(self.parse_action(child, idx))
                 idx += 1
+        # Tasker's XML writer emits <Action> children sorted by sr as a STRING
+        # ("act10" before "act2"), but sr is the task POSITION ("act0" = first
+        # action). Without this, any task with >= 10 actions executes in the
+        # wrong order — e.g. Utils' "Unlock Screen" would put ENDFOR(act10)
+        # before its IF(act2). Numeric sr order is the real task order.
+        task["actions"].sort(key=_action_order_key)
         self.parsed[id(el)] = task
         return task
 

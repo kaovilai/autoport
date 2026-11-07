@@ -350,6 +350,17 @@ function walkStrings(value, found) {
   }
 }
 
+/** Task order = numeric sr ("act12" after "act2"), not document order.
+ *  Tasker's XML writer emits <Action> children sorted by sr as a string. */
+function actionOrderKey(a, b) {
+  const ma = /(\d+)$/.exec(a.sr || '');
+  const mb = /(\d+)$/.exec(b.sr || '');
+  if (ma && mb) return Number(ma[1]) - Number(mb[1]);
+  if (ma) return -1;
+  if (mb) return 1;
+  return String(a.sr || '').localeCompare(String(b.sr || ''));
+}
+
 function isLocalVarName(name) {
   const first = name.charAt(0);
   return (first >= 'a' && first <= 'z') || name.startsWith('par');
@@ -494,6 +505,12 @@ export class TaskerParser {
         idx += 1;
       }
     }
+    // Tasker's XML writer emits <Action> children sorted by sr as a STRING
+    // ("act10" before "act2"), but sr is the task POSITION ("act0" = first
+    // action). Without this, any task with >= 10 actions executes in the
+    // wrong order — e.g. Utils' "Unlock Screen" would put ENDFOR(act10)
+    // before its IF(act2). Numeric sr order is the real task order.
+    task.actions.sort(actionOrderKey);
     this._parsedTasks.set(el, task);
     return task;
   }

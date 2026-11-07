@@ -177,27 +177,6 @@
     },
     {
      "kind": "builtin",
-     "code": 410,
-     "codeName": "WRITE_TO_FILE",
-     "args": {
-      "arg0": "%result_file",
-      "arg1": "{\"success\":true,\"clicked\":\"%target\"}",
-      "arg2": 0,
-      "arg3": 1
-     },
-     "sr": "act10",
-     "ve": "7"
-    },
-    {
-     "kind": "builtin",
-     "code": 38,
-     "codeName": "ENDIF",
-     "args": {},
-     "sr": "act11",
-     "ve": "7"
-    },
-    {
-     "kind": "builtin",
      "code": 43,
      "codeName": "ELSE",
      "args": {},
@@ -388,6 +367,27 @@
      "codeName": "ELSE",
      "args": {},
      "sr": "act9",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 410,
+     "codeName": "WRITE_TO_FILE",
+     "args": {
+      "arg0": "%result_file",
+      "arg1": "{\"success\":true,\"clicked\":\"%target\"}",
+      "arg2": 0,
+      "arg3": 1
+     },
+     "sr": "act10",
+     "ve": "7"
+    },
+    {
+     "kind": "builtin",
+     "code": 38,
+     "codeName": "ENDIF",
+     "args": {},
+     "sr": "act11",
      "ve": "7"
     }
    ],
