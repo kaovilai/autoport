@@ -45,7 +45,7 @@ function card(rec) {
     </dl>
     ${textPreview ? `<pre class="preview">${escapeHtml(textPreview)}</pre>` : ''}
     <footer>
-      ${oversized ? '' : `<a class="btn primary" href="/?from=${rec.id}">Open in converter</a>`}
+      ${oversized ? '' : `<a class="btn primary" href="./?from=${rec.id}">Open in converter</a>`}
       <button class="btn" data-del="${rec.id}" type="button">Delete</button>
     </footer>`;
   el.querySelector('[data-del]').addEventListener('click', async () => {

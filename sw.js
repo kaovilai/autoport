@@ -14,12 +14,16 @@
  * answers 405 (python3 -m http.server answers 501) — the user sees an error page, no app.
  */
 
-const VERSION = 'v2';
+const VERSION = 'v3';
+/* Base path derived from the SW scope, so the app works when hosted at a subpath
+ * (e.g. GitHub Pages project site https://host/autoport/). Scope always ends in '/'. */
+const BASE = new URL(self.registration.scope).pathname;
 const CACHE_SHELL = `autoport-shell-${VERSION}`;
 const CACHE_RUNTIME = `autoport-runtime-${VERSION}`;
 
+/* Shell entries are written relative to the scope and resolved to absolute URLs below. */
 const SHELL = [
-  '/',
+  './',
   '/index.html',
   '/share.html',
   '/404.html',
@@ -40,7 +44,7 @@ const SHELL = [
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/icon-maskable-512.png'
-];
+].map((p) => new URL(p.replace(/^\//, ''), self.registration.scope).href);
 
 const DB_NAME = 'autoport';
 const DB_VERSION = 1;
@@ -228,7 +232,7 @@ async function handleShare(req) {
   await notifyClients({ type: 'autoport:inbox-changed', stored });
 
   // 303 (not 307/308!): the POST must not be replayed on refresh or back-navigation.
-  const target = new URL('/share.html', self.location.href);
+  const target = new URL('share.html', self.registration.scope);
   target.searchParams.set('n', String(stored));
   if (err) target.searchParams.set('err', err);
   return Response.redirect(target.href, 303);
@@ -276,7 +280,8 @@ async function cacheFirst(req, cacheName) {
   if (!hit) {
     // Known Chromium quirk: a navigation Request can fail to match a cache entry whose stored
     // response carries a Vary header. Retry by path so the app shell still loads offline.
-    hit = await cache.match(new URL(req.url).pathname, { ignoreSearch: true });
+    hit = await cache.match(new URL(req.url).pathname, { ignoreSearch: true }) ||
+          await cache.match(req.url, { ignoreSearch: true });
   }
   if (hit) return hit;
   const res = await fetch(req);
@@ -294,21 +299,21 @@ async function staleWhileRevalidate(req) {
   return hit || (await network) || new Response('offline', { status: 503, statusText: 'Offline' });
 }
 
-const SHELL_PATHS = new Set(SHELL);
+const SHELL_PATHS = new Set(SHELL.map((u) => new URL(u).pathname));
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
   // --- share target ---------------------------------------------------
-  if (req.method === 'POST' && url.pathname === '/share') {
+  if (req.method === 'POST' && url.pathname === BASE + 'share') {
     // respondWith MUST be called synchronously here (see file header).
     event.respondWith(handleShare(req));
     return;
   }
   // A GET /share (bookmark, GET-form fallback, or a manual open) lands on the inbox UI.
-  if (req.method === 'GET' && url.pathname === '/share') {
-    event.respondWith(Response.redirect(new URL('/share.html', self.location.href).href, 302));
+  if (req.method === 'GET' && url.pathname === BASE + 'share') {
+    event.respondWith(Response.redirect(new URL('share.html', self.registration.scope).href, 302));
     return;
   }
 
@@ -325,8 +330,8 @@ self.addEventListener('fetch', (event) => {
       } catch (e) {
         const cache = await caches.open(CACHE_SHELL);
         // Unknown deep link offline → app shell, so the SPA can route it.
-        return (await cache.match('/index.html')) ||
-               (await cache.match('/404.html')) ||
+        return (await cache.match(new URL('index.html', self.registration.scope).href)) ||
+               (await cache.match(new URL('404.html', self.registration.scope).href)) ||
                new Response('offline', { status: 503 });
       }
     })());
