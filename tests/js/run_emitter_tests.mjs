@@ -488,5 +488,32 @@ await test('javaObjectStream: unsupported types are rejected loudly', () => {
   assert.throws(() => oos.writeInt(3.5), /not a 32-bit integer/);
 });
 
+
+/* Copilot review on 8eaa7f1: Integer range handling */
+
+await test('typedBundle rejects java.lang.Integer values outside the signed 32-bit range', () => {
+  const report = { rejectedUnsupportedValues: [], rejectedLongValues: [] };
+  const out = typedBundle({
+    ok: '5', 'ok-type': 'java.lang.Integer',
+    huge: '4294967296', 'huge-type': 'java.lang.Integer',
+    neg: '-2147483649', 'neg-type': 'java.lang.Integer',
+  }, report);
+  assert.equal(out.ok, 5);
+  assert.equal(out.huge, undefined); // dropped, not silently truncated
+  assert.equal(out.neg, undefined);
+  assert.deepEqual(report.rejectedUnsupportedValues.map((r) => r.key), ['huge', 'neg']);
+  assert.match(report.rejectedUnsupportedValues[0].type, /int32 range/);
+});
+
+await test('JavaObjectOutputStream.writeObject throws on out-of-range Integer instead of truncating', () => {
+  const oos = new JavaObjectOutputStream();
+  assert.throws(() => oos.writeObject(4294967296), /32-bit range/);
+  assert.throws(() => oos.writeObject(-2147483649), /32-bit range/);
+  // in-range values still serialize
+  const ok = new JavaObjectOutputStream();
+  ok.writeObject(2147483647);
+  ok.writeObject(-2147483648);
+});
+
 console.log(`\nemitter tests: ${passes} passed, ${failures} failed`);
 process.exit(failures ? 1 : 0);

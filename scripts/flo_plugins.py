@@ -75,10 +75,18 @@ def zigzag(v):
 #
 # int32 values are little-endian. A string is [int32 charLen][UTF-16LE chars]
 # [2-byte NUL], padded so the payload ((charLen+1)*2) is a multiple of 4
-# (Parcel::writeInplace). A value is [int32 typeTag][payload]; length-prefixed
-# types carry an extra [int32 length] the reader can skip over. A Bundle is
-# [int32 length][magic 0x4C444E42 "BNDL"][int32 count][count x (key, value)]
-# where length counts the magic, count and entries (not the length field).
+# (Parcel::writeInplace). A value is [int32 typeTag][payload]. Per AOSP
+# Parcel.java (writeValue/readValue/isLengthPrefixed):
+#   - VAL_BOOLEAN (9), VAL_SHORT (5), VAL_BYTE (20) and VAL_CHAR are all
+#     written via writeInt — a 4-byte slot (there is no 2-byte Parcel write);
+#     booleans decode to real booleans (readInt() == 1)
+#   - length-prefixed tags (extra [int32 length] for skipping) are exactly
+#     MAP, PARCELABLE, LIST, SPARSEARRAY, PARCELABLEARRAY, OBJECTARRAY,
+#     SERIALIZABLE — Bundle and PersistableBundle are NOT: they carry their
+#     own length, so a nested VAL_BUNDLE value is decodeParcelBundle directly
+# A Bundle is [int32 length][magic 0x4C444E42 "BNDL"][int32 count]
+# [count x (key, value)] where length counts the count and entries (observed
+# on all 33 corpus bundles; region = length field + magic + declared length).
 
 VAL_STRING = 0
 VAL_INTEGER = 1
@@ -96,9 +104,10 @@ VAL_SPARSEBOOLEANARRAY = 12
 VAL_BYTEARRAY = 13
 VAL_STRINGARRAY = 14
 VAL_CHARSEQUENCEARRAY = 24
-# types written with an extra int32 length so unknown ones can be skipped
-LEN_PREFIXED = {VAL_MAP, VAL_BUNDLE, VAL_PARCELABLE, VAL_LIST,
-                VAL_SPARSEBOOLEANARRAY, 16, 17, 21, 25}  # parcelablearr/objarr/serializable/pbst
+# exactly AOSP Parcel.isLengthPrefixed(): MAP, PARCELABLE, LIST, SPARSEARRAY,
+# PARCELABLEARRAY, OBJECTARRAY, SERIALIZABLE. Bundle (3) and
+# PersistableBundle (25) are self-prefixed and handled separately.
+LEN_PREFIXED = {VAL_MAP, VAL_PARCELABLE, VAL_LIST, 12, 16, 17, 21}
 # types the locale-SDK bundle cannot represent: decoded as tagged objects so
 # the ANCHOR survives (the emitter drops + reports the value) instead of the
 # whole plug-in statement silently disappearing from the scan
@@ -144,13 +153,16 @@ def parcel_value(b, i, depth=0):
         return None, i
     if tag in (VAL_STRING, VAL_CHARSEQUENCE):
         return parcel_string(b, i)
-    if tag in (VAL_INTEGER, VAL_BOOLEAN):
+    if tag == VAL_BOOLEAN:
+        # writeInt(v ? 1 : 0) / readInt() == 1 — a real Boolean in a 4-byte slot
+        v, i = i32(b, i)
+        return v == 1, i
+    if tag == VAL_INTEGER:
         return i32(b, i)
-    if tag == VAL_SHORT:
-        if i + 2 > len(b):
-            raise ValueError('eof in short')
-        return {'$parcel': 'java.lang.Short',
-                'value': struct.unpack('<h', b[i:i + 2])[0]}, i + 2
+    if tag in (VAL_SHORT, 20):  # VAL_BYTE: both written via writeInt (4-byte slot)
+        v, i = i32(b, i)
+        name = 'java.lang.Short' if tag == VAL_SHORT else 'java.lang.Byte'
+        return {'$parcel': name, 'value': v}, i
     if tag == VAL_LONG:
         if i + 8 > len(b):
             raise ValueError('eof in long')
@@ -182,6 +194,18 @@ def parcel_value(b, i, depth=0):
         if i + payload > len(b):
             raise ValueError('eof in array')
         return {'$parcel': UNREPRESENTABLE_NAMES[tag], 'value': None}, i + payload
+    if tag == VAL_BUNDLE:
+        # NOT extra-length-prefixed (AOSP isLengthPrefixed): the Bundle
+        # carries its own [length][magic][count][entries]
+        return parcel_bundle(b, i)
+    if tag == 25:  # PersistableBundle: self-prefixed like Bundle, different magic
+        ln, j = i32(b, i)
+        if ln < 12:
+            raise ValueError('bad persistable bundle length')
+        end = j + 4 + ln
+        if end > len(b):
+            raise ValueError('eof in persistable bundle')
+        return {'$parcel': UNREPRESENTABLE_NAMES[tag], 'value': None}, end
     if tag in LEN_PREFIXED:
         ln, j = i32(b, i)
         if ln < 0:
@@ -189,11 +213,6 @@ def parcel_value(b, i, depth=0):
         end = j + ln
         if end > len(b):
             raise ValueError('eof in length-prefixed value')
-        if tag == VAL_BUNDLE:
-            v, k = parcel_bundle(b, j)
-            if k != end:
-                raise ValueError('nested bundle length mismatch')
-            return v, end
         if tag == VAL_LIST:
             n, k = i32(b, j)
             out = []

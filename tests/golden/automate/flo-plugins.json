@@ -35,10 +35,10 @@
      "TextToWrite": null,
      "StoredAction": null,
      "plugininstanceid": "efa620ac-8c29-487b-bd21-8db38e7965d6",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "1",
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -64,10 +64,10 @@
      "TextToWrite": null,
      "StoredAction": null,
      "plugininstanceid": "26319ad0-8cf6-4b8a-b2e9-081b5ffef175",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "5",
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -93,10 +93,10 @@
      "TextToWrite": null,
      "StoredAction": null,
      "plugininstanceid": "0e2aea2b-a812-4928-86c2-72b67a45e118",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "3",
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -122,10 +122,10 @@
      "TextToWrite": null,
      "StoredAction": null,
      "plugininstanceid": "cf1b2a62-60b9-4230-8db2-bc7c2edeaff6",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "1",
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -151,10 +151,10 @@
      "TextToWrite": null,
      "StoredAction": null,
      "plugininstanceid": "a994fabc-acb4-4053-ac15-a3a9230be8c7",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "1",
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -178,10 +178,10 @@
      "TextToWrite": null,
      "StoredAction": "3cdaf842-daca-4b8c-bffa-602cd1d9e26d",
      "plugininstanceid": "1305034a-2a16-42cc-ad86-ee430012c652",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -207,10 +207,10 @@
      "TextToWrite": null,
      "StoredAction": null,
      "plugininstanceid": "4869014a-0fb1-4a71-be12-a86f91e34342",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "1",
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -236,10 +236,10 @@
      "TextToWrite": null,
      "StoredAction": null,
      "plugininstanceid": "efa620ac-8c29-487b-bd21-8db38e7965d6",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "1",
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -265,10 +265,10 @@
      "TextToWrite": null,
      "StoredAction": null,
      "plugininstanceid": "4869014a-0fb1-4a71-be12-a86f91e34342",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -294,10 +294,10 @@
      "TextToWrite": null,
      "StoredAction": null,
      "plugininstanceid": "4869014a-0fb1-4a71-be12-a86f91e34342",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -321,10 +321,10 @@
      "TextToWrite": null,
      "StoredAction": "43f20a0e-a569-433d-b1c7-18ea30e1b29f",
      "plugininstanceid": "1305034a-2a16-42cc-ad86-ee430012c652",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -348,10 +348,10 @@
      "TextToWrite": null,
      "StoredAction": "19055d3c-263a-4839-a50e-42b9ca11cd8a",
      "plugininstanceid": "a47de97c-6f2e-4efa-a75f-2d2706e9bcd3",
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    }
   ]
@@ -430,11 +430,11 @@
      "StoredAction": null,
      "plugininstanceid": "9930d403-3c56-4dee-9cf6-5ea47d2aace7",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -463,11 +463,11 @@
      "StoredAction": null,
      "plugininstanceid": "9f630b08-73a6-4fec-a059-af45e18952b5",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -496,11 +496,11 @@
      "StoredAction": null,
      "plugininstanceid": "c9fd55ec-a119-4292-b05d-f0f50a257a7c",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -529,11 +529,11 @@
      "StoredAction": null,
      "plugininstanceid": "9f630b08-73a6-4fec-a059-af45e18952b5",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    }
   ]
@@ -576,8 +576,8 @@
      "FreeFormCommand": null,
      "slideShow": null,
      "SayText": "Just do it",
-     "slideShowPlayNext": 0,
-     "receiverAudioElementa": 0,
+     "slideShowPlayNext": false,
+     "receiverAudioElementa": false,
      "receiverAudioElementk": null,
      "receiverAudioElementv": null,
      "ScreenId": "media",
@@ -596,12 +596,12 @@
      "receiverImageElement": null,
      "CastDevice": "com.google.android.gms/.cast.media.CastMediaRouteProviderService:b632f34388ad65b279568175dc2c10b9",
      "ScreenNotificationTitle": null,
-     "slideShowAddToQueue": 0,
-     "receiverVideoElementa": 1,
+     "slideShowAddToQueue": false,
+     "receiverVideoElementa": true,
      "receiverVideoElementk": null,
      "receiverVideoElementv": "60",
      "songArtist": null,
-     "WaitForResult": 0
+     "WaitForResult": false
     }
    }
   ]
@@ -636,13 +636,13 @@
      "Volume": null,
      "net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS": "CastDevice CommandId plugininstanceid plugintypeid ",
      "plugintypeid": "com.joaomgcd.autocast.intent.IntentControlMediaAutoCast",
-     "WaitForMediaEnd": 0,
+     "WaitForMediaEnd": false,
      "Seek": null,
      "CommandId": "stop",
      "plugininstanceid": "9f4187b9-0cb3-401e-b245-6239fcbd4747",
      "CastDevice": "HAASUDHASDHH",
-     "WaitForResult": 0,
-     "DisconnectFromReceiver": 1
+     "WaitForResult": false,
+     "DisconnectFromReceiver": true
     }
    },
    {
@@ -709,11 +709,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -741,11 +741,11 @@
      "StoredAction": null,
      "plugininstanceid": "5e261b9d-329d-4c01-b8bd-8ad46e0e0e3f",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -774,11 +774,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -807,11 +807,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -840,11 +840,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -873,11 +873,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -906,11 +906,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -939,11 +939,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -972,11 +972,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -1005,11 +1005,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -1038,11 +1038,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -1071,11 +1071,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -1104,11 +1104,11 @@
      "StoredAction": "None",
      "plugininstanceid": "e45d1330-8f23-41f9-b366-09c27b92f613",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    },
    {
@@ -1136,11 +1136,11 @@
      "StoredAction": null,
      "plugininstanceid": "5e261b9d-329d-4c01-b8bd-8ad46e0e0e3f",
      "EnableDisableAccessibilityService": null,
-     "IsTaskerAction": 0,
+     "IsTaskerAction": false,
      "Password": null,
      "FieldSelectionType": "0",
      "RepeatInterval": null,
-     "IsFirstAction": 0
+     "IsFirstAction": false
     }
    }
   ]

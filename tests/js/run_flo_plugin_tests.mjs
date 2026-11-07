@@ -99,7 +99,10 @@ test('real flow content: 36322 first bundle decodes the AutoInput v1 schema', ()
   assert.equal(b.plugintypeid, 'com.joaomgcd.autoinput.intent.IntentPerformAction');
   assert.equal(b.ActionId, 'Ana birim sunucusunu başlat'); // UTF-8 blurb text survives
   assert.equal(b.NearbyText, null);
-  assert.equal(b.IsTaskerAction, 0);
+  // VAL_BOOLEAN decodes to a real boolean (AOSP readInt() == 1), so plugin
+  // flags serialize as java.lang.Boolean — not java.lang.Integer
+  assert.equal(b.IsTaskerAction, false);
+  assert.equal(b.IsFirstAction, false);
   assert.equal(s.plugins[0].kind, 'SETTING');
 });
 
@@ -165,7 +168,7 @@ test('parcel: string / int / boolean / string-array / nested bundle / tagged lon
   str16('n'); i32le(1); i32le(-42);
   str16('flag'); i32le(9); i32le(1);
   str16('arr'); i32le(14); i32le(2); str16('a'); str16('b');
-  str16('sub'); i32le(3); i32le(nested.length); body.push(...nested);
+  str16('sub'); i32le(3); body.push(...nested); // VAL_BUNDLE: self-prefixed, no extra length
   str16('big'); i32le(6); // VAL_LONG 0x1122334455667788
   const lo = 0x55667788, hi = 0x11223344;
   body.push(lo & 0xff, (lo >> 8) & 0xff, (lo >> 16) & 0xff, (lo >>> 24) & 0xff);
@@ -178,7 +181,7 @@ test('parcel: string / int / boolean / string-array / nested bundle / tagged lon
   const { values, end } = decodeParcelBundle(p2, 0);
   assert.equal(values.s, 'hello');
   assert.equal(values.n, -42);
-  assert.equal(values.flag, 1);
+  assert.equal(values.flag, true); // VAL_BOOLEAN: readInt() == 1 -> real boolean
   assert.deepEqual(values.arr, ['a', 'b']);
   assert.deepEqual(values.sub, { inner: 'x' });
   assert.equal(values.big.$parcel, 'java.lang.Long');
@@ -404,6 +407,64 @@ test('probe validate-passthrough-automate-36322.json matches recorded verdict an
   const u8 = readFixture('automate/36322.flo');
   const { macro } = emitAutomateMacro(scanFloPlugins(u8), { name: 'AutoPort Automate 36322' });
   assert.deepEqual(macro, probe.macro, 'emitted macro drifted from the MCP-validated probe');
+});
+
+
+/* AOSP Parcel.java slot-size regressions (Copilot review on 8eaa7f1) */
+
+test('parcel: VAL_SHORT and VAL_BYTE occupy 4-byte int32 slots (writeValue uses writeInt)', () => {
+  // [key 'sh'][tag 5][int32 0x1234][key 'by'][tag 20][int32 7][key 's'][tag 0]['x']
+  const body = [];
+  const i32le = (n) => { body.push(n & 0xff, (n >> 8) & 0xff, (n >> 16) & 0xff, (n >>> 24) & 0xff); };
+  const str16 = (s) => {
+    i32le(s.length);
+    for (const ch of s) { const c = ch.charCodeAt(0); body.push(c & 0xff, c >> 8); }
+    body.push(0, 0);
+    const payload = 2 * s.length + 2;
+    const pad = (4 - (payload % 4)) % 4;
+    for (let k = 0; k < pad; k++) body.push(0);
+  };
+  i32le(3);
+  str16('sh'); i32le(5); i32le(0x1234);
+  str16('by'); i32le(20); i32le(7);
+  str16('s'); i32le(0); str16('x');
+  const head = [];
+  const h32 = (n) => { head.push(n & 0xff, (n >> 8) & 0xff, (n >> 16) & 0xff, (n >>> 24) & 0xff); };
+  h32(body.length); head.push(0x42, 0x4e, 0x44, 0x4c);
+  const p = new Uint8Array([...head, ...body]);
+  const { values, end } = decodeParcelBundle(p, 0);
+  assert.equal(values.sh.$parcel, 'java.lang.Short');
+  assert.equal(values.sh.value, 0x1234);
+  assert.equal(values.by.$parcel, 'java.lang.Byte');
+  assert.equal(values.by.value, 7);
+  assert.equal(values.s, 'x'); // misaligned short would have eaten this key
+  assert.equal(end, p.length);
+});
+
+test('parcel: nested VAL_BUNDLE carries its own length (no extra skip-length)', () => {
+  // covered in the multi-kind test above; this pins the AOSP rule explicitly:
+  // isLengthPrefixed() excludes Bundle — [tag 3] is followed directly by the
+  // nested [length][BNDL][count][entries]
+  const nested = buildParcel([['inner', [0, (i32, str) => str('x')]]]);
+  const body = [];
+  const i32le = (n) => { body.push(n & 0xff, (n >> 8) & 0xff, (n >> 16) & 0xff, (n >>> 24) & 0xff); };
+  const str16 = (s) => {
+    i32le(s.length);
+    for (const ch of s) { const c = ch.charCodeAt(0); body.push(c & 0xff, c >> 8); }
+    body.push(0, 0);
+    const payload = 2 * s.length + 2;
+    const pad = (4 - (payload % 4)) % 4;
+    for (let k = 0; k < pad; k++) body.push(0);
+  };
+  i32le(1);
+  str16('sub'); i32le(3); body.push(...nested);
+  const head = [];
+  const h32 = (n) => { head.push(n & 0xff, (n >> 8) & 0xff, (n >> 16) & 0xff, (n >>> 24) & 0xff); };
+  h32(body.length); head.push(0x42, 0x4e, 0x44, 0x4c);
+  const p = new Uint8Array([...head, ...body]);
+  const { values, end } = decodeParcelBundle(p, 0);
+  assert.deepEqual(values.sub, { inner: 'x' });
+  assert.equal(end, p.length);
 });
 
 console.log(`flo-plugin tests: ${passes} passed, ${failures} failed`);

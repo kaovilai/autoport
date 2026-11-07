@@ -54,7 +54,10 @@ const VAL_LIST = 11;
 const VAL_BYTEARRAY = 13;
 const VAL_STRINGARRAY = 14;
 const VAL_CHARSEQUENCEARRAY = 24;
-const LEN_PREFIXED = new Set([2, VAL_BUNDLE, 4, VAL_LIST, 12, 16, 17, 21, 25]);
+// exactly AOSP Parcel.isLengthPrefixed(): MAP, PARCELABLE, LIST, SPARSEARRAY,
+// PARCELABLEARRAY, OBJECTARRAY, SERIALIZABLE. Bundle (3) and
+// PersistableBundle (25) are self-prefixed and handled separately.
+const LEN_PREFIXED = new Set([2, 4, VAL_LIST, 12, 16, 17, 21]);
 // Types the locale-SDK bundle cannot represent: decoded as tagged objects so
 // the ANCHOR survives (the emitter drops + reports the value) instead of the
 // whole plug-in statement silently disappearing from the scan. Names match
@@ -98,10 +101,17 @@ function i32(u8, i) {
 //
 // int32 values little-endian. A string is [int32 charLen][UTF-16LE chars]
 // [2-byte NUL], the payload ((charLen+1)*2) padded to a multiple of 4
-// (Parcel::writeInplace). A value is [int32 tag][payload]; length-prefixed
-// tags carry an extra [int32 length]. A Bundle is [int32 length][magic
-// "BNDL"][int32 count][count × (key, value)] where length counts the magic,
-// count and entries.
+// (Parcel::writeInplace). A value is [int32 tag][payload]. Per AOSP
+// Parcel.java (writeValue/readValue/isLengthPrefixed):
+//   - VAL_BOOLEAN (9), VAL_SHORT (5), VAL_BYTE (20) and VAL_CHAR are all
+//     written via writeInt — a 4-byte slot (there is no 2-byte Parcel
+//     write); booleans decode to real booleans (readInt() == 1)
+//   - length-prefixed tags (extra [int32 length] for skipping) are exactly
+//     MAP, PARCELABLE, LIST, SPARSEARRAY, PARCELABLEARRAY, OBJECTARRAY,
+//     SERIALIZABLE — Bundle and PersistableBundle are NOT: they carry their
+//     own length, so a nested VAL_BUNDLE value is decodeParcelBundle
+//     directly. A Bundle is [int32 length][magic "BNDL"][int32 count]
+//     [count × (key, value)] where length counts the count and entries.
 
 function parcelString(u8, i) {
   const n = i32(u8, i);
@@ -122,16 +132,21 @@ function parcelValue(u8, i, depth) {
   const tag = t.value;
   if (tag === -1) return { value: null, next: i };
   if (tag === VAL_STRING || tag === VAL_CHARSEQUENCE) return parcelString(u8, i);
-  if (tag === VAL_INTEGER || tag === VAL_BOOLEAN) return i32(u8, i);
+  if (tag === VAL_BOOLEAN) {
+    // writeInt(v ? 1 : 0) / readInt() == 1 — a real Boolean in a 4-byte slot
+    const v = i32(u8, i);
+    return { value: v.value === 1, next: v.next };
+  }
+  if (tag === VAL_INTEGER) return i32(u8, i);
+  if (tag === VAL_SHORT || tag === 20) { // VAL_BYTE: both via writeInt (4-byte slot)
+    const v = i32(u8, i);
+    return { value: { $parcel: tag === VAL_SHORT ? 'java.lang.Short' : 'java.lang.Byte', value: v.value }, next: v.next };
+  }
   if (tag === VAL_LONG) {
     if (i + 8 > u8.length) throw new Error('EOF in long');
     const lo = (u8[i] | (u8[i + 1] << 8) | (u8[i + 2] << 16)) + u8[i + 3] * 0x1000000;
     const hi = (u8[i + 4] | (u8[i + 5] << 8) | (u8[i + 6] << 16)) + u8[i + 7] * 0x1000000;
     return { value: { $parcel: 'java.lang.Long', value: hi * 0x100000000 + lo }, next: i + 8 };
-  }
-  if (tag === VAL_SHORT) {
-    if (i + 2 > u8.length) throw new Error('EOF in short');
-    return { value: { $parcel: 'java.lang.Short', value: u8[i] | (u8[i + 1] << 8) }, next: i + 2 };
   }
   if (tag === VAL_FLOAT || tag === VAL_DOUBLE) {
     const dv = new DataView(u8.buffer, u8.byteOffset + i, tag === VAL_FLOAT ? 4 : 8);
@@ -160,17 +175,24 @@ function parcelValue(u8, i, depth) {
     if (i + payload > u8.length) throw new Error('EOF in array');
     return { value: { $parcel: TAG_NAMES[tag], value: null }, next: i + payload };
   }
+  if (tag === VAL_BUNDLE) {
+    // NOT extra-length-prefixed (AOSP isLengthPrefixed): the Bundle carries
+    // its own [length][magic][count][entries]
+    const b = decodeParcelBundle(u8, i);
+    return { value: b.values, next: b.end };
+  }
+  if (tag === 25) { // PersistableBundle: self-prefixed like Bundle, different magic
+    const ln = i32(u8, i);
+    const end = ln.next + 4 + ln.value;
+    if (ln.value < 12 || end > u8.length) throw new Error('bad persistable bundle length');
+    return { value: { $parcel: 'android.os.PersistableBundle', value: null }, next: end };
+  }
   if (LEN_PREFIXED.has(tag)) {
     const ln = i32(u8, i);
     i = ln.next;
     if (ln.value < 0) return { value: null, next: i };
     const end = i + ln.value;
     if (end > u8.length) throw new Error('EOF in length-prefixed value');
-    if (tag === VAL_BUNDLE) {
-      const b = decodeParcelBundle(u8, i);
-      if (b.end !== end) throw new Error('nested bundle length mismatch');
-      return { value: b.values, next: end };
-    }
     if (tag === VAL_LIST) {
       const n = i32(u8, i);
       i = n.next;

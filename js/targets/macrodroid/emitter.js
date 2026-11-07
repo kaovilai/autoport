@@ -125,7 +125,12 @@ export function typedBundle(rawVals, report = null) {
     if (t === 'java.lang.Boolean') out[k] = String(v) === 'true';
     else if (t === 'java.lang.Integer') {
       const n = parseInt(v, 10);
-      out[k] = Number.isFinite(n) ? n : String(v);
+      // Java's Integer is signed 32-bit; a wider value cannot be carried
+      // (the ObjectOutputStream would silently truncate it), so drop + report
+      if (Number.isFinite(n) && n >= -0x80000000 && n <= 0x7fffffff) out[k] = n;
+      else if (Number.isFinite(n)) {
+        if (report) report.rejectedUnsupportedValues.push({ key: k, type: 'java.lang.Integer(out of int32 range)' });
+      } else out[k] = String(v);
     } else out[k] = String(v);
   }
   return out;

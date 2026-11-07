@@ -205,6 +205,12 @@ export class JavaObjectOutputStream {
       return;
     }
     if (typeof value === 'number' && Number.isInteger(value)) {
+      // The wire format only carries signed 32-bit Integers; u4's bitwise
+      // shifts would silently truncate anything wider (e.g. 4294967296
+      // becomes Integer 0), so validate before writing the field bytes.
+      if (value < -0x80000000 || value > 0x7fffffff) {
+        throw new Error(`writeObject: Integer out of signed 32-bit range: ${value}`);
+      }
       this.raw(TC_OBJECT);
       this.writeClassDesc('java.lang.Integer');
       assign();
