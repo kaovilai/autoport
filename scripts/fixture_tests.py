@@ -173,7 +173,9 @@ def main():
         "results": results,
     }
     out_path = args.out or os.path.join(root, "fixture-tests-report.json")
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    _d = os.path.dirname(out_path)
+    if _d:
+        os.makedirs(_d, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=1)
         f.write("\n")

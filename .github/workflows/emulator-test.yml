@@ -70,7 +70,7 @@ jobs:
           export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
           "$ANDROID_HOME/platform-tools/adb" reverse tcp:8090 tcp:8090
 
-      - name: V-PWA: load page in Chrome (localhost = secure context)
+      - name: "V-PWA: load page in Chrome (localhost = secure context)"
         run: |
           export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
           ADB="$ANDROID_HOME/platform-tools/adb"
@@ -81,7 +81,7 @@ jobs:
           echo "top activity: $top"
           echo "$top" | grep -qi chrome || { echo "::warning::Chrome may not be the top activity"; }
 
-      - name: V15: MacroDroid MCP share-link import
+      - name: "V15: MacroDroid MCP share-link import"
         run: |
           export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
           ADB="$ANDROID_HOME/platform-tools/adb"
