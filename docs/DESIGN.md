@@ -406,8 +406,11 @@ round-trip validation make false positives on arbitrary flow bytes
 essentially impossible — verified: the ten non-plugin corpus flows yield zero
 hits. Some plugins' parcels carry trailing zero padding (observed: AutoCast,
 4 bytes); a small zero-only tail is accepted. Values the locale SDK cannot
-represent are decoded as tagged objects (`{$parcel: 'java.lang.Long', …}`) so
-the emitter rejects and reports them exactly like the Tasker path.
+represent are decoded as tagged objects (`{$parcel: 'java.lang.Long', …}`,
+`byte[]`, `int[]`, map/parcelable/serializable via their declared lengths) so
+the emitter drops and reports them exactly like the Tasker path — an
+unrepresentable value never loses the plug-in statement itself. Only an
+unknown Parcel tag without a skippable layout still rejects the whole anchor.
 
 **Statement kind** is recovered only when the exact base chain
 (`[typeId][id][x][y][null/back-reference fields]`) ends at the package length

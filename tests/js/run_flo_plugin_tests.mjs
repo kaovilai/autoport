@@ -186,11 +186,86 @@ test('parcel: string / int / boolean / string-array / nested bundle / tagged lon
   assert.equal(end, p2.length);
 });
 
-test('parcel: strict rejection on bad magic / short length / junk tail', () => {
+test('parcel: strict rejection on bad magic / short length', () => {
   const good = buildParcel([['k', [1, (i32) => i32(7)]]]);
   const badMagic = new Uint8Array(good); badMagic[4] = 0x58;
   assert.throws(() => decodeParcelBundle(badMagic, 0), /magic/);
   assert.throws(() => decodeParcelBundle(good.subarray(0, good.length - 1), 0), /EOF|length/);
+});
+
+/** Build a minimal .flo containing one synthetic F0 anchor whose parcel
+ *  region ends with the given tail bytes. */
+function buildFlowWithAnchor(tailBytes) {
+  const parts = [];
+  const push = (...xs) => parts.push(...xs);
+  const ascii = (s) => [...s].map((c) => c.charCodeAt(0));
+  push(0x4c, 0x41, 0x46, 0x6c); // LAFl
+  push(0, 84);                  // version 84 (>= 35: varint string lengths)
+  push(53, 1);                  // nextStatementId (zigzag), statement count
+  const pkg = 'com.joaomgcd.autoinput';
+  const act = 'com.joaomgcd.autoinput.activity.ActivityConfigPerformAction';
+  push(pkg.length, ...ascii(pkg));
+  push(act.length, ...ascii(act));
+  const parcel = buildParcel([['K', [0, (i32, str) => str('v')]]]);
+  const region = parcel.length + tailBytes.length;
+  if (region < 128) push(region);
+  else push((region & 0x7f) | 0x80, region >> 7); // varint
+  push(...parcel, ...tailBytes);
+  push(1, 66); // blurb "B"
+  push(0, 0, 0); // varNames count, mappings count, bool
+  return new Uint8Array(parts);
+}
+
+test('scanner: zero tail accepted, junk tail rejected, overlong tail rejected', () => {
+  // zero padding (observed on AutoCast flows) keeps the anchor
+  assert.equal(scanFloPlugins(buildFlowWithAnchor([0, 0, 0, 0])).pluginCount, 1);
+  // non-zero trailing bytes mean the anchor guessed the wrong region
+  assert.equal(scanFloPlugins(buildFlowWithAnchor([1, 2, 3, 4])).pluginCount, 0);
+  // more than 8 bytes of even zero padding is not a plausible parcel region
+  assert.equal(scanFloPlugins(buildFlowWithAnchor(new Array(12).fill(0))).pluginCount, 0);
+});
+
+test('scanner + emitter: a bundle value the locale SDK cannot represent does not lose the plug-in statement', () => {
+  // byte[] inside the configuration bundle: the anchor must survive with the
+  // value tagged, and the emitter must drop + report it (CodeRabbit: the
+  // anchor used to be rejected wholesale, silently omitting the statement)
+  const body = [];
+  const i32le = (n) => { body.push(n & 0xff, (n >> 8) & 0xff, (n >> 16) & 0xff, (n >>> 24) & 0xff); };
+  const str16 = (s) => {
+    i32le(s.length);
+    for (const ch of s) { const c = ch.charCodeAt(0); body.push(c & 0xff, c >> 8); }
+    body.push(0, 0);
+    const payload = 2 * s.length + 2;
+    const pad = (4 - (payload % 4)) % 4;
+    for (let k = 0; k < pad; k++) body.push(0);
+  };
+  i32le(2); // count
+  str16('ok'); i32le(0); str16('fine');
+  str16('blob'); i32le(13); i32le(5); body.push(1, 2, 3, 4, 5, 0, 0, 0); // byte[5] + pad
+  const head = [];
+  const h32 = (n) => { head.push(n & 0xff, (n >> 8) & 0xff, (n >> 16) & 0xff, (n >>> 24) & 0xff); };
+  h32(body.length); head.push(0x42, 0x4e, 0x44, 0x4c);
+  const parcel = new Uint8Array([...head, ...body]);
+  const parts = [];
+  const push = (...xs) => parts.push(...xs);
+  const ascii = (s) => [...s].map((c) => c.charCodeAt(0));
+  const pkg = 'com.joaomgcd.autoinput';
+  const act = 'com.joaomgcd.autoinput.activity.ActivityConfigPerformAction';
+  push(0x4c, 0x41, 0x46, 0x6c, 0, 84, 53, 1);
+  push(pkg.length, ...ascii(pkg));
+  push(act.length, ...ascii(act));
+  push(parcel.length, ...parcel);
+  push(1, 66, 0, 0, 0);
+  const s = scanFloPlugins(new Uint8Array(parts));
+  assert.equal(s.pluginCount, 1, 'anchor with a byte[] value must survive');
+  assert.equal(s.plugins[0].bundle.ok, 'fine');
+  assert.equal(s.plugins[0].bundle.blob.$parcel, 'byte[]');
+  const { macro, report } = emitAutomateMacro(s);
+  assert.equal(macro.macro.m_actionList.length, 1, 'statement still emitted');
+  assert.deepEqual(report.rejectedUnsupportedValues, [{ key: 'blob', type: 'byte[]' }]);
+  const bytes = macro.macro.m_actionList[0].m_pluginInstanceData.mSerializedBundle;
+  const round = serializeBundle({ ok: 'fine' });
+  assert.deepEqual(Array.from(round), bytes, 'byte[] dropped from the emitted bundle');
 });
 
 /* ------------------------------------------------------------------ */

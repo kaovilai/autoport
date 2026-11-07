@@ -462,8 +462,12 @@ function automateValue(v, keyPath, report) {
   if (v === null || v === undefined) return null;
   if (typeof v === 'string' || typeof v === 'boolean') return v;
   if (typeof v === 'number') {
+    // decodeParcelBundle only yields int32 integers for VAL_INTEGER/BOOLEAN
+    // (longs/floats/doubles arrive as tagged objects), so a non-int32 number
+    // cannot occur — report it defensively rather than silently dropping.
     if (Number.isInteger(v) && Math.abs(v) <= 0x7fffffff) return v;
-    return undefined; // non-integer or out-of-int-range: unreachable (tagged below)
+    report.rejectedUnsupportedValues.push({ key: keyPath, type: 'number(non-int32)' });
+    return undefined;
   }
   if (Array.isArray(v)) return v.map((x) => (typeof x === 'string' ? x : String(x)));
   if (typeof v === 'object') {

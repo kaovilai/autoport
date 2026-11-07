@@ -99,6 +99,24 @@ VAL_CHARSEQUENCEARRAY = 24
 # types written with an extra int32 length so unknown ones can be skipped
 LEN_PREFIXED = {VAL_MAP, VAL_BUNDLE, VAL_PARCELABLE, VAL_LIST,
                 VAL_SPARSEBOOLEANARRAY, 16, 17, 21, 25}  # parcelablearr/objarr/serializable/pbst
+# types the locale-SDK bundle cannot represent: decoded as tagged objects so
+# the ANCHOR survives (the emitter drops + reports the value) instead of the
+# whole plug-in statement silently disappearing from the scan
+UNREPRESENTABLE_NAMES = {
+    VAL_MAP: 'java.util.Map',
+    VAL_PARCELABLE: 'android.os.Parcelable',
+    VAL_BYTEARRAY: 'byte[]',
+    VAL_SPARSEBOOLEANARRAY: 'android.util.SparseBooleanArray',
+    15: 'android.os.IBinder',
+    16: 'android.os.Parcelable[]',
+    17: 'java.lang.Object[]',
+    18: 'int[]',
+    19: 'long[]',
+    21: 'java.io.Serializable',
+    22: 'android.util.SparseBooleanArray',
+    23: 'boolean[]',
+    25: 'android.os.PersistableBundle',
+}
 
 
 def i32(b, i):
@@ -153,6 +171,17 @@ def parcel_value(b, i, depth=0):
             s, i = parcel_string(b, i)
             out.append(s)
         return out, i
+    if tag in (VAL_BYTEARRAY, 18, 19, 23):  # byte[]/int[]/long[]/boolean[]
+        n, i = i32(b, i)
+        width = {VAL_BYTEARRAY: 1, 18: 4, 19: 8, 23: 4}[tag]
+        if n < 0 or n > 100000:
+            raise ValueError('bad array length')
+        payload = n * width
+        if tag == VAL_BYTEARRAY:
+            payload += (4 - payload % 4) % 4  # writeInplace rounding
+        if i + payload > len(b):
+            raise ValueError('eof in array')
+        return {'$parcel': UNREPRESENTABLE_NAMES[tag], 'value': None}, i + payload
     if tag in LEN_PREFIXED:
         ln, j = i32(b, i)
         if ln < 0:
@@ -174,7 +203,10 @@ def parcel_value(b, i, depth=0):
             if k != end:
                 raise ValueError('list length mismatch')
             return out, end
-        raise ValueError('unhandled length-prefixed parcel type %d' % tag)
+        # skippable but unrepresentable: consume exactly the declared length
+        # so the anchor survives; the emitter drops + reports the value
+        return {'$parcel': UNREPRESENTABLE_NAMES.get(tag, 'parcel-type-%d' % tag),
+                'value': None}, end
     raise ValueError('unhandled parcel type tag %d' % tag)
 
 

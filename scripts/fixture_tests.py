@@ -169,13 +169,14 @@ def main():
         "22590.flo": 12, "36322.flo": 4, "52217.flo": 14,
         "40232.flo": 1, "50902.flo": 2,
     }
+    # per-run output path: a fixed name would let concurrent runs clobber
+    # each other's oracle output
+    plug_out = os.path.join(tempfile.gettempdir(),
+                            "autoport-flo-plugins-%d.json" % os.getpid())
     rc, _so, se = run([sys.executable, "-I", os.path.join(spikes, "flo_plugins.py"),
-                       os.path.join(tempfile.gettempdir(), "autoport-flo-plugins.json")]
-                      + flo_fixtures)
+                       plug_out, *flo_fixtures])
     if rc == 0:
-        plug_report = json.load(open(os.path.join(tempfile.gettempdir(),
-                                                  "autoport-flo-plugins.json"),
-                                     encoding="utf-8"))
+        plug_report = json.load(open(plug_out, encoding="utf-8"))
         per_file = {p["file"]: p for p in plug_report}
         mismatches = []
         for f, want in expected_plugins.items():

@@ -51,14 +51,19 @@ const VAL_DOUBLE = 8;
 const VAL_BOOLEAN = 9;
 const VAL_CHARSEQUENCE = 10;
 const VAL_LIST = 11;
+const VAL_BYTEARRAY = 13;
 const VAL_STRINGARRAY = 14;
 const VAL_CHARSEQUENCEARRAY = 24;
 const LEN_PREFIXED = new Set([2, VAL_BUNDLE, 4, VAL_LIST, 12, 16, 17, 21, 25]);
-// names for values the locale-SDK bundle cannot carry — the emitter reports these
+// Types the locale-SDK bundle cannot represent: decoded as tagged objects so
+// the ANCHOR survives (the emitter drops + reports the value) instead of the
+// whole plug-in statement silently disappearing from the scan. Names match
+// UNREPRESENTABLE_NAMES in scripts/flo_plugins.py (the authoritative oracle).
 const TAG_NAMES = {
-  2: 'android.os.Bundle(map)', 4: 'android.os.Parcelable', 12: 'SparseBooleanArray',
-  13: 'byte[]', 16: 'Parcelable[]', 17: 'Object[]', 21: 'java.io.Serializable',
-  25: 'PersistableBundle',
+  2: 'java.util.Map', 4: 'android.os.Parcelable', 12: 'android.util.SparseBooleanArray',
+  13: 'byte[]', 15: 'android.os.IBinder', 16: 'android.os.Parcelable[]',
+  17: 'java.lang.Object[]', 18: 'int[]', 19: 'long[]', 21: 'java.io.Serializable',
+  22: 'android.util.SparseBooleanArray', 23: 'boolean[]', 25: 'android.os.PersistableBundle',
 };
 
 /* ---- Packed primitives (p020c4/e.java, Q3/c.java) ---- */
@@ -145,6 +150,16 @@ function parcelValue(u8, i, depth) {
     }
     return { value: out, next: i };
   }
+  if (tag === VAL_BYTEARRAY || tag === 18 || tag === 19 || tag === 23) { // byte[]/int[]/long[]/boolean[]
+    const n = i32(u8, i);
+    i = n.next;
+    const width = tag === VAL_BYTEARRAY ? 1 : tag === 19 ? 8 : 4;
+    if (n.value < 0 || n.value > 100000) throw new Error('bad array length');
+    let payload = n.value * width;
+    if (tag === VAL_BYTEARRAY) payload += (4 - (payload % 4)) % 4; // writeInplace rounding
+    if (i + payload > u8.length) throw new Error('EOF in array');
+    return { value: { $parcel: TAG_NAMES[tag], value: null }, next: i + payload };
+  }
   if (LEN_PREFIXED.has(tag)) {
     const ln = i32(u8, i);
     i = ln.next;
@@ -168,7 +183,9 @@ function parcelValue(u8, i, depth) {
       if (i !== end) throw new Error('list length mismatch');
       return { value: out, next: end };
     }
-    throw new Error(`unhandled length-prefixed parcel type ${tag}`);
+    // skippable but unrepresentable: consume exactly the declared length so
+    // the anchor survives; the emitter drops + reports the value
+    return { value: { $parcel: TAG_NAMES[tag] || `parcel-type-${tag}`, value: null }, next: end };
   }
   throw new Error(`unhandled parcel type tag ${tag}`);
 }
@@ -302,11 +319,9 @@ function tryAnchor(u8, i, version) {
     let end = regionEnd;
     const bn = readUtfLen(u8, regionEnd, version);
     if (bn.value <= MAX_BLURB && bn.next + bn.value <= u8.length) {
-      try {
-        blurb = decodeUtf8(u8, bn.next, bn.value);
-      } catch (e) {
-        blurb = asciiSlice(u8, bn.next, bn.next + bn.value);
-      }
+      // non-fatal decode: the Python oracle uses errors='replace', and the
+      // port must stay byte-compatible with it on invalid UTF-8 too
+      blurb = decodeUtf8(u8, bn.next, bn.value);
       end = bn.next + bn.value;
     }
     let varNames = [];
@@ -340,10 +355,11 @@ function tryAnchor(u8, i, version) {
   }
 }
 
-/** Minimal UTF-8 decode for blurb strings (ASCII slice is the fallback). */
+/** UTF-8 decode with replacement characters — mirrors the Python oracle's
+ *  bytes.decode('utf-8', 'replace') so parity holds on invalid sequences. */
 function decodeUtf8(u8, start, len) {
   const bytes = u8.subarray(start, start + len);
-  return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+  return new TextDecoder('utf-8', { fatal: false }).decode(bytes);
 }
 
 /* ---- scanner ---- */
