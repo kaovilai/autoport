@@ -328,9 +328,18 @@ self.addEventListener('fetch', (event) => {
       try {
         return await cacheFirst(req, CACHE_SHELL);
       } catch (e) {
-        // Unknown deep link offline → redirect to the app root (scope), so the relative
-        // refs in index.html resolve correctly instead of against the missing deep path.
-        return Response.redirect(new URL('index.html', self.registration.scope).href, 302);
+        // Unknown deep link offline → serve the cached shell with a <base> injected, so its
+        // relative refs resolve from the scope instead of the missing deep path. No redirect:
+        // a redirect target that itself failed to precache would loop.
+        const cache = await caches.open(CACHE_SHELL);
+        for (const page of ['index.html', '404.html']) {
+          const hit = await cache.match(new URL(page, self.registration.scope).href, { ignoreSearch: true });
+          if (hit) {
+            const html = (await hit.text()).replace('<head>', `<head><base href="${BASE}">`);
+            return new Response(html, { headers: hit.headers, status: 200, statusText: 'OK' });
+          }
+        }
+        return new Response('offline', { status: 503 });
       }
     })());
     return;
