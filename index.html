@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AutoPort — Tasker / Automate → MacroDroid</title>
 <meta name="description" content="Convert Tasker and Automate automations into MacroDroid macros. Share a file in, get a macro out.">
-<meta name="theme-color" content="#0f1419">
+<meta name="theme-color" content="#6366f1">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -16,7 +16,12 @@
 
 <header class="top">
   <div class="brand">
-    <img src="/icons/icon-192.png" alt="" width="40" height="40">
+    <span class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 7h9M4 7l3-3M4 7l3 3"/>
+        <path d="M20 17h-9m9 0-3-3m3 3-3 3"/>
+      </svg>
+    </span>
     <div>
       <h1>AutoPort</h1>
       <p class="tag">Tasker / Automate → MacroDroid</p>
@@ -30,7 +35,7 @@
 <main id="main">
 
   <section class="panel">
-    <h2>1 · Bring a file in</h2>
+    <div class="hero-title"><span class="step-dot" aria-hidden="true">1</span><h2><span class="sr">1 · </span>Bring a file in</h2></div>
     <p class="muted">
       On Android: install this app, then use the <strong>share sheet</strong> from Tasker, Automate,
       or your file manager and pick <em>AutoPort</em>. In a browser: pick or drop a file below.
@@ -59,13 +64,13 @@
   </section>
 
   <section class="panel">
-    <h2>2 · What we recognized</h2>
+    <div class="hero-title"><span class="step-dot" aria-hidden="true">2</span><h2><span class="sr">2 · </span>What we recognized</h2></div>
     <p id="status" class="status" role="status" aria-live="polite">Waiting for a file…</p>
     <pre id="results" class="results" tabindex="0"></pre>
   </section>
 
   <section class="panel">
-    <h2>3 · Shared inbox</h2>
+    <div class="hero-title"><span class="step-dot" aria-hidden="true">3</span><h2><span class="sr">3 · </span>Shared inbox</h2></div>
     <p class="muted small">Items delivered through the Android share sheet (stored in IndexedDB, on this device only).</p>
     <div id="inbox" class="inbox"></div>
   </section>

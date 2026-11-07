@@ -14,7 +14,7 @@
  * answers 405 (python3 -m http.server answers 501) — the user sees an error page, no app.
  */
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE_SHELL = `autoport-shell-${VERSION}`;
 const CACHE_RUNTIME = `autoport-runtime-${VERSION}`;
 
