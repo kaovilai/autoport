@@ -273,7 +273,9 @@ jobs:
             echo "::error::imported macro name 'Launch Instagram' not visible in the MacroDroid editor"
             cat /tmp/passthrough-ui.xml; exit 1
           fi
-          rows=$(grep -o "ActivityConfigPerformAction" /tmp/passthrough-ui.xml | wc -l)
+          # Count NODES, not string occurrences: uiautomator puts the class in
+          # both text and content-desc, so a raw grep would pass with one row.
+          rows=$(grep -o 'text="com.joaomgcd.autoinput.activity.ActivityConfigPerformAction"' /tmp/passthrough-ui.xml | wc -l)
           if [ "$rows" -lt 2 ]; then
             echo "::error::expected 2 rendered LocalePluginAction rows in the editor, found $rows (the nodes were dropped or not rendered)"
             cat /tmp/passthrough-ui.xml; exit 1
